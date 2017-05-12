@@ -1,0 +1,12 @@
+package jsinterop.generator.externs.simpleclass;
+
+import java.lang.String;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public interface SimpleStructuralInterface {
+  boolean fooMethod(String foo, String bar, boolean baz);
+
+  boolean fooMethod(String foo, String bar);
+}

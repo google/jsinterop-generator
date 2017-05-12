@@ -1,0 +1,8 @@
+jsinterop.generator.externs.entitiesrenaming.Foo.foo.parameterToRename=foo
+jsinterop.generator.externs.entitiesrenaming.Foo.bar.parameterToRename=bar
+jsinterop.generator.externs.entitiesrenaming.Foo.FooFooCallbackFn.onInvoke.p0=bar
+jsinterop.generator.externs.entitiesrenaming.SimpleInterface.MethodFooCallbackFn.onInvoke.p0=value
+jsinterop.generator.externs.entitiesrenaming.SimpleInterface.MethodFooCallbackFn.ValueCallbackFn.onInvoke.p0=baz
+jsinterop.generator.externs.entitiesrenaming.Global.foo.bar=foo
+
+
