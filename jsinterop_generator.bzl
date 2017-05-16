@@ -270,7 +270,7 @@ def jsinterop_generator(
         extension_type_prefix = extension_type_prefix,
         name_mapping_files = deps_name_mapping_files + name_mapping_files,
         use_bean_convention = use_bean_convention,
-        # TODO replace it by a blaze flag
+        # TODO(dramaix): replace it by a blaze flag
         debug = False,
         package_name = PACKAGE_NAME,
         conversion_mode = conversion_mode,

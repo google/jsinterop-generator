@@ -180,7 +180,7 @@ public class MembersClassCleaner extends AbstractModelVisitor {
         String name = entity.getName();
         entity.setName(name + "_STATIC");
 
-        // TODO add a javadoc above the field explaining why it was renamed
+        // TODO(dramaix): add a javadoc above the field explaining why it was renamed
         AnnotationType annotationType = entity.getKind() == METHOD ? JS_METHOD : JS_PROPERTY;
 
         addAnnotationNameAttributeIfNotEmpty(entity, name, annotationType, true);

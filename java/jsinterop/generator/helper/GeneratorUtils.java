@@ -40,7 +40,7 @@ public class GeneratorUtils {
     String read(String filePath) throws IOException;
   }
 
-  // TODO remove this constant once clutz is no longer used.
+  // TODO(dramaix): remove this constant once clutz is no longer used.
   private static final String CLUTZ_GLOBAL_NAMESPACE = "ಠ_ಠ.clutz";
   public static String extractNamespace(String nativeFqn, String nativeTypeName) {
     if (nativeFqn.length() == nativeTypeName.length()) {
@@ -76,7 +76,7 @@ public class GeneratorUtils {
     return maybeAppendPrefix(packagePrefix, cleanedTsNamespace);
   }
 
-  // TODO remove this method once clutz is no longer used.
+  // TODO(dramaix): remove this method once clutz is no longer used.
   public static String maybeRemoveClutzNamespace(String namespace) {
     // Clutz add its own internal namespace that acts as global namespace. Remove it if present
     if (namespace.startsWith(CLUTZ_GLOBAL_NAMESPACE)) {

@@ -34,7 +34,7 @@ csplit -n $number_decimal -ks $generator_result_file /$pattern/ {$repetition}
 
 cd -
 
-# TODO maybe emit logs in its own file instead of skipping it.
+# TODO(dramaix): maybe emit logs in its own file instead of skipping it.
 # Compute the name of the first file.
 log_file=${tmp_files_directory}/xx
 for ((i=0; i<number_decimal; i++)); do

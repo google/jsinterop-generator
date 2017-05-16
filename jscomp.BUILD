@@ -40,7 +40,7 @@ filegroup(
         "externs/browser/ie_vml.js",
         "externs/browser/intersection_observer.js",
         "externs/browser/iphone.js",
-        # TODO This extern file is being opensourced. When it is
+        # TODO(dramaix): This extern file is being opensourced. When it is
         # present in the remote repo, uncomment the line below.
         #"externs/browser/mediakeys.js",
         "externs/browser/mediasource.js",
@@ -51,7 +51,7 @@ filegroup(
         "externs/browser/w3c_anim_timing.js",
         "externs/browser/w3c_audio.js",
         "externs/browser/w3c_batterystatus.js",
-        # TODO This extern file is being opensourced. When it is
+        # TODO(dramaix): This extern file is being opensourced. When it is
         # present in the remote repo, uncomment the line below.
         #"externs/browser/w3c_clipboardevent.js",
         "externs/browser/w3c_css3d.js",

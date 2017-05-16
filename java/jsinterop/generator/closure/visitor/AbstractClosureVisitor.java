@@ -85,7 +85,7 @@ abstract class AbstractClosureVisitor {
     } else if (isTypedef(var)) {
       acceptTypedef(var);
     } else if (type.isEnumType()) {
-      // TODO Add support for enum type.
+      // TODO(b/28999444): Add support for enum type.
       throw new RuntimeException("Closure Enum are not supported");
     } else if (type.isConstructor()) {
       // variable defining a constructor function:
@@ -93,7 +93,7 @@ abstract class AbstractClosureVisitor {
       //  * @type {function(new:MutationObserver, function(Array<MutationRecord>))}
       //  */
       //  Window.prototype.MozMutationObserver;
-      // TODO add support for constructor function.
+      // TODO(b/33673967): add support for constructor function.
     } else {
       acceptMember(var, isStatic);
     }

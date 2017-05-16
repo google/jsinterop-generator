@@ -128,7 +128,7 @@ public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
     // remove the already sorted type parameters
     undefinedTypeParameters.removeAll(sortedUndefinedTypeParameters);
     // add the rest by sorting them alphabetically
-    // TODO order should be based on the order at method definition.
+    // TODO(b/34858931): order should be based on the order at method definition.
     sortedUndefinedTypeParameters.addAll(
         undefinedTypeParameters
             .stream()

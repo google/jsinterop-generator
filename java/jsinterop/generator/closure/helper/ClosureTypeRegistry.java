@@ -152,7 +152,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseNamedType(NamedType type) {
-      // TODO It seems that reference to undefined types are wrapped in a NamedType
+      // TODO(b/34387250): It seems that reference to undefined types are wrapped in a NamedType
       // with a reference to UnknownType. If it's the case detect that and throw an exception.
       return visit(type.getReferencedType());
     }

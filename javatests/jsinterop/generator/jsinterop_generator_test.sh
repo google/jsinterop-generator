@@ -47,7 +47,7 @@ setup_test() {
 
   # copy golden files and format them
   cp ${ORIGINAL_GOLDEN_FILES_DIR}/*.java ${GOLDEN_FILES_DIR}
-  # TODO remove this when all feature are implemented.
+  # TODO(dramaix): remove this when all feature are implemented.
   strip_java_comments ${GOLDEN_FILES_DIR}
   format_java_code ${GOLDEN_FILES_DIR}
 }

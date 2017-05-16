@@ -48,10 +48,10 @@ import jsinterop.generator.model.TypeReference;
 import jsinterop.generator.model.TypeVariableReference;
 
 /** CodeWriter is used to generate basic piece of java code. */
-// TODO rewrite the code writing process as a visitor that visit the model. That will
+// TODO(b/34251635): rewrite the code writing process as a visitor that visit the model. That will
 // simplify the code and avoid all these instanceof expressions.
 public class CodeWriter {
-  // TODO remove this. Users can use external formatter in order to format
+  // TODO(dramaix): remove this. Users can use external formatter in order to format
   // the generated code.
   private static final int JAVADOC_MAX_LENGTH = 100;
 
