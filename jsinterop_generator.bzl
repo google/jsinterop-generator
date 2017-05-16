@@ -107,8 +107,8 @@ def _impl(ctx):
   inputs = [
       ctx.outputs._generated_jar,
       ctx.executable._google_java_formatter,
-      ctx.executable._jar
-  ]
+      ctx.executable._jar,
+  ] + ctx.files._jdk
   ctx.action(
       inputs = inputs,
       outputs = [ctx.outputs._formatted_jar],
@@ -155,6 +155,10 @@ _jsinterop_generator = rule(
             cfg = "host",
             executable = True,
             default = Label("//third_party:jar")
+        ),
+        "_jdk": attr.label(
+            cfg = "host",
+            default = Label("//third_party:jdk")
         ),
         "_google_java_formatter": attr.label(
             cfg = "host",
