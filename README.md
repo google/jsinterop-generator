@@ -16,6 +16,7 @@ You need to add this repository as an external dependency in your `WORKSPACE` fi
     new_http_archive(
       name = "com_google_jsinterop_generator",
       url="https://github.com/google/jsinterop-generator/archive/master.zip",
+      strip_prefix="jsinterop-generator-master",
     )
 
 and then define a `jsinterop_generator` target in your 'BUILD' file
