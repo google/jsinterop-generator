@@ -90,7 +90,7 @@ public abstract class AbstractTypeRegistry<T> {
 
     globalType = type;
 
-    // TODO Clean that up for typescript when bug is fixed.
+    // TODO(b/34278243): Clean that up for typescript when bug is fixed.
     if (nativeTypeKey != null) {
       registerJavaTypeByKey(type, nativeTypeKey);
     }

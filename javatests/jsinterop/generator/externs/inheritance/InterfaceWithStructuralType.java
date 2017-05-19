@@ -19,7 +19,7 @@ public interface InterfaceWithStructuralType<U, V> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Bar2BarUnionType<U, V> {
     @JsOverlay
-    // TODO could be: static <V,U> Bar2BarUnionType<V,U> of(Object o);
+    // TODO(dramaix): could be: static <V,U> Bar2BarUnionType<V,U> of(Object o);
     static InterfaceWithStructuralType.Bar2BarUnionType of(Object o) {
       return Js.cast(o);
     }

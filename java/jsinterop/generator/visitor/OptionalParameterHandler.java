@@ -46,7 +46,7 @@ public class OptionalParameterHandler extends AbstractModelVisitor {
   public boolean visit(Type type) {
     if (type.hasAnnotation(AnnotationType.JS_FUNCTION)) {
       // don't create method overloading on functional interface.
-      // TODO create method overloading with default methods for JsFunction type
+      // TODO(b/36140220): create method overloading with default methods for JsFunction type
       return false;
     }
 

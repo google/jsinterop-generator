@@ -4,7 +4,7 @@
  */
 
 /**
- * TODO should be part of a dependency
+ * TODO(dramaix): should be part of a dependency
  * @constructor
  * @param {...*} args
  * @template T

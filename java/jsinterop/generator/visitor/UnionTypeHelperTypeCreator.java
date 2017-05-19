@@ -231,7 +231,7 @@ public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
 
   private static TypeReference toInstanceOfType(TypeReference typeReference) {
     if (typeReference instanceof ArrayTypeReference) {
-      // TODO This won't work with a array created on javascript side.
+      // TODO(b/34396450): This won't work with a array created on javascript side.
       return new ArrayTypeReference(OBJECT);
     }
 
@@ -291,7 +291,7 @@ public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
     }
 
     if (typeReference == JS_PROPERTY_MAP || typeReference == JS_ARRAY_LIKE) {
-      // TODO we can not generate an instanceof statement against JsPropertyMap and
+      // TODO(b/35804724): we can not generate an instanceof statement against JsPropertyMap and
       // JsArrayLike because they are native jstype interface. Remove that when both type implement
       // $isinstance method.
       return false;

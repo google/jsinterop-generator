@@ -46,7 +46,7 @@ import jsinterop.generator.model.TypeVariableReference;
  * same hierarchy can have the same index signature definition. In this case if the return type is
  * the same, just remove the method, otherwise rename one of the method.
  *
- * <p>TODO clarify the role of IObject interface.
+ * <p>TODO(b/29146313): clarify the role of IObject interface.
  */
 public class JsOverlayMethodsCleaner extends AbstractModelVisitor {
   private static final Predicate<Method> IS_JS_OVERLAY_METHOD =

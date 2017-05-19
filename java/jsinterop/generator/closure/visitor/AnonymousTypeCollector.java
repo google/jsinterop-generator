@@ -136,7 +136,7 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
   }
 
   /**
-   * TODO remove this when the bug is fixed. We need this for Promise. Promise redefine
+   * TODO(b/35712194): remove this when the bug is fixed. We need this for Promise. Promise redefine
    * callback function of IThenable interface by adding a "this" type definition. The callback types
    * don't match anymore and cannot be unified later on.
    */

@@ -98,7 +98,7 @@ function SimpleStructuralInterface() {}
 SimpleStructuralInterface.prototype.fooMethod = function(foo, bar, opt_baz) {};
 
 /**
- * TODO Type alias with a constant is not supported.
+ * TODO(b/34389745): Type alias with a constant is not supported.
  * @const
  */
 var SimpleClassAlias = SimpleClass;

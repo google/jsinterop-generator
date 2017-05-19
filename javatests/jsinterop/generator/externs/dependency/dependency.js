@@ -48,7 +48,7 @@ ThirdPartyClass.prototype.extraField;
  * @param {T} foo
  * @param {(T |{bar:T})} bar
  * @return {undefined}
- * TODO reenable the test with local parameter when the bug is
+ * TODO(b/35681242): reenable the test with local parameter when the bug is
  * fixed
  * //@param {function(T):U} baz
  * //@return {U}

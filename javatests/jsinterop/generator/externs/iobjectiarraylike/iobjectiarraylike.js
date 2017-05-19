@@ -3,7 +3,7 @@
  * @externs
  */
 
-// TODO move to an extern dependency
+// TODO(dramaix): move to an extern dependency
 /**
  * @interface
  * @template KEY1, VALUE1
