@@ -76,6 +76,12 @@ alias(
     visibility = ["//visibility:public"],
 )
 
+alias(
+    name = "jdk",
+    actual = "@local_jdk//:jdk-default",
+    visibility = ["//visibility:public"],
+)
+
 # Tests dependencies
 alias(
     name = "common_externs",
