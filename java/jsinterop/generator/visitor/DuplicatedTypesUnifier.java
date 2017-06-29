@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.toSet;
 import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,7 @@ import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Method;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 
@@ -98,9 +100,18 @@ public class DuplicatedTypesUnifier extends AbstractModelVisitor {
   private String currentKeyContext;
   private final Map<Type, Map<String, Type>> syntheticTypesByEnclosingType = new HashMap<>();
   private Set<Type> currentSyntheticTypesSet;
+  private final Set<Type> syntheticTypeToRemove = new HashSet<>();
 
   public DuplicatedTypesUnifier(boolean useBeanConvention) {
     this.useBeanConvention = useBeanConvention;
+  }
+
+  @Override
+  public void endVisit(Program program) {
+    // Remove the synthetic types at the end of this visitor. Otherwise we delete the relationship
+    // with their enclosing type and we cannot clean correctly all type references to the synthetic
+    // types.
+    syntheticTypeToRemove.forEach(Type::removeFromParent);
   }
 
   @Override
@@ -181,43 +192,45 @@ public class DuplicatedTypesUnifier extends AbstractModelVisitor {
 
   @SuppressWarnings("ReferenceEquality")
   private void maybeFixSyntheticTypeReference(JavaTypeReference typeReference) {
-    if (!typeReference.getJavaType().isSynthetic()) {
+    Type syntheticType = typeReference.getJavaType();
+
+    if (!syntheticType.isSynthetic()) {
       // typeReference is not a reference to an synthetic type.
       return;
     }
 
-    Type syntheticType = typeReference.getJavaType();
-
     String typeKey = createTypeKey(syntheticType, currentKeyContext);
 
     Map<String, Type> syntheticTypesByKey =
-        syntheticTypesByEnclosingType.get(syntheticType.getParent());
+        syntheticTypesByEnclosingType.get(syntheticType.getEnclosingType());
 
     Type existingSyntheticType = syntheticTypesByKey.get(typeKey);
 
     if (existingSyntheticType != null && existingSyntheticType != syntheticType) {
       // A type with the same structure is already generated.
-      syntheticType.removeFromParent();
-      // A synthetic type can have reference to other synthetic type like a function type in a
-      // union type: (function(V):U|string).
-      // Because a synthetic types are only referred one time (where they are used), so we are sure
-      // they are not used outside the current synthetic type we are deleting.
-      // Delete synthetic types referenced in another synthetic type.
-      cleanInnerSyntheticTypes(syntheticType);
+      if (syntheticTypeToRemove.add(syntheticType)) {
+        // A synthetic type can have reference to other synthetic type like a function type in a
+        // union type: (function(V):U|string).
+        // Because a synthetic type is only referred one time (where they are used), so we are sure
+        // they are not used outside the current synthetic type we are deleting so they should be
+        // deleted as well.
+        cleanInnerSyntheticTypes(syntheticType);
+      }
       typeReference.setJavaType(existingSyntheticType);
     } else {
       syntheticTypesByKey.put(typeKey, syntheticType);
     }
   }
 
-  private static void cleanInnerSyntheticTypes(Type mainType) {
+  private void cleanInnerSyntheticTypes(Type mainType) {
     (new AbstractModelVisitor() {
           @Override
           public boolean visit(TypeReference typeReference) {
             if (typeReference instanceof JavaTypeReference) {
               Type javaType = ((JavaTypeReference) typeReference).getJavaType();
-              if (javaType.isSynthetic() && javaType.getParent().equals(mainType.getParent())) {
-                javaType.removeFromParent();
+              if (javaType.isSynthetic()
+                  && mainType.getEnclosingType().equals(javaType.getEnclosingType())) {
+                syntheticTypeToRemove.add(javaType);
               }
             }
             return true;

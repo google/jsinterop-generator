@@ -44,7 +44,7 @@ public class FixTypeParametersOfReferencesToSyntheticTypes extends AbstractModel
 
   @Override
   public void endVisit(Type type) {
-    inSyntheticType = type.getParent() != null && type.getParent().isSynthetic();
+    inSyntheticType = type.getEnclosingType() != null && type.getEnclosingType().isSynthetic();
   }
 
   @Override

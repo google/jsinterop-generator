@@ -116,4 +116,8 @@ public class Field extends Entity implements Visitable<Field> {
   public boolean isNativeReadOnly() {
     return nativeReadOnly;
   }
+
+  public void removeFromParent() {
+    getEnclosingType().removeField(this);
+  }
 }

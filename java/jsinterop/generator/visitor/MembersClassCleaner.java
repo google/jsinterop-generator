@@ -24,7 +24,6 @@ import static jsinterop.generator.model.EntityKind.METHOD;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -108,7 +107,7 @@ public class MembersClassCleaner extends AbstractModelVisitor {
       Method singleConstructor = type.getConstructors().get(0);
       if (singleConstructor.getParameters().isEmpty()
           && singleConstructor.getAccessModifier() == AccessModifier.PUBLIC) {
-        type.getConstructors().clear();
+        type.removeMethod(singleConstructor);
       }
     }
   }
@@ -191,11 +190,9 @@ public class MembersClassCleaner extends AbstractModelVisitor {
   private static void removeDuplicatedFields(Type type) {
     Set<String> staticFieldKeys = getStaticFieldKeys(type);
 
-    for (Iterator<Field> it = type.getFields().iterator(); it.hasNext(); ) {
-      Field field = it.next();
-
+    for (Field field : type.getFields()) {
       if (!field.isStatic() && staticFieldKeys.contains(getKey(field))) {
-        it.remove();
+        field.removeFromParent();
       }
     }
   }

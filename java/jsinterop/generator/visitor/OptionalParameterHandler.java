@@ -17,10 +17,6 @@
 
 package jsinterop.generator.visitor;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
 import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Method.Parameter;
@@ -40,18 +36,11 @@ import jsinterop.generator.model.Type;
  * </pre>
  */
 public class OptionalParameterHandler extends AbstractModelVisitor {
-  Deque<List<Method>> newMethodsStack = new LinkedList<>();
-
   @Override
   public boolean visit(Type type) {
-    if (type.hasAnnotation(AnnotationType.JS_FUNCTION)) {
-      // don't create method overloading on functional interface.
-      // TODO(b/36140220): create method overloading with default methods for JsFunction type
-      return false;
-    }
-
-    newMethodsStack.push(new ArrayList<>());
-    return true;
+    // don't create method overloading on functional interface.
+    // TODO(b/36140220): create method overloading with default methods for JsFunction type
+    return !type.hasAnnotation(AnnotationType.JS_FUNCTION);
   }
 
   @Override
@@ -60,7 +49,7 @@ public class OptionalParameterHandler extends AbstractModelVisitor {
     for (int i = parameterCount - 1; i >= 0; i--) {
       Parameter currentParameter = method.getParameters().get(i);
       if (currentParameter.isOptional()) {
-        newMethodsStack.peek().add(createOverloadMethod(method, i));
+        method.getEnclosingType().addMethod(createOverloadMethod(method, i));
       } else {
         // if a non optional parameter is found, the others are non optional too
         return false;
@@ -76,16 +65,9 @@ public class OptionalParameterHandler extends AbstractModelVisitor {
     overload.clearParameters();
 
     for (int i = 0; i < parameterCount; i++) {
-      overload.addParameter(method.getParameters().get(i));
+      overload.addParameter(Parameter.from(method.getParameters().get(i)));
     }
 
     return overload;
-  }
-
-  @Override
-  public void endVisit(Type type) {
-    if (!type.hasAnnotation(AnnotationType.JS_FUNCTION)) {
-      type.addMethods(newMethodsStack.pop());
-    }
   }
 }

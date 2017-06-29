@@ -24,10 +24,9 @@ import static com.google.common.collect.Lists.newArrayList;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import java.util.Deque;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,10 +56,7 @@ public class JsOverlayMethodsCleaner extends AbstractModelVisitor {
         }
       };
 
-  private final Deque<Type> currentTypeStack = new LinkedList<>();
-  private final Deque<Set<Method>> methodsToRemoveStack = new LinkedList<>();
   private final Set<Type> alreadyVisitedType = new HashSet<>();
-  private Map<Method, String> knownOverlayMethodsWithReturnType;
 
   @Override
   public boolean visit(Type type) {
@@ -74,9 +70,37 @@ public class JsOverlayMethodsCleaner extends AbstractModelVisitor {
         }
       }
 
-      // let's now visit the type
-      currentTypeStack.push(type);
-      methodsToRemoveStack.push(new HashSet<>());
+      // let's now visit the method's type
+      Map<Method, String> knownOverlayMethodsWithReturnType = getKnownJsOverlayMethods(type);
+
+      for (Method method : new ArrayList<>(type.getMethods())) {
+        if (IS_JS_OVERLAY_METHOD.apply(method)) {
+          if (addOverlayMethod(method, knownOverlayMethodsWithReturnType)) {
+            // method doesn't collide with any known overlay methods.
+            return false;
+          }
+
+          // Collision: try adding simple name for return.
+          String originalName = method.getName();
+          String simpleNamePostfix =
+              getReturnTypeAsString(method.getReturnType(), false /* useFqn */);
+          method.setName(originalName + "As" + simpleNamePostfix);
+
+          if (addOverlayMethod(method, knownOverlayMethodsWithReturnType)) {
+            return false;
+          }
+
+          // Still collides; try adding qualified name for return.
+          String qualifiedNamePostifx =
+              getReturnTypeAsString(method.getReturnType(), true /* useFqn */);
+          method.setName(originalName + "As" + qualifiedNamePostifx);
+
+          checkState(addOverlayMethod(method, knownOverlayMethodsWithReturnType));
+        }
+      }
+
+      alreadyVisitedType.add(type);
+
       return true;
     }
 
@@ -88,65 +112,24 @@ public class JsOverlayMethodsCleaner extends AbstractModelVisitor {
     return !type.isInterface() && !alreadyVisitedType.contains(type);
   }
 
-  @Override
-  public void endVisit(Type type) {
-    if (typeMustBeVisited(type)) {
-      Set<Method> methodsToRemove = methodsToRemoveStack.pop();
-
-      type.getMethods().removeAll(methodsToRemove);
-
-      currentTypeStack.pop();
-
-      knownOverlayMethodsWithReturnType = null;
-      alreadyVisitedType.add(type);
-    }
-  }
-
-  @Override
-  public boolean visit(Method method) {
-    if (IS_JS_OVERLAY_METHOD.apply(method)) {
-      if (addOverlayMethod(method)) {
-        // method doesn't collide with any known overlay methods.
-        return false;
-      }
-
-      // Collision: try adding simple name for return.
-      String originalName = method.getName();
-      String simpleNamePostfix = getReturnTypeAsString(method.getReturnType(), false /* useFqn */);
-      method.setName(originalName + "As" + simpleNamePostfix);
-
-      if (addOverlayMethod(method)) {
-        return false;
-      }
-
-      // Still collides; try adding qualified name for return.
-      String qualifiedNamePostifx =
-          getReturnTypeAsString(method.getReturnType(), true /* useFqn */);
-      method.setName(originalName + "As" + qualifiedNamePostifx);
-
-      checkState(addOverlayMethod(method));
-    }
-    return false;
-  }
-
   /**
    * Add a method to the set of existing known overlay methods if it doesn't collide with any of
    * these methods. If a same method (same return type, same name, same paramters) already exists,
    * the method will be removed from the type.
    *
-   * <p>Return true if the method doesn't collide with any, return false otherwise.
+   * @return {@code true} if the method doesn't collide with any, return {@code false} otherwise.
    */
-  private boolean addOverlayMethod(Method method) {
-    String returnType = getKnownJsOverlayMethods().get(method);
+  private boolean addOverlayMethod(Method method, Map<Method, String> overlayMethods) {
+    String returnType = overlayMethods.get(method);
     if (returnType == null) {
       // no collision: add the method to the existing one set.
-      getKnownJsOverlayMethods().put(method, method.getReturnType().getJniSignature());
+      overlayMethods.put(method, method.getReturnType().getJniSignature());
       return true;
     }
 
     // there is a possible collision, check if it's same method.
     if (returnType.equals(method.getReturnType().getJniSignature())) {
-      removeMethod(method);
+      method.removeFromParent();
       // there is no conflict anymore
       return true;
     }
@@ -170,20 +153,10 @@ public class JsOverlayMethodsCleaner extends AbstractModelVisitor {
     return toCamelUpperCase(fqn ? returnType.getJavaTypeFqn() : returnType.getTypeName());
   }
 
-  private void removeMethod(Method method) {
-    methodsToRemoveStack.peek().add(method);
-  }
+  private Map<Method, String> getKnownJsOverlayMethods(Type currentType) {
+    Map<Method, String> knownOverlayMethodsWithReturnType = new HashMap<>();
 
-  private Type getCurrentType() {
-    return currentTypeStack.peek();
-  }
-
-  private Map<Method, String> getKnownJsOverlayMethods() {
-    if (knownOverlayMethodsWithReturnType == null) {
-      knownOverlayMethodsWithReturnType = new HashMap<>();
-
-      addParentJsOverlayMethods(getCurrentType(), knownOverlayMethodsWithReturnType);
-    }
+    addParentJsOverlayMethods(currentType, knownOverlayMethodsWithReturnType);
 
     return knownOverlayMethodsWithReturnType;
   }

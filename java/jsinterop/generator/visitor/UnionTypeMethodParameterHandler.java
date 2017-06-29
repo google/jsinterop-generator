@@ -52,15 +52,11 @@ import jsinterop.generator.model.UnionTypeReference;
  * methods overloading.
  */
 public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
-  private final Deque<Type> currentTypeStack = new LinkedList<>();
   private final Deque<Set<Method>> parentInterfaceMethodsStack = new LinkedList<>();
-  private final Deque<List<Method>> methodsToAddStack = new LinkedList<>();
 
   @Override
   public boolean visit(Type type) {
-    currentTypeStack.push(type);
     parentInterfaceMethodsStack.push(getParentInterfacesMethods(type));
-    methodsToAddStack.push(new ArrayList<>());
     return true;
   }
 
@@ -73,10 +69,7 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
 
   @Override
   public void endVisit(Type type) {
-    Type currentType = currentTypeStack.pop();
     parentInterfaceMethodsStack.pop();
-
-    currentType.addMethods(methodsToAddStack.pop());
   }
 
   @Override
@@ -86,6 +79,7 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
     if (isParentInterfaceMethod(method)) {
       return false;
     }
+    Type currentType = method.getEnclosingType();
 
     List<Method> overloadingMethods = new ArrayList<>();
 
@@ -118,7 +112,7 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
       if (method.getKind() != EntityKind.CONSTRUCTOR) {
         // Because JsType can be extended, we need to create default JsOverlay method that delegates
         // to the original method in order to force developer to override only the original method.
-        boolean needDefaultMethod = getCurrentType().isInterface();
+        boolean needDefaultMethod = currentType.isInterface();
         overloadingMethod.setDefault(needDefaultMethod);
         overloadingMethod.setFinal(!needDefaultMethod);
         overloadingMethod.addAnnotation(Annotation.builder().type(JS_OVERLAY).build());
@@ -139,7 +133,7 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
         overloadingMethods.stream().map(Method::getJniSignatureWithoutReturn).collect(toSet());
 
     if (uniqueMethodSignatures.size() == overloadingMethods.size()) {
-      methodsToAddStack.peek().addAll(overloadingMethods);
+      currentType.addMethods(overloadingMethods);
     }
 
     return false;
@@ -224,9 +218,5 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
     // simple case, no more direct union type involved in the type reference.
     // Union type involved in generics or array type will be replaced later by an helper type.
     return newArrayList(typeReference);
-  }
-
-  public Type getCurrentType() {
-    return currentTypeStack.peek();
   }
 }

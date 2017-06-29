@@ -17,6 +17,7 @@
 
 package jsinterop.generator.model;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Lists.transform;
 import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 import static jsinterop.generator.model.EntityKind.METHOD;
@@ -43,6 +44,7 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
     private boolean varargs;
     private final boolean optional;
     private String name;
+    private Method enclosingMethod;
 
     public Parameter(String name, TypeReference type, boolean varargs, boolean optional) {
       this.name = name;
@@ -96,6 +98,14 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
       TypeReference jniType = isVarargs() ? new ArrayTypeReference(getType()) : getType();
       return jniType.getJniSignature();
     }
+
+    public Method getEnclosingMethod() {
+      return enclosingMethod;
+    }
+
+    private void setEnclosingMethod(Method enclosingMethod) {
+      this.enclosingMethod = enclosingMethod;
+    }
   }
 
   public static Method from(Method method) {
@@ -140,24 +150,6 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
     this(false);
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (!super.equals(o)) {
-      return false;
-    }
-
-    List<String> parameterTypes = transform(parameters, toParameterTypeName);
-    List<String> otherParameterTypes = transform(((Method) o).parameters, toParameterTypeName);
-
-    return Objects.equals(parameterTypes, otherParameterTypes);
-  }
-
-  @Override
-  public int hashCode() {
-    List<String> parameterTypes = transform(parameters, toParameterTypeName);
-    return Objects.hash(super.hashCode(), parameterTypes);
-  }
-
   public List<Parameter> getParameters() {
     return ImmutableList.copyOf(parameters);
   }
@@ -167,7 +159,12 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
   }
 
   public void addParameter(Parameter parameter) {
+    checkArgument(
+        parameter.getEnclosingMethod() == null, "%s is not an orphan parameter.", parameter);
+
     this.parameters.add(parameter);
+
+    parameter.setEnclosingMethod(this);
   }
 
   public TypeReference getReturnType() {
@@ -208,9 +205,17 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
     return isDefault;
   }
 
-  @Override
-  public String toString() {
-    return getName() + "(" + Joiner.on(", ").join(getParameters()) + ")";
+  public String getJniSignatureWithoutReturn() {
+    String parameters =
+        getParameters().stream().map(Parameter::getJniSignature).collect(Collectors.joining());
+
+    String methodName = getKind() == EntityKind.CONSTRUCTOR ? "%constructor%" : getName();
+
+    return methodName + "(" + parameters + ")";
+  }
+
+  public void removeFromParent() {
+    getEnclosingType().removeMethod(this);
   }
 
   @Override
@@ -232,12 +237,26 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
     return this;
   }
 
-  public String getJniSignatureWithoutReturn() {
-    String parameters =
-        getParameters().stream().map(Parameter::getJniSignature).collect(Collectors.joining());
+  @Override
+  public boolean equals(Object o) {
+    if (!super.equals(o)) {
+      return false;
+    }
 
-    String methodName = getKind() == EntityKind.CONSTRUCTOR ? "%constructor%" : getName();
+    List<String> parameterTypes = transform(parameters, toParameterTypeName);
+    List<String> otherParameterTypes = transform(((Method) o).parameters, toParameterTypeName);
 
-    return methodName + "(" + parameters + ")";
+    return Objects.equals(parameterTypes, otherParameterTypes);
+  }
+
+  @Override
+  public int hashCode() {
+    List<String> parameterTypes = transform(parameters, toParameterTypeName);
+    return Objects.hash(super.hashCode(), parameterTypes);
+  }
+
+  @Override
+  public String toString() {
+    return getName() + "(" + Joiner.on(", ").join(getParameters()) + ")";
   }
 }

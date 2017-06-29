@@ -16,6 +16,7 @@
  */
 package jsinterop.generator.model;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.newHashSet;
@@ -25,8 +26,8 @@ import static jsinterop.generator.model.EntityKind.INTERFACE;
 import static jsinterop.generator.model.EntityKind.METHOD;
 import static jsinterop.generator.model.EntityKind.NAMESPACE;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -42,7 +43,7 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     // copy properties from Entity class
     copyEntityProperties(type, clonedType);
 
-    clonedType.setParent(type.getParent());
+    clonedType.setEnclosingType(type.getEnclosingType());
     clonedType.setPackageName(type.getPackageName());
     clonedType.setNativeNamespace(type.getNativeNamespace());
     clonedType.setSynthetic(type.isSynthetic());
@@ -79,7 +80,6 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     return clonedType;
   }
 
-  private Type parent;
   private String packageName;
   private Set<TypeReference> inheritedTypes = new LinkedHashSet<>();
   private Set<TypeReference> implementedTypes = new LinkedHashSet<>();
@@ -121,15 +121,15 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
   }
 
   public List<Field> getFields() {
-    return fields;
+    return ImmutableList.copyOf(fields);
   }
 
   public List<Method> getMethods() {
-    return methods;
+    return ImmutableList.copyOf(methods);
   }
 
   public List<Method> getConstructors() {
-    return constructors;
+    return ImmutableList.copyOf(constructors);
   }
 
   @Override
@@ -138,14 +138,14 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
   }
 
   public List<Type> getInnerTypes() {
-    return innerTypes;
+    return ImmutableList.copyOf(innerTypes);
   }
 
   public String getPackageName() {
-    if (parent != null) {
+    if (getEnclosingType() != null) {
       // as the name of the Parent can be modified latter, we cannot store the parent.getJavaFqn()
       // as package name of inner class. Compute it each time, we call getPackageName method.
-      return parent.getJavaFqn();
+      return getEnclosingType().getJavaFqn();
     }
 
     return packageName;
@@ -153,20 +153,6 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
 
   public void setPackageName(String packageName) {
     this.packageName = packageName;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (!super.equals(o)) {
-      return false;
-    }
-
-    return Objects.equals(getPackageName(), ((Type) o).getPackageName());
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), packageName);
   }
 
   public boolean isClass() {
@@ -182,27 +168,39 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
   }
 
   public void addField(Field field) {
+    checkArgument(field.getEnclosingType() == null, "%s is not an orphan field.", field);
+
     fields.add(field);
+    field.setEnclosingType(this);
+  }
+
+  public void addMethods(List<Method> methods) {
+    methods.forEach(this::addMethod);
   }
 
   public void addMethod(Method method) {
+    checkArgument(method.getEnclosingType() == null, "%s is not an orphan method.", method);
+
     if (method.getKind() == CONSTRUCTOR) {
       constructors.add(method);
     } else {
       methods.add(method);
     }
+
+    method.setEnclosingType(this);
   }
 
   public void addConstructor(Method constructor) {
-    Preconditions.checkArgument(
+    checkArgument(
         constructor.getKind() == CONSTRUCTOR, "Method %s is not a constructor.", constructor);
-    constructors.add(constructor);
+    addMethod(constructor);
   }
 
   public void addInnerType(Type innerType) {
+    checkArgument(innerType.getEnclosingType() == null, "%s is not an orphan type.", innerType);
     innerTypes.add(innerType);
 
-    innerType.setParent(this);
+    innerType.setEnclosingType(this);
 
     // inner types are automatically static
     innerType.setStatic(true);
@@ -221,16 +219,8 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     implementedTypes.add(typeReference);
   }
 
-  public void setParent(Type parent) {
-    this.parent = parent;
-  }
-
-  public Type getParent() {
-    return parent;
-  }
-
   public Type getTopLevelParentType() {
-    return parent == null ? this : parent.getTopLevelParentType();
+    return getEnclosingType() == null ? this : getEnclosingType().getTopLevelParentType();
   }
 
   public Set<String> getInnerTypesNames() {
@@ -282,29 +272,35 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     return this;
   }
 
-  public void setMethods(List<Method> methods) {
-    this.methods = methods;
+  public void removeFields(List<Field> fieldsToRemove) {
+    fieldsToRemove.forEach(this::removeField);
   }
 
-  @Override
-  public String toString() {
-    return (isInterface() ? "Interface " : "Class ") + getJavaFqn();
+  public void removeField(Field field) {
+    checkParent(field);
+    fields.remove(field);
+    field.setEnclosingType(null);
   }
 
-  public void addMethods(List<Method> methods) {
-    methods.forEach(this::addMethod);
-  }
-
-  public void removeMethods(List<Method> methods) {
-    methods.forEach(this::removeMethod);
-  }
-
-  private void removeMethod(Method toRemove) {
+  public void removeMethod(Method toRemove) {
+    checkParent(toRemove);
     if (toRemove.getKind() == METHOD) {
-      getMethods().remove(toRemove);
+      methods.remove(toRemove);
     } else {
-      getConstructors().remove(toRemove);
+      constructors.remove(toRemove);
     }
+    toRemove.setEnclosingType(null);
+  }
+
+  public void removeInnerType(Type innerType) {
+    checkParent(innerType);
+    innerTypes.remove(innerType);
+    innerType.setEnclosingType(null);
+  }
+
+  @SuppressWarnings("ReferenceEquality")
+  private void checkParent(Entity entity) {
+    checkArgument(entity.getEnclosingType() == this, "%s is not the parent of %s", this, entity);
   }
 
   public boolean isSynthetic() {
@@ -332,8 +328,26 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
   }
 
   public void removeFromParent() {
-    checkState(parent != null, "Type is not an inner type.");
+    checkState(getEnclosingType() != null, "Type is not an inner type.");
+    getEnclosingType().removeInnerType(this);
+  }
 
-    parent.getInnerTypes().remove(this);
+  @Override
+  public boolean equals(Object o) {
+    if (!super.equals(o)) {
+      return false;
+    }
+
+    return Objects.equals(getPackageName(), ((Type) o).getPackageName());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), packageName);
+  }
+
+  @Override
+  public String toString() {
+    return (isInterface() ? "Interface " : "Class ") + getJavaFqn();
   }
 }

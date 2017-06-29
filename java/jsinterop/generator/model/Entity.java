@@ -35,6 +35,7 @@ public abstract class Entity {
   private List<Annotation> annotations = new LinkedList<>();
   private boolean finalModifier;
   private boolean staticModifier;
+  private Type enclosingType;
 
   public EntityKind getKind() {
     return kind;
@@ -128,5 +129,13 @@ public abstract class Entity {
 
   public void setAccessModifier(AccessModifier accessModifier) {
     this.accessModifier = accessModifier;
+  }
+
+  public Type getEnclosingType() {
+    return enclosingType;
+  }
+
+  protected void setEnclosingType(Type enclosingType) {
+    this.enclosingType = enclosingType;
   }
 }

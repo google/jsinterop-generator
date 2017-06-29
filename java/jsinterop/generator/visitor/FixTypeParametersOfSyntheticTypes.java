@@ -120,7 +120,7 @@ public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
     // and placed at the end.
     List<TypeReference> sortedUndefinedTypeParameters =
         syntheticType
-            .getParent()
+            .getEnclosingType()
             .getTypeParameters()
             .stream()
             .filter(undefinedTypeParameters::contains)

@@ -30,8 +30,6 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.Entity;
@@ -112,12 +110,8 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
     return methods;
   }
 
-  private Deque<Type> currentTypes = new LinkedList<>();
-
   @Override
   public boolean visit(Type type) {
-    currentTypes.push(type);
-
     validEntityName(type, JS_TYPE, false);
 
     String originalName = type.getName();
@@ -131,11 +125,6 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
     }
 
     return true;
-  }
-
-  @Override
-  public void endVisit(Type type) {
-    currentTypes.pop();
   }
 
   @Override

@@ -56,7 +56,7 @@ public class TypeWriter {
       Ordering.natural().onResultOf(Entity::getName);
 
   public static void emit(Type type, CodeWriter writer) {
-    if (type.getParent() == null) {
+    if (type.getEnclosingType() == null) {
       writer.setPackage(type.getPackageName());
     }
 

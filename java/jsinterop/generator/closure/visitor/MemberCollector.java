@@ -91,15 +91,20 @@ public class MemberCollector extends AbstractClosureVisitor {
 
     getCurrentJavaType().addMethod(constructorMethod);
 
+    currentJavaMethodDeque.push(constructorMethod);
+    return true;
+  }
+
+  @Override
+  protected void endVisitConstructor(FunctionType constructor) {
+    Method constructorMethod = currentJavaMethodDeque.pop();
+
     // if the type is currently extended, copy the constructor on the extension point
     if (getJavaTypeRegistry().containsExtensionType(getCurrentJavaType())) {
       getJavaTypeRegistry()
           .getExtensionType(getCurrentJavaType())
-          .addConstructor(constructorMethod);
+          .addConstructor(Method.from(constructorMethod));
     }
-
-    currentJavaMethodDeque.push(constructorMethod);
-    return true;
   }
 
   @Override

@@ -95,7 +95,7 @@ public class FieldsConverter extends AbstractModelVisitor {
             }
           });
 
-      type.getFields().removeAll(nonStaticFields);
+      type.removeFields(nonStaticFields);
 
     } else if (type.isClass()) {
       // Classes can implement interfaces with non static fields. Now that these fields have been
