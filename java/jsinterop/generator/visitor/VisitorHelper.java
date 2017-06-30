@@ -17,12 +17,14 @@
 
 package jsinterop.generator.visitor;
 
+import java.util.List;
 import jsinterop.generator.model.Program;
 
 /** Helper class that runs all java model visitors. */
 public final class VisitorHelper {
 
-  public static void finalizeJavaProgram(Program program, boolean useBeanConvention) {
+  public static void finalizeJavaProgram(
+      Program program, boolean useBeanConvention, List<String> integerEntities) {
     new EmptyNamespaceFilter().accept(program);
 
     new FieldsConverter(useBeanConvention).accept(program);
@@ -32,6 +34,8 @@ public final class VisitorHelper {
     new OptionalParameterHandler().accept(program);
 
     new ValidJavaIdentifierVisitor().accept(program);
+
+    new IntegerEntitiesConverter(integerEntities).accept(program);
 
     new UnionTypeMethodParameterHandler().accept(program);
 

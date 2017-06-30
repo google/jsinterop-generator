@@ -27,6 +27,7 @@ import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN;
 import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN_OBJECT;
 import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE;
 import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE_OBJECT;
+import static jsinterop.generator.model.PredefinedTypeReference.INT;
 import static jsinterop.generator.model.PredefinedTypeReference.JS_ARRAY_LIKE;
 import static jsinterop.generator.model.PredefinedTypeReference.JS_PROPERTY_MAP;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
@@ -245,7 +246,7 @@ public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
       return BOOLEAN_OBJECT;
     }
 
-    if (typeReference == DOUBLE) {
+    if (typeReference == DOUBLE || typeReference == INT) {
       return DOUBLE_OBJECT;
     }
 
@@ -363,6 +364,8 @@ public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
       castMethodName = "asBoolean";
     } else if (returnType == PredefinedTypeReference.DOUBLE) {
       castMethodName = "asDouble";
+    } else if (returnType == PredefinedTypeReference.INT) {
+      castMethodName = "asInt";
     } else if (returnType == PredefinedTypeReference.STRING) {
       castMethodName = "asString";
     } else {

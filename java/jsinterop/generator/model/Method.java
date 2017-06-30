@@ -18,6 +18,7 @@
 package jsinterop.generator.model;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.transform;
 import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 import static jsinterop.generator.model.EntityKind.METHOD;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 public class Method extends Entity implements HasTypeParameters, Visitable<Method> {
 
   /** Models parameters of java methods. */
-  public static class Parameter implements Visitable<Parameter> {
+  public static class Parameter implements Visitable<Parameter>, HasName {
     public static Parameter from(Parameter parameter) {
       return new Parameter(
           parameter.getName(), parameter.getType(), parameter.isVarargs(), parameter.isOptional());
@@ -58,6 +59,7 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
       return type;
     }
 
+    @Override
     public String getName() {
       return name;
     }
@@ -72,6 +74,11 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
 
     public void setType(TypeReference type) {
       this.type = type;
+    }
+
+    public String getJavaFqn() {
+      checkState(getEnclosingMethod() != null);
+      return getEnclosingMethod().getJavaFqn() + "." + getName();
     }
 
     @Override

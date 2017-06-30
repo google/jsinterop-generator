@@ -1,0 +1,9 @@
+jsinterop.generator.externs.integerentities.Foo.foo
+jsinterop.generator.externs.integerentities.Foo.union.unionParam
+jsinterop.generator.externs.integerentities.Foo.foo.integerParam
+jsinterop.generator.externs.integerentities.Foo.bar
+jsinterop.generator.externs.integerentities.Foo.baz
+jsinterop.generator.externs.integerentities.Foo.FooCallbackFn.onInvoke.foo
+jsinterop.generator.externs.integerentities.Global.foo
+jsinterop.generator.externs.integerentities.Global.foo.bar
+jsinterop.generator.externs.integerentities.Global.baz

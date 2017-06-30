@@ -66,10 +66,18 @@ public class Runner {
   @Option(
     name = "--name_mapping_file",
     usage =
-        "File containing between a fqn of parameter and its final name. This file allows the "
-            + "generator to rename some parameters with a well-defined name."
+        "File containing the mapping between a fqn of parameter and its final name. This file "
+            + "allows the generator to rename some parameters with a well-defined name."
   )
   List<String> nameMappingFilePaths = new ArrayList<>();
+
+  @Option(
+    name = "--integer_entities_file",
+    usage =
+        "File containing the list of entities typed as number and need to be converted to integer "
+            + "instead of double. The entity is represented by its fqn."
+  )
+  List<String> integerEntitiesFiles = new ArrayList<>();
 
   @Option(name = "--dependency", usage = "Source file of a dependency")
   List<String> dependencyFilePaths = new ArrayList<>();
@@ -89,6 +97,7 @@ public class Runner {
             .beanConventionUsed(beanConvention)
             .dependencyMappingFiles(dependencyMappingFilePaths)
             .nameMappingFiles(nameMappingFilePaths)
+            .integerEntitiesFiles(integerEntitiesFiles)
             .dependencies(
                 dependencyFilePaths.stream().map(SourceFile::fromFile).collect(toImmutableList()))
             .sources(sourceFilePaths.stream().map(SourceFile::fromFile).collect(toImmutableList()))

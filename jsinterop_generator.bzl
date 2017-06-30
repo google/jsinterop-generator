@@ -44,10 +44,9 @@ def _closure_impl(srcs, deps_srcs, types_mapping_files, ctx):
       "--extension_type_prefix=%s" % ctx.attr.extension_type_prefix,
       ]
   arguments += ["--dependency=%s" % f.path for f in deps_srcs]
-
   arguments += ["--dependency_mapping_file=%s" % f.path for f in types_mapping_files]
-
   arguments += ["--name_mapping_file=%s" % f.path for f in  ctx.files.name_mapping_files]
+  arguments += ["--integer_entities_file=%s" % f.path for f in  ctx.files.integer_entities_files]
 
   if ctx.attr.debug:
     arguments += ["--debug_mode"]
@@ -58,7 +57,7 @@ def _closure_impl(srcs, deps_srcs, types_mapping_files, ctx):
   arguments += ["%s" % f.path for f in srcs]
 
   ctx.action(
-      inputs = srcs + deps_srcs + types_mapping_files + ctx.files.name_mapping_files,
+      inputs = srcs + deps_srcs + types_mapping_files + ctx.files.name_mapping_files + ctx.files.integer_entities_files,
       outputs=[ctx.outputs._generated_jar, ctx.outputs._dependency_file],
       executable = ctx.executable._closure_generator,
       progress_message = "Generating jsinterop classes from extern closure files",
@@ -145,6 +144,7 @@ _jsinterop_generator = rule(
         "package_prefix": attr.string(),
         "extension_type_prefix": attr.string(),
         "name_mapping_files": attr.label_list(allow_files = True),
+        "integer_entities_files": attr.label_list(allow_files = True),
         "use_bean_convention": attr.bool(),
         "debug": attr.bool(),
         "package_name": attr.string(),
@@ -208,6 +208,7 @@ def jsinterop_generator(
     copyright_attr = "",
     extension_type_prefix = None,
     name_mapping_files = [],
+    integer_entities_files = [],
     use_bean_convention = True,
     package_prefix = None,
     generate_j2cl_library = True,
@@ -276,6 +277,7 @@ def jsinterop_generator(
         package_prefix = package_prefix,
         extension_type_prefix = extension_type_prefix,
         name_mapping_files = deps_name_mapping_files + name_mapping_files,
+        integer_entities_files = integer_entities_files,
         use_bean_convention = use_bean_convention,
         # TODO(dramaix): replace it by a blaze flag
         debug = False,

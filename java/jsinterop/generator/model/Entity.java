@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 /** Super class to be extended by class modeling Java entity. */
-public abstract class Entity {
+public abstract class Entity implements HasName {
   protected static void copyEntityProperties(Entity from, Entity to) {
     to.setName(from.getName());
     to.setStatic(from.isStatic());
@@ -45,6 +45,7 @@ public abstract class Entity {
     this.kind = kind;
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -129,6 +130,14 @@ public abstract class Entity {
 
   public void setAccessModifier(AccessModifier accessModifier) {
     this.accessModifier = accessModifier;
+  }
+
+  public String getJavaFqn() {
+    if (getEnclosingType() != null) {
+      return getEnclosingType().getJavaFqn() + "." + getName();
+    }
+
+    return getName();
   }
 
   public Type getEnclosingType() {

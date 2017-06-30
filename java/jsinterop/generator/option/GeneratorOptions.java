@@ -46,4 +46,7 @@ public class GeneratorOptions {
 
   @JsProperty(name = "depsTypesMapping")
   public native String[] depsTypesMapping();
+
+  @JsProperty(name = "integerEntities")
+  public native String[] integerEntities();
 }

@@ -114,7 +114,7 @@ public enum PredefinedTypeReference implements TypeReference {
 
   @Override
   public TypeReference doVisit(ModelVisitor visitor) {
-    // this type of TypeReference doesnt need to be visited.
-    return this;
+    visitor.visit(this);
+    return visitor.endVisit(this);
   }
 }

@@ -27,6 +27,7 @@ def jsinterop_generator_test(
     deps = [],
     conversion_mode = "closure",
     j2cl_test_externs_list = [],
+    integer_entities_files = [],
     ):
 
   jsinterop_generator_name = "%s__jsinterop_generator" % name
@@ -43,6 +44,7 @@ def jsinterop_generator_test(
       deps = deps,
       conversion_mode = conversion_mode,
       j2cl_test_externs_list = j2cl_test_externs_list,
+      integer_entities_files = integer_entities_files,
   )
 
   native.sh_test(

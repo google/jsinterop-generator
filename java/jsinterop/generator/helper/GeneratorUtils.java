@@ -130,12 +130,16 @@ public class GeneratorUtils {
     return prefix + suffix;
   }
 
-  public static Map<String, String> readKeyValueFile(
+  public static Map<String, String> readKeyValueFiles(
       List<String> filePaths, FileReader fileReader) {
     return Splitter.on('\n')
         .omitEmptyStrings()
         .withKeyValueSeparator('=')
         .split(readFiles(filePaths, fileReader));
+  }
+
+  public static List<String> readListFiles(List<String> filePaths, FileReader fileReader) {
+    return Splitter.on('\n').omitEmptyStrings().splitToList(readFiles(filePaths, fileReader));
   }
 
   private static String readFiles(List<String> filePaths, FileReader reader) {

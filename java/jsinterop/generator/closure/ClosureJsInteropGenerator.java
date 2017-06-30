@@ -83,7 +83,10 @@ class ClosureJsInteropGenerator {
   private void finalizeProgram(Program javaProgram) {
     new IObjectIArrayLikeCleaner().accept(javaProgram);
 
-    VisitorHelper.finalizeJavaProgram(javaProgram, options.isBeanConventionUsed());
+    VisitorHelper.finalizeJavaProgram(
+        javaProgram,
+        options.isBeanConventionUsed(),
+        readListFiles(options.getIntegerEntitiesFiles()));
   }
 
   private void generateJarFile(Program javaProgram) {
@@ -126,9 +129,9 @@ class ClosureJsInteropGenerator {
             .sourceFiles(options.getSources())
             .externDependencyFiles(options.getDependencies())
             // TODO(b/36178451): set the map in the context directly
-            .javaProgram(new Program(readFiles(options.getDependencyMappingFiles())))
+            .javaProgram(new Program(readKeyValueFiles(options.getDependencyMappingFiles())))
             .typeRegistry(new ClosureTypeRegistry(compiler.getTypeRegistry()))
-            .nameMapping(readFiles(options.getNameMappingFiles()))
+            .nameMapping(readKeyValueFiles(options.getNameMappingFiles()))
             .build();
 
     TypedScope topScope = compiler.getTopScope();
@@ -147,8 +150,13 @@ class ClosureJsInteropGenerator {
     return ctx.getJavaProgram();
   }
 
-  private static Map<String, String> readFiles(List<String> filePaths) {
-    return GeneratorUtils.readKeyValueFile(
+  private static Map<String, String> readKeyValueFiles(List<String> filePaths) {
+    return GeneratorUtils.readKeyValueFiles(
+        filePaths, p -> Files.asCharSource(new File(p), UTF_8).read());
+  }
+
+  private List<String> readListFiles(List<String> filePaths) {
+    return GeneratorUtils.readListFiles(
         filePaths, p -> Files.asCharSource(new File(p), UTF_8).read());
   }
 

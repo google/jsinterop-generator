@@ -48,6 +48,8 @@ public abstract class Options {
 
     abstract Builder nameMappingFiles(List<String> nameMappingFiles);
 
+    abstract Builder integerEntitiesFiles(List<String> integerMappingFiles);
+
     abstract Options build();
   }
 
@@ -79,6 +81,8 @@ public abstract class Options {
   public abstract List<SourceFile> getSources();
 
   public abstract List<String> getNameMappingFiles();
+
+  public abstract List<String> getIntegerEntitiesFiles();
 
   static Builder builder() {
     return new AutoValue_Options.Builder();
