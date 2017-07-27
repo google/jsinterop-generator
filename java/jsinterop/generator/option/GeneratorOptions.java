@@ -41,9 +41,6 @@ public class GeneratorOptions {
   @JsProperty(name = "withTypescriptLib")
   public native boolean withTypescriptLib();
 
-  @JsProperty(name = "fromClutz")
-  public native boolean fromClutz();
-
   @JsProperty(name = "depsTypesMapping")
   public native String[] depsTypesMapping();
 
