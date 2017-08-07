@@ -160,14 +160,19 @@ public class TypeCollector extends AbstractClosureVisitor {
     String name = extractName(jsFqn);
     String namespace = extractNamespace(jsFqn, name);
 
-    return ModelHelper.createJavaType(
-        name,
-        namespace,
-        jsFqn,
-        entityKind,
-        isJsFunction,
-        packagePrefix,
-        getContext().getJavaProgram());
+    Type javaType =
+        ModelHelper.createJavaType(
+            name,
+            namespace,
+            jsFqn,
+            entityKind,
+            isJsFunction,
+            packagePrefix,
+            getContext().getJavaProgram());
+
+    getContext().getJavaProgram().addType(javaType);
+
+    return javaType;
   }
 
   private void createApiExtensionType(Type typeToExtend) {
