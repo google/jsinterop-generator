@@ -264,7 +264,7 @@ def jsinterop_generator(
     generator_srcs = srcs
 
 
-    j2cl_test_externs_list += deps_srcs
+    j2cl_test_externs_list = j2cl_test_externs_list + deps_srcs
     jsinterop_generator_rule_name = "%s__internal_src_generated" % name
 
     _jsinterop_generator(
