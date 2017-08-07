@@ -125,6 +125,8 @@ public class ModelHelper {
       type.addAnnotation(annotationBuilder.build());
     }
 
+    program.addType(type);
+
     return type;
   }
 
