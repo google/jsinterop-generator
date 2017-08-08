@@ -20,6 +20,6 @@ import jsinterop.annotations.JsType;
 
 /** JsInterop version of the javascript Console object available from the global scope. */
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public class Console {
-  public native void log(Object message);
+public interface Console {
+  void log(Object message);
 }

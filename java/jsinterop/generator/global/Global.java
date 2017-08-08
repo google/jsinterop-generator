@@ -18,12 +18,11 @@ package jsinterop.generator.global;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 
-/** This class gives access to javascript objects available from the global scope that we need. */
+/**
+ * This class gives access to javascript objects available from the global scope that we need. Not
+ * that the global namespace is available through the field named "global".
+ */
 public class Global {
-  @JsProperty(namespace = JsPackage.GLOBAL)
+  @JsProperty(name = "global.console", namespace = JsPackage.GLOBAL)
   public static native Console getConsole();
-
-  public static native void debugger() /*-{
-    debugger;
-  }-*/;
 }

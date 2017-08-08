@@ -24,7 +24,7 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, name = "Object", namespace = JsPackage.GLOBAL)
 public class GeneratorOptions {
   @JsProperty
-  public native String getOutputDirectory();
+  public native String getOutput();
 
   @JsProperty
   public native String getPackagePrefix();
