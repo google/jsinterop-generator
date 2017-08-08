@@ -32,8 +32,6 @@ public abstract class Options {
 
     abstract Builder packagePrefix(@Nullable String packagePrefix);
 
-    abstract Builder copyright(@Nullable String copyright);
-
     abstract Builder extensionTypePrefix(String extensionTypePrefix);
 
     abstract Builder debugEnabled(boolean debugEnabled);
@@ -59,9 +57,6 @@ public abstract class Options {
 
   @Nullable
   public abstract String getPackagePrefix();
-
-  @Nullable
-  public abstract String getCopyright();
 
   public abstract String getExtensionTypePrefix();
 

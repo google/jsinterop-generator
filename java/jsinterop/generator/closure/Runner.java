@@ -36,9 +36,6 @@ public class Runner {
   @Option(name = "--package_prefix", usage = "Package prefix")
   String packagePrefix = null;
 
-  @Option(name = "--copyright", usage = "Copyright to emit at the beginning of each file")
-  String copyright = null;
-
   @Option(
     name = "--extension_type_prefix",
     usage = "Value used for prefixing extension types",
@@ -91,7 +88,6 @@ public class Runner {
             .outputJarFile(output)
             .outputDependencyFile(outputDependencyPath)
             .packagePrefix(packagePrefix)
-            .copyright(copyright)
             .extensionTypePrefix(extensionTypePrefix)
             .debugEnabled(debugEnabled)
             .beanConventionUsed(beanConvention)

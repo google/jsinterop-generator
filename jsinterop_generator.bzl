@@ -40,7 +40,6 @@ def _closure_impl(srcs, deps_srcs, types_mapping_files, ctx):
       "--output=%s" % ctx.outputs._generated_jar.path,
       "--output_dependency_file=%s" % ctx.outputs._dependency_file.path,
       "--package_prefix=%s" % ctx.attr.package_prefix,
-      "--copyright=%s" % ctx.attr.copyright_attr,
       "--extension_type_prefix=%s" % ctx.attr.extension_type_prefix,
       ]
   arguments += ["--dependency=%s" % f.path for f in deps_srcs]
@@ -139,7 +138,6 @@ _jsinterop_generator = rule(
         ),
         "deps_srcs": attr.label_list(allow_files = True),
         "types_mapping_files": attr.label_list(allow_files = True),
-        "copyright_attr": attr.string(),
         "output_directory": attr.string(),
         "package_prefix": attr.string(),
         "extension_type_prefix": attr.string(),
@@ -205,7 +203,6 @@ def jsinterop_generator(
     srcs = [],
     exports = [],
     deps = [],
-    copyright_attr = "",
     extension_type_prefix = None,
     name_mapping_files = [],
     integer_entities_files = [],
@@ -272,7 +269,6 @@ def jsinterop_generator(
         srcs = generator_srcs,
         deps_srcs = deps_srcs,
         types_mapping_files = deps_types_mapping_files,
-        copyright_attr = copyright_attr,
         output_directory = ".",
         package_prefix = package_prefix,
         extension_type_prefix = extension_type_prefix,

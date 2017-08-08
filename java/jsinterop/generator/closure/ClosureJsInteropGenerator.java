@@ -107,7 +107,7 @@ class ClosureJsInteropGenerator {
   private JavaFile createJavaFile(Type type) {
     String filePath = type.getJavaFqn().replace('.', separatorChar) + ".java";
 
-    CodeWriter codeWriter = new CodeWriter(type, options.getCopyright());
+    CodeWriter codeWriter = new CodeWriter(type);
     TypeWriter.emit(type, codeWriter);
     String fileContent = codeWriter.generateCode();
 

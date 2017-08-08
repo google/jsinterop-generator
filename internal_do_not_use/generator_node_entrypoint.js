@@ -24,18 +24,17 @@ const args = process.argv.slice(2);
 
 // generator config
 const config = {
-  'copyright': args[0],
-  'output': args[1],
-  'packagePrefix': args[2],
-  'debugEnabled': __to_boolean(args[3]),
-  'withTypescriptLib': __to_boolean(args[4]),
-  'useBeanConvention': __to_boolean(args[5]),
-  'depsTypesMapping': __to_array(args[6]),
-  'integerEntities': __to_array(args[7]),
+  'output': args[0],
+  'packagePrefix': args[1],
+  'debugEnabled': __to_boolean(args[2]),
+  'withTypescriptLib': __to_boolean(args[3]),
+  'useBeanConvention': __to_boolean(args[4]),
+  'depsTypesMapping': __to_array(args[5]),
+  'integerEntities': __to_array(args[6]),
 };
 
 // arrays containing paths to d.ts files.
-const dts_files = __to_array(args[8]);
+const dts_files = __to_array(args[7]);
 
 generator.runGenerator(dts_files, config);
 

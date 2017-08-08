@@ -55,15 +55,13 @@ public class CodeWriter {
   // the generated code.
   private static final int JAVADOC_MAX_LENGTH = 100;
 
-  private final String copyright;
   private final Type mainType;
   private final StringBuilder builder = new StringBuilder();
   private String packageName;
   private Map<String, TypeReference> importedType = new HashMap<>();
 
-  public CodeWriter(Type mainType, String copyright) {
+  public CodeWriter(Type mainType) {
     this.mainType = mainType;
-    this.copyright = copyright;
     // Add main type as an import eagarly to avoid name clashes.
     addImport(new JavaTypeReference(mainType));
   }
@@ -239,16 +237,6 @@ public class CodeWriter {
 
   public String generateCode() {
     StringBuilder content = new StringBuilder();
-
-    if (!isNullOrEmpty(copyright)) {
-      List<String> copyrightLines = Splitter.on('\n').splitToList(copyright);
-
-      content.append("/*").append('\n');
-      for (String line : copyrightLines) {
-        content.append(" * ").append(line).append('\n');
-      }
-      content.append(" */").append('\n');
-    }
 
     if (!isNullOrEmpty(packageName)) {
       content.append("package ").append(packageName).append(";\n");

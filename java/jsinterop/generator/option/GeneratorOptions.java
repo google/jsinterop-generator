@@ -30,9 +30,6 @@ public class GeneratorOptions {
   public native String getPackagePrefix();
 
   @JsProperty
-  public native String getCopyright();
-
-  @JsProperty
   public native boolean isDebugEnabled();
 
   @JsProperty(name = "useBeanConvention")
