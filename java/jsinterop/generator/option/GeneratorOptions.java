@@ -43,4 +43,7 @@ public class GeneratorOptions {
 
   @JsProperty(name = "integerEntities")
   public native String[] integerEntities();
+
+  @JsProperty
+  public native String getOutputDependencyFile();
 }

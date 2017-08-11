@@ -12,6 +12,7 @@ java_library(
     name = "global",
     srcs = glob(["*.java"]),
     deps = [
+        "//java/jsinterop/generator/nodejs",
         "//third_party:gwt-jsinterop-annotations",
     ],
 )

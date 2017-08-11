@@ -24,12 +24,6 @@ licenses(["notice"])
 
 # An implicit dependency of all "jsinterop_generator" skylark rules.
 sh_binary(
-    name = "create_generated_srcjar",
-    srcs = ["create_generated_srcjar.sh"],
-)
-
-# An implicit dependency of all "jsinterop_generator" skylark rules.
-sh_binary(
     name = "format_srcjar",
     srcs = ["format_srcjar.sh"],
 )

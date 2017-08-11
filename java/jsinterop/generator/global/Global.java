@@ -15,8 +15,10 @@
  */
 package jsinterop.generator.global;
 
+import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
+import jsinterop.generator.nodejs.Archiver;
 
 /**
  * This class gives access to javascript objects available from the global scope that we need. Not
@@ -25,4 +27,7 @@ import jsinterop.annotations.JsProperty;
 public class Global {
   @JsProperty(name = "global.console", namespace = JsPackage.GLOBAL)
   public static native Console getConsole();
+
+  @JsMethod(namespace = JsPackage.GLOBAL)
+  public static native Archiver archiver(String format);
 }

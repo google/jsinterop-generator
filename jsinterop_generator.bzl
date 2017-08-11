@@ -171,13 +171,6 @@ _jsinterop_generator = rule(
             executable = True,
             default = Label("//java/jsinterop/generator/closure:ClosureJsinteropGenerator"),
         ),
-        "_srcjar_script": attr.label(
-            cfg = "host",
-            executable = True,
-            default = Label(
-                "//internal_do_not_use:create_generated_srcjar",
-            ),
-        ),
         "_format_jar_script": attr.label(
             cfg = "host",
             executable = True,
