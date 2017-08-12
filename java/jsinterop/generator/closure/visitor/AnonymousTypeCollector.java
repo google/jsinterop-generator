@@ -25,6 +25,7 @@ import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 
 import com.google.common.collect.ImmutableList;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.TypeI.Nullability;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.RecordType;
@@ -116,7 +117,8 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
     }
 
     Type javaType = new Type(EntityKind.INTERFACE);
-    javaType.setNativeFqn(cleanThisFromNativeFqn(recordOrFunctionType.toAnnotationString()));
+    javaType.setNativeFqn(
+        cleanThisFromNativeFqn(recordOrFunctionType.toAnnotationString(Nullability.IMPLICIT)));
     javaType.addAnnotation(Annotation.builder().type(annotationType).build());
     javaType.setSynthetic(true);
 
