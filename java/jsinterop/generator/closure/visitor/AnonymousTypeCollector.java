@@ -33,7 +33,6 @@ import com.google.javascript.rhino.jstype.StaticTypedSlot;
 import java.util.regex.Pattern;
 import jsinterop.generator.closure.helper.GenerationContext;
 import jsinterop.generator.model.Annotation;
-import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.EntityKind;
 import jsinterop.generator.model.Type;
 
@@ -77,18 +76,27 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
   protected boolean visitField(StaticTypedSlot<JSType> property, boolean isStatic) {
     initNameForRecordType(property.getName(), isStatic ? "Type" : "FieldType");
     initNameForFunctionType(property.getName());
-
     return true;
   }
 
   @Override
   protected boolean visitRecordType(String jsFqn, RecordType recordType) {
-    return visitRecordOrFunctionType(jsFqn, recordType, currentNameForRecordType, JS_TYPE);
+    return visitRecordOrFunctionType(
+        jsFqn,
+        recordType,
+        currentNameForRecordType,
+        Annotation.builder()
+            .type(JS_TYPE)
+            .isNativeAttribute(true)
+            .nameAttribute("?")
+            .namespaceAttribute("")
+            .build());
   }
 
   @Override
   protected boolean visitFunctionType(String name, FunctionType type) {
-    if (visitRecordOrFunctionType(name, type, currentNameForFunctionType, JS_FUNCTION)) {
+    if (visitRecordOrFunctionType(
+        name, type, currentNameForFunctionType, Annotation.builder().type(JS_FUNCTION).build())) {
       // Just like for methods, the return type will be visited first and the parameters will reset
       // the names. A function type will be converted to an interface with one method named
       // onInvoke. There is no added value to add onInvoke on the name of synthetic types defined
@@ -102,10 +110,7 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
   }
 
   private boolean visitRecordOrFunctionType(
-      String typeName,
-      JSType recordOrFunctionType,
-      String currentName,
-      AnnotationType annotationType) {
+      String typeName, JSType recordOrFunctionType, String currentName, Annotation annotation) {
     if (getJavaTypeRegistry().containsJavaType(recordOrFunctionType)) {
       // Named structural types (with a @typedef) have already been processed.
       // Visit children only if we are visiting the typedef definition (case where typeName is
@@ -119,7 +124,7 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
     Type javaType = new Type(EntityKind.INTERFACE);
     javaType.setNativeFqn(
         cleanThisFromNativeFqn(recordOrFunctionType.toAnnotationString(Nullability.IMPLICIT)));
-    javaType.addAnnotation(Annotation.builder().type(annotationType).build());
+    javaType.addAnnotation(annotation);
     javaType.setSynthetic(true);
 
     javaType.setName(

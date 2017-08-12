@@ -1,8 +1,5 @@
 package jsinterop.generator.externs.structuraltypes;
 
-import java.lang.Double;
-import java.lang.Object;
-import java.lang.String;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -39,7 +36,7 @@ public class SimpleClass {
     }
   }
 
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface ConsumeAndReturnAnonymousReturnType {
     @JsProperty
     String getBar();
@@ -48,7 +45,7 @@ public class SimpleClass {
     void setBar(String bar);
   }
 
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface ConsumeAndReturnAnonymousTypeFooType {
     @JsProperty
     double getFoo();
@@ -57,7 +54,7 @@ public class SimpleClass {
     void setFoo(double foo);
   }
 
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface ConsumeUnionTypeWithRecordTypeStringOrFooType {
     @JsProperty
     String getFoo();
@@ -85,17 +82,12 @@ public class SimpleClass {
     }
 
     @JsOverlay
-    default boolean isConsumeUnionTypeWithRecordTypeStringOrFooType() {
-      return (Object) this instanceof SimpleClass.ConsumeUnionTypeWithRecordTypeStringOrFooType;
-    }
-
-    @JsOverlay
     default boolean isString() {
       return (Object) this instanceof String;
     }
   }
 
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface RecordTypeArrayFieldType {
     @JsProperty
     double getFoo();

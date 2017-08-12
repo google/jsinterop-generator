@@ -1,7 +1,5 @@
 package jsinterop.generator.externs.dependency;
 
-import java.lang.Object;
-import java.lang.String;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -12,7 +10,7 @@ import jsinterop.generator.externs.dependency.thirdparty2.ThirdParty2Class;
 
 @JsType(isNative = true, name = "ThirdPartyClass", namespace = JsPackage.GLOBAL)
 public class MyLibThirdPartyClass<T> extends ThirdPartyClass<T> {
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface ExtraMethodBarType<T> {
     @JsProperty
     T getBar();
@@ -36,11 +34,6 @@ public class MyLibThirdPartyClass<T> extends ThirdPartyClass<T> {
     @JsOverlay
     default T asT() {
       return Js.cast(this);
-    }
-
-    @JsOverlay
-    default boolean isExtraMethodBarType() {
-      return (Object) this instanceof MyLibThirdPartyClass.ExtraMethodBarType;
     }
   }
 

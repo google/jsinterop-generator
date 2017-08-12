@@ -1,6 +1,5 @@
 package jsinterop.generator.externs.inheritance;
 
-import java.lang.String;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -13,7 +12,7 @@ public class InterfaceWithStructuralTypeImpl<V, U> implements InterfaceWithStruc
     void onInvoke(boolean p0);
   }
 
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface FooFooType {
     @JsProperty
     String getFoo();
@@ -22,7 +21,7 @@ public class InterfaceWithStructuralTypeImpl<V, U> implements InterfaceWithStruc
     void setFoo(String foo);
   }
 
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface FooReturnType {
     @JsProperty
     double getBar();

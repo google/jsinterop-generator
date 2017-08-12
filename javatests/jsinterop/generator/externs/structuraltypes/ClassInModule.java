@@ -6,7 +6,7 @@ import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, name = "SimpleModule.ClassInModule", namespace = JsPackage.GLOBAL)
 public class ClassInModule {
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface FooBazType {
     @JsProperty
     double getBaz();

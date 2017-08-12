@@ -1,6 +1,5 @@
 package jsinterop.generator.externs.entitiesrenaming;
 
-import java.lang.String;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -8,7 +7,7 @@ import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Foo {
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface BarBarType {
     @JsProperty
     String getBar();

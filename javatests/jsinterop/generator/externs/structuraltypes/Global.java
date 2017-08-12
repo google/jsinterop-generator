@@ -1,6 +1,5 @@
 package jsinterop.generator.externs.structuraltypes;
 
-import java.lang.String;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -8,7 +7,7 @@ import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, name = "window", namespace = JsPackage.GLOBAL)
 public class Global {
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface FooBarType {
     @JsProperty
     String getBar();
@@ -17,11 +16,11 @@ public class Global {
     void setBar(String bar);
   }
 
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Method1FooType {
     @JsFunction
     public interface FooCallbackFn {
-      @JsType
+      @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
       public interface P0Type {
         @JsProperty
         String getBar();
@@ -40,9 +39,9 @@ public class Global {
     void setFoo(Global.Method1FooType.FooCallbackFn foo);
   }
 
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Method2FooType {
-    @JsType
+    @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface BarFieldType {
       @JsProperty
       String getFoo();
@@ -51,9 +50,9 @@ public class Global {
       void setFoo(String foo);
     }
 
-    @JsType
+    @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface FooFieldType {
-      @JsType
+      @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
       public interface BazFieldType {
         @JsProperty
         String getInsane();
@@ -82,9 +81,9 @@ public class Global {
     void setFoo(Global.Method2FooType.FooFieldType foo);
   }
 
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Method3BarType {
-    @JsType
+    @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface BarFieldType {
       @JsProperty
       String getFoo();
@@ -100,9 +99,9 @@ public class Global {
     void setBar(Global.Method3BarType.BarFieldType bar);
   }
 
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Method3FooType {
-    @JsType
+    @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface BarFieldType {
       @JsProperty
       String getFoo();

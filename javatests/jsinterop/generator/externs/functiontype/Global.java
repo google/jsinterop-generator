@@ -1,7 +1,5 @@
 package jsinterop.generator.externs.functiontype;
 
-import java.lang.Object;
-import java.lang.String;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -76,7 +74,7 @@ public class Global {
 
   @JsFunction
   public interface Method5FooCallbackFn {
-    @JsType
+    @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface P0Type {
       @JsProperty
       String getFoo();
@@ -85,7 +83,7 @@ public class Global {
       void setFoo(String foo);
     }
 
-    @JsType
+    @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface ReturnType {
       @JsProperty
       double getFoo();

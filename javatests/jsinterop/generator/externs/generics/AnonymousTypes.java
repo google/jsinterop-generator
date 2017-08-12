@@ -1,7 +1,5 @@
 package jsinterop.generator.externs.generics;
 
-import java.lang.Object;
-import java.lang.String;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -11,7 +9,7 @@ import jsinterop.base.Js;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class AnonymousTypes<T> {
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface BarFooType<T> {
     @JsProperty
     T getBar();
@@ -20,7 +18,7 @@ public class AnonymousTypes<T> {
     void setBar(T bar);
   }
 
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface FooFooType<T, U, V> {
     @JsProperty
     U getBar();
@@ -51,7 +49,7 @@ public class AnonymousTypes<T> {
     T onInvoke(boolean p0);
   }
 
-  @JsType
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface TypeLiteralFooType<T> {
     @JsProperty
     T getBar();

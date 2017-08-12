@@ -1,6 +1,5 @@
 package jsinterop.generator.externs.generics;
 
-import java.lang.Double;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -10,7 +9,7 @@ import jsinterop.annotations.JsType;
 public interface Bar<U, T, V> {
   @JsFunction
   public interface BarMethod3FooCallbackFn<V, T> {
-    @JsType
+    @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface ReturnType<T> {
       @JsProperty
       T getFoo();
