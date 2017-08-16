@@ -16,6 +16,7 @@
 package jsinterop.generator.closure.helper;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.IN_HERITAGE_CLAUSE;
 import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.IN_TYPE_ARGUMENTS;
@@ -32,8 +33,6 @@ import static jsinterop.generator.model.PredefinedTypeReference.VOID_OBJECT;
 import com.google.javascript.rhino.jstype.EnumElementType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
-import com.google.javascript.rhino.jstype.JSTypeNative;
-import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.NoType;
 import com.google.javascript.rhino.jstype.ObjectType;
@@ -45,7 +44,7 @@ import com.google.javascript.rhino.jstype.Visitor;
 import java.util.IdentityHashMap;
 import java.util.List;
 import jsinterop.generator.helper.AbstractTypeRegistry;
-import jsinterop.generator.helper.ModelHelper;
+import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.PredefinedTypeReference;
@@ -57,14 +56,14 @@ import jsinterop.generator.model.UnionTypeReference;
 /** Implementation of {@link AbstractTypeRegistry} specific to closure. */
 public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
-  public ClosureTypeRegistry(JSTypeRegistry jsTypeRegistry) {
+  public ClosureTypeRegistry() {
     // JsCompiler considers two different RecordType with the same structure as equivalent in terms
     // of equals() and hashcode() even if they are associated to two different symbols.
     // In our case we want to be able to differentiate those RecordType because they are associated
     // with two different Java interfaces. As JsCompiler creates one JSType instance by type
     // definition and reuse the instance each time they reach a reference to the type, it's safe to
     // use a IdentityHashMap to create our mapping between JsType and Java type.
-    super(new IdentityHashMap<>(), jsTypeRegistry.getNativeType(JSTypeNative.ARRAY_TYPE));
+    super(new IdentityHashMap<>());
   }
 
   public void registerJavaType(Type javaType, JSType jsType) {
@@ -193,8 +192,15 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
                       referenceContext == IN_HERITAGE_CLAUSE ? IN_TYPE_ARGUMENTS : REGULAR)
                   .visit(type.getTemplateTypes().get(0));
         }
-        return ModelHelper.createArrayTypeReference(
-            arrayType, referenceContext, getNativeArrayTypeReference());
+        if (referenceContext == IN_HERITAGE_CLAUSE) {
+          // In java you cannot extends classic array. In this case create a parametrized reference
+          // to JsArray class.
+          return new ParametrizedTypeReference(
+              visit(type.getReferencedType()), newArrayList(arrayType));
+        } else {
+          // Convert array type to classic java array where it's valid.
+          return new ArrayTypeReference(arrayType);
+        }
       }
 
       TypeReference templatizedType = visit(type.getReferencedType());

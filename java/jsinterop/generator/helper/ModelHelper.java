@@ -16,8 +16,6 @@
 package jsinterop.generator.helper;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Lists.newArrayList;
-import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.IN_HERITAGE_CLAUSE;
 import static jsinterop.generator.helper.GeneratorUtils.createJavaPackage;
 import static jsinterop.generator.helper.GeneratorUtils.extractName;
 import static jsinterop.generator.helper.GeneratorUtils.extractNamespace;
@@ -32,45 +30,23 @@ import static jsinterop.generator.model.PredefinedTypeReference.JS;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
 import com.google.common.collect.ImmutableList;
-import java.util.Optional;
-import jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext;
 import jsinterop.generator.model.Annotation;
-import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.EntityKind;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.LiteralExpression;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Method.Parameter;
 import jsinterop.generator.model.MethodInvocation;
-import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.ReturnStatement;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeQualifier;
-import jsinterop.generator.model.TypeReference;
 
 /** Helper methods around our java model. */
 public class ModelHelper {
 
   private static final String GLOBAL_SCOPE_CLASS_NAME = "Global";
   private static final String GLOBAL_NAMESPACE = "<global>";
-
-  public static TypeReference createArrayTypeReference(
-      TypeReference valueType,
-      ReferenceContext referenceContext,
-      Optional<TypeReference> nativeArrayType) {
-    if (referenceContext == IN_HERITAGE_CLAUSE) {
-      if (!nativeArrayType.isPresent()) {
-        throw new RuntimeException("Array type is not defined.");
-      }
-      // In java you cannot extends classic array. In this case create a parametrized reference
-      // to JsArray class.
-      return new ParametrizedTypeReference(nativeArrayType.get(), newArrayList(valueType));
-    } else {
-      // Convert array type to classic java array where it's valid.
-      return new ArrayTypeReference(valueType);
-    }
-  }
 
   public static Type createJavaType(
       String name,

@@ -22,10 +22,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Type;
-import jsinterop.generator.model.TypeReference;
 
 /** Registry providing logic to keep the link between a native type and a java type. */
 public abstract class AbstractTypeRegistry<T> {
@@ -37,27 +34,15 @@ public abstract class AbstractTypeRegistry<T> {
   }
 
   private final Map<T, Type> javaTypesById;
-  private final T nativeArrayTypeKey;
   private Type globalType;
   private final Map<Type, Type> extensionTypesByParent = new HashMap<>();
 
-  protected AbstractTypeRegistry(T nativeArrayTypeKey) {
-    this(new HashMap<>(), nativeArrayTypeKey);
+  protected AbstractTypeRegistry() {
+    this(new HashMap<>());
   }
 
-  protected AbstractTypeRegistry(Map<T, Type> registry, T nativeArrayTypeKey) {
+  protected AbstractTypeRegistry(Map<T, Type> registry) {
     this.javaTypesById = registry;
-    this.nativeArrayTypeKey = nativeArrayTypeKey;
-  }
-
-  protected Optional<TypeReference> getNativeArrayTypeReference() {
-    checkState(!javaTypesById.isEmpty(), "Type registry not initialized yet.");
-
-    if (containsJavaTypeByKey(nativeArrayTypeKey)) {
-      Type arrayType = getJavaTypeByKey(nativeArrayTypeKey);
-      return Optional.of(new JavaTypeReference(arrayType));
-    }
-    return Optional.empty();
   }
 
   protected boolean containsJavaTypeByKey(T nativeTypeKey) {
@@ -75,14 +60,6 @@ public abstract class AbstractTypeRegistry<T> {
   protected void registerJavaTypeByKey(Type type, T nativeTypeKey) {
     Type previousType = javaTypesById.put(nativeTypeKey, type);
     checkState(previousType == null, "A type already exists with key [%s]", nativeTypeKey);
-  }
-
-  public boolean containsJavaGlobalType() {
-    return globalType != null;
-  }
-
-  public Type getGlobalJavaType() {
-    return checkNotNull(globalType, "The global type is unknown");
   }
 
   public void registerJavaGlobalType(Type type, T nativeTypeKey) {
