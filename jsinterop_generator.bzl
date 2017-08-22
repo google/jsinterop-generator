@@ -118,7 +118,7 @@ def _impl(ctx):
   )
 
   return struct(
-      files=set([
+      files=depset([
           ctx.outputs._formatted_jar,
           ctx.outputs._generated_jar,
           ctx.outputs._dependency_file,
