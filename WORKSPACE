@@ -1,5 +1,10 @@
 workspace(name = "com_google_jsinterop_generator")
 
+maven_server(
+    name = "sonatype_snapshot",
+    url = "https://oss.sonatype.org/content/repositories/snapshots",
+)
+
 maven_jar(
     name = "jsr305",
     artifact = "com.google.code.findbugs:jsr305:3.0.1",
@@ -22,7 +27,8 @@ maven_jar(
 
 maven_jar(
     name = "jscomp",
-    artifact = "com.google.javascript:closure-compiler:v20170409",
+    artifact = "com.google.javascript:closure-compiler:1.0-SNAPSHOT",
+    server = "sonatype_snapshot",
 )
 
 maven_jar(
