@@ -28,23 +28,78 @@ Examples:
        # contains generated sources
     )
 """
+
 load("//third_party:j2cl_library.bzl", "j2cl_library")
 load("//third_party:utils.bzl", "absolute_label", "get_java_package")
 
-
 _is_bazel = not hasattr(native, "genmpm")
 
+JS_INTEROP_RULE_NAME_PATTERN = "%s__internal_src_generated"
 
-def _closure_impl(srcs, deps_srcs, types_mapping_files, ctx):
+JsInteropGeneratorInfo = provider()
+
+def _get_generator_files(targets):
+  transitive_srcs = depset()
+  transitive_types_mappings = depset()
+  transitive_names_mappings = depset()
+  gwt_module_names = []
+
+  for target in targets:
+    target_provider = target[JsInteropGeneratorInfo]
+
+    transitive_srcs += target_provider.transitive_sources
+    transitive_types_mappings += target_provider.transitive_types_mappings
+    transitive_names_mappings += target_provider.transitive_names_mappings
+    gwt_module_names += target_provider.gwt_module_names
+
+  return struct(
+      sources = transitive_srcs,
+      types_mappings = transitive_types_mappings,
+      names_mappings = transitive_names_mappings,
+      gwt_module_names = gwt_module_names,
+  )
+
+def _jsinterop_generator_export_impl(ctx):
+  """ Implementation of the _jsinterop_generator_export skylark rule.
+
+  This rule is used to export existing jsinterop_generator targets.
+  It collects the infos of the JsInteropGeneratorInfo provider of each target
+  of the exports attribute and reexpose everything in one provider.
+  """
+  jsinterop_files = _get_generator_files(ctx.attr.exports)
+
+  # reexpose files and properties collected from all exported targets.
+  return [
+      JsInteropGeneratorInfo(
+          transitive_sources=jsinterop_files.sources,
+          transitive_types_mappings=jsinterop_files.types_mappings,
+          transitive_names_mappings=jsinterop_files.names_mappings,
+          gwt_module_names=jsinterop_files.gwt_module_names
+      )
+  ]
+
+_jsinterop_generator_export = rule(
+    attrs = {
+        "exports": attr.label_list(allow_files = True),
+    },
+    implementation = _jsinterop_generator_export_impl,
+)
+
+
+def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
+  deps_srcs = deps_files.sources.to_list()
+  dep_types_mapping_files = deps_files.types_mappings.to_list()
+  names_mapping_files = deps_files.names_mappings.to_list() + ctx.files.name_mapping_files
+
   arguments = [
       "--output=%s" % ctx.outputs._generated_jar.path,
-      "--output_dependency_file=%s" % ctx.outputs._dependency_file.path,
+      "--output_dependency_file=%s" % types_mapping_file.path,
       "--package_prefix=%s" % ctx.attr.package_prefix,
       "--extension_type_prefix=%s" % ctx.attr.extension_type_prefix,
       ]
   arguments += ["--dependency=%s" % f.path for f in deps_srcs]
-  arguments += ["--dependency_mapping_file=%s" % f.path for f in types_mapping_files]
-  arguments += ["--name_mapping_file=%s" % f.path for f in  ctx.files.name_mapping_files]
+  arguments += ["--dependency_mapping_file=%s" % f.path for f in dep_types_mapping_files]
+  arguments += ["--name_mapping_file=%s" % f.path for f in  names_mapping_files]
   arguments += ["--integer_entities_file=%s" % f.path for f in  ctx.files.integer_entities_files]
 
   if ctx.attr.debug:
@@ -56,44 +111,44 @@ def _closure_impl(srcs, deps_srcs, types_mapping_files, ctx):
   arguments += ["%s" % f.path for f in srcs]
 
   ctx.action(
-      inputs = srcs + deps_srcs + types_mapping_files + ctx.files.name_mapping_files + ctx.files.integer_entities_files,
-      outputs=[ctx.outputs._generated_jar, ctx.outputs._dependency_file],
+      inputs = srcs + deps_srcs + dep_types_mapping_files + names_mapping_files + ctx.files.integer_entities_files,
+      outputs=[ctx.outputs._generated_jar, types_mapping_file],
       executable = ctx.executable._closure_generator,
       progress_message = "Generating jsinterop classes from extern closure files",
       arguments = arguments,
   )
 
-def _impl(ctx):
+def _jsinterop_generator_impl(ctx):
   srcs = ctx.files.srcs
-  deps_srcs = ctx.files.deps_srcs
-  types_mapping_files = ctx.files.types_mapping_files
+  deps_files = _get_generator_files(ctx.attr.deps)
+  types_mapping_file = ctx.actions.declare_file("%s_types" % ctx.attr.name)
 
   if ctx.attr.conversion_mode == "closure":
-    _closure_impl(srcs, deps_srcs, types_mapping_files, ctx)
-  else:
-    fail("Unknown conversion mode")
+    _closure_impl(srcs, deps_files, types_mapping_file, ctx)
 
   # generate the gwt.xml file by concatenating dependencies gwt inherits files
   gwt_xml_file = ctx.outputs._gwt_xml_file
-  inherits_files = ctx.files.gwt_inherits_files
+  dep_gwt_module_names= deps_files.gwt_module_names
 
-  action_commands = ["printf '%%s\n' '<module>' '<source path=\"\"/>' '<inherits name=\"jsinterop.base.Base\" />' > %s" % gwt_xml_file.path]
-  if inherits_files:
-    action_commands += ["cat %s >> %s" % (" ".join([f.path for f in inherits_files]), gwt_xml_file.path)]
-  action_commands += ["echo '</module>' >> %s" % gwt_xml_file.path]
+  gwt_xml_content = [
+      "<module>",
+      "<source path=\"\"/>",
+      "<inherits name=\"jsinterop.base.Base\" />",
+      ]
+  gwt_xml_content += ["<inherits name=\"%s\" />" % dep_module for dep_module in dep_gwt_module_names]
+  gwt_xml_content += ["</module>"]
 
-  ctx.action(
-      inputs = inherits_files,
-      outputs = [gwt_xml_file],
-      command= ";".join(action_commands),
+  ctx.actions.write(
+      output = gwt_xml_file,
+      content= "\n".join(gwt_xml_content),
   )
 
-  # generate the gwt inherits file for dependency purpose
+
+  # generate the gwt module name for dependency purpose
   if not ctx.attr.package_prefix:
-    inherits_content = '<inherits name="%s" />' % ctx.attr.gwt_module_name
+    gwt_module_name = "%s" % ctx.attr.gwt_module_name
   else:
-    inherits_content = '<inherits name="%s.%s" />' % (ctx.attr.package_prefix, ctx.attr.gwt_module_name)
-  ctx.file_action(output=ctx.outputs._gwt_inherits_file, content=inherits_content)
+    gwt_module_name = "%s.%s" % (ctx.attr.package_prefix, ctx.attr.gwt_module_name)
 
   # format output
   arguments = [
@@ -117,15 +172,14 @@ def _impl(ctx):
       arguments = arguments,
   )
 
-  return struct(
-      files=depset([
-          ctx.outputs._formatted_jar,
-          ctx.outputs._generated_jar,
-          ctx.outputs._dependency_file,
-          ctx.outputs._gwt_xml_file,
-          ctx.outputs._gwt_inherits_file,
-          ]),
-  )
+  return [
+      JsInteropGeneratorInfo(
+          transitive_sources=deps_files.sources + srcs,
+          transitive_types_mappings=deps_files.types_mappings + [types_mapping_file],
+          transitive_names_mappings=deps_files.names_mappings + ctx.files.name_mapping_files,
+          gwt_module_names=[gwt_module_name]
+      )
+  ]
 
 _jsinterop_generator = rule(
     attrs = {
@@ -136,35 +190,29 @@ _jsinterop_generator = rule(
                 ".js",
             ],
         ),
-        "deps_srcs": attr.label_list(allow_files = True),
-        "types_mapping_files": attr.label_list(allow_files = True),
-        "output_directory": attr.string(),
+        "deps": attr.label_list(allow_files = True),
         "package_prefix": attr.string(),
         "extension_type_prefix": attr.string(),
         "name_mapping_files": attr.label_list(allow_files = True),
         "integer_entities_files": attr.label_list(allow_files = True),
         "use_bean_convention": attr.bool(),
         "debug": attr.bool(),
-        "package_name": attr.string(),
         "conversion_mode": attr.string(),
-        "gwt_inherits_files": attr.label_list(allow_files = True),
         "gwt_module_name": attr.string(),
-
 
         "_jar": attr.label(
             cfg = "host",
             executable = True,
-            default = Label("//third_party:jar")
+            default = Label("//third_party:jar"),
         ),
         "_jdk": attr.label(
             cfg = "host",
-            default = Label("//third_party:jdk")
+            default = Label("//third_party:jdk"),
         ),
-
         "_google_java_formatter": attr.label(
             cfg = "host",
             executable = True,
-            default = Label("//third_party:google_java_format")
+            default = Label("//third_party:google_java_format"),
         ),
         "_closure_generator": attr.label(
             cfg = "host",
@@ -183,11 +231,9 @@ _jsinterop_generator = rule(
     outputs = {
         "_formatted_jar": "%{name}.srcjar",
         "_generated_jar": "%{name}_non_formatted.jar",
-        "_dependency_file": "%{name}.types",
         "_gwt_xml_file": "%{gwt_module_name}.gwt.xml",
-        "_gwt_inherits_file" : "%{name}.gwt.inherits",
     },
-    implementation = _impl,
+    implementation = _jsinterop_generator_impl,
 )
 
 # Macro invoking the skylark rule
@@ -219,99 +265,74 @@ def jsinterop_generator(
   if not generate_j2cl_library and not generate_gwt_library:
     fail("either generate_j2cl_library or generate_gwt_library should be set to True")
 
-  if not package_prefix:
-    package_prefix = get_java_package(PACKAGE_NAME)
-
-  if conversion_mode == "closure":
-    externs_list = srcs
-  else:
-    externs_list = []
-
-  if not extension_type_prefix:
-    extension_type_prefix = name[0].upper() + name[1:]
-  gwt_module_name = extension_type_prefix
-
   exports_java = [absolute_label(export) for export in exports]
   exports_j2cl = ["%s-j2cl" % export for export in exports_java]
   exports_srcs = ["%s__deps_srcs_internal" % export for export in exports_java]
-  exports_type_mapping_files = ["%s__dep_type_mappings_internal" % export for export in exports_java]
-  exports_name_mapping_files = ["%s__deps_name_mapping_file_internal" % export for export in exports_java]
-  exports_gwt_inherits_files = ["%s__deps_gwt_inherit_internal" % export for export in exports_java]
+  exports_js_interop_generator = [JS_INTEROP_RULE_NAME_PATTERN % export for export in exports_java]
 
   deps_java = [absolute_label(dep) for dep in deps]
-  # deps_j2cl is computed later.
+  # deps_j2cl are computed later
   deps_srcs = ["%s__deps_srcs_internal" % dep for dep in deps_java]
-  deps_types_mapping_files = ["%s__dep_type_mappings_internal" % dep for dep in deps_java]
-  deps_name_mapping_files= ["%s__deps_name_mapping_file_internal" % dep for dep in deps_java]
-  deps_gwt_inherits_files = ["%s__deps_gwt_inherit_internal" % dep for dep in deps_java]
+  deps_js_interop_generator = [JS_INTEROP_RULE_NAME_PATTERN % dep for dep in deps_java]
 
-  types_mapping_files = []
-  generated_jars = []
-  gwt_xml_file = None
-  gwt_inherits_files = []
+  jsinterop_generator_rule_name = JS_INTEROP_RULE_NAME_PATTERN % name
 
   if srcs:
     generator_srcs = srcs
 
+    if not package_prefix:
+      package_prefix = get_java_package(PACKAGE_NAME)
 
-    j2cl_test_externs_list = j2cl_test_externs_list + deps_srcs
-    jsinterop_generator_rule_name = "%s__internal_src_generated" % name
+    if conversion_mode == "closure":
+      j2cl_test_externs_list += srcs + exports_srcs + deps_srcs
+    else:
+      fail("Unknown conversion mode")
+
+    if not extension_type_prefix:
+      extension_type_prefix = name[0].upper() + name[1:]
+
+    gwt_module_name = extension_type_prefix
 
     _jsinterop_generator(
         name = jsinterop_generator_rule_name,
         srcs = generator_srcs,
-        deps_srcs = deps_srcs,
-        types_mapping_files = deps_types_mapping_files,
-        output_directory = ".",
+        deps = deps_js_interop_generator,
         package_prefix = package_prefix,
         extension_type_prefix = extension_type_prefix,
-        name_mapping_files = deps_name_mapping_files + name_mapping_files,
+        name_mapping_files = name_mapping_files,
         integer_entities_files = integer_entities_files,
         use_bean_convention = use_bean_convention,
         # TODO(dramaix): replace it by a blaze flag
         debug = False,
-        package_name = PACKAGE_NAME,
         conversion_mode = conversion_mode,
-        gwt_inherits_files = deps_gwt_inherits_files,
         gwt_module_name = gwt_module_name,
         testonly = testonly,
-        visibility = ["//visibility:private"],
+        visibility = ["//visibility:public"],
     )
 
-    types_mapping_files = [":%s__internal_src_generated.types" % name]
     generated_jars = [":%s" % jsinterop_generator_rule_name]
     gwt_xml_file = ":%s.gwt.xml" % gwt_module_name
-    gwt_inherits_files = [":%s.gwt.inherits" % jsinterop_generator_rule_name]
 
     deps_java += [
         "//third_party:gwt-jsinterop-annotations",
         "//third_party:jsinterop-base",
     ]
 
-  # Because the _jsinterop_generator rule is private, we cannot refer the outputs of the rule
-  # We create a filegroup to expose the mapping file and the mapping file of its dependencies
-  # to other jsinterop_generator rules
-  native.filegroup(
-      name = "%s__dep_type_mappings_internal" % name,
-      srcs = exports_type_mapping_files + deps_types_mapping_files + types_mapping_files
-  )
+  else:
+    # exporting existing generated libraries.
+    _jsinterop_generator_export(
+        name = jsinterop_generator_rule_name,
+        exports = exports_js_interop_generator,
+    )
 
-  # create filegroup with provided extern/d.ts and deps files so that we can depend on later.
+    generated_jars = None
+    gwt_xml_file = None
+
+  # create filegroup with that collect transitive source files so that we can
+  # depend on later.
   native.filegroup(
       name = "%s__deps_srcs_internal" % name,
       srcs = exports_srcs + deps_srcs + srcs,
-  )
-
-  # expose the name mapping file so that we can depend on later
-  native.filegroup(
-      name = "%s__deps_name_mapping_file_internal" % name,
-      srcs = exports_name_mapping_files + name_mapping_files,
-  )
-
-  # expose the file containing the gwt module to inherit
-  native.filegroup(
-      name = "%s__deps_gwt_inherit_internal" % name,
-      srcs = exports_gwt_inherits_files + gwt_inherits_files,
   )
 
   if not deps_java:
@@ -330,7 +351,7 @@ def jsinterop_generator(
         exports = exports_j2cl,
         testonly = testonly,
         visibility = visibility,
-        _test_externs_list = externs_list + j2cl_test_externs_list,
+        _test_externs_list = j2cl_test_externs_list,
     )
 
   if generate_gwt_library:
