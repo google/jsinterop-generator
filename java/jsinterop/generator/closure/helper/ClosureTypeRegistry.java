@@ -16,6 +16,7 @@
 package jsinterop.generator.closure.helper;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.IN_HERITAGE_CLAUSE;
@@ -151,8 +152,9 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseNamedType(NamedType type) {
-      // TODO(b/34387250): It seems that reference to undefined types are wrapped in a NamedType
-      // with a reference to UnknownType. If it's the case detect that and throw an exception.
+      // Reference to undefined types are wrapped in a NamedType with a reference to UnknownType.
+      checkState(!type.isUnknownType(), "Type %s is unknown", type.getReferenceName());
+
       return visit(type.getReferencedType());
     }
 
