@@ -66,15 +66,16 @@ Bar.prototype.bar2;
 /**
  * test type parameter scope.
  * @template V
- * @param {T} param
+ * @param {{foo: V, bar: T}} param
  * @return {V}
  */
 Bar.prototype.barMethod2 = function(param) {};
 
 /**
  * Test generics used in structural type enclosed in another structural type.
- * @param {function(V):{foo:T}} foo
+ * @param {function(V):{foo:T, bar: Y, baz: Z}} foo
  * @return {undefined}
+ * @template Z,Y
  */
 Bar.prototype.barMethod3 = function(foo) {};
 
@@ -119,7 +120,7 @@ AnonymousTypes.prototype.functionTypeWithGenericInReturnType = function(foo) {};
 /**
  * @param {{bar:U, baz:T, foo: V}} foo
  * @return {undefined}
- * @template U,V
+ * @template V, U
  */
 AnonymousTypes.prototype.foo = function(foo) {};
 

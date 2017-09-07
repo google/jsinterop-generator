@@ -19,7 +19,7 @@ public class AnonymousTypes<T> {
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface FooFooType<T, U, V> {
+  public interface FooFooType<V, U, T> {
     @JsProperty
     U getBar();
 
@@ -89,7 +89,7 @@ public class AnonymousTypes<T> {
 
   public static native <T> void bar(AnonymousTypes.BarFooType<T> foo);
 
-  public native <U, V> void foo(AnonymousTypes.FooFooType<T, U, V> foo);
+  public native <V, U> void foo(AnonymousTypes.FooFooType<V, U, T> foo);
 
   public native void functionTypeWithGenericInParameter(
       AnonymousTypes.FunctionTypeWithGenericInParameterFooCallbackFn<T> foo);

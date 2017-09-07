@@ -20,14 +20,16 @@ package jsinterop.generator.visitor;
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.stream.Collectors.toList;
 
-import com.google.common.collect.Ordering;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 import jsinterop.generator.model.ArrayTypeReference;
+import jsinterop.generator.model.DelegableTypeReference;
 import jsinterop.generator.model.Field;
+import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Method.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
@@ -72,7 +74,7 @@ public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
   }
 
   private static void retrofitUndefinedTypeParameters(Type javaType) {
-    Set<TypeVariableReference> undefinedTypeParameters = new HashSet<>();
+    Set<TypeReference> undefinedTypeParameters = new HashSet<>();
 
     // For each method, collect all generics (used in the return type or in the parameters)
     // that are not defined at the method level
@@ -110,31 +112,99 @@ public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
         .flatMap(FixTypeParametersOfSyntheticTypes::extractTypeParameter)
         .forEach(undefinedTypeParameters::add);
 
-    javaType.getTypeParameters().addAll(sortTypeParameter(undefinedTypeParameters, javaType));
+    javaType.setTypeParameters(sortTypeParameter(undefinedTypeParameters, javaType));
   }
 
-  private static Collection<? extends TypeReference> sortTypeParameter(
-      Set<TypeVariableReference> undefinedTypeParameters, Type syntheticType) {
-    // Sort the type parameter using the order of the parent's type parameters at type definition.
-    // Type parameters coming from local type parameter of a method will be sorted alphabetically
-    // and placed at the end.
-    List<TypeReference> sortedUndefinedTypeParameters =
-        syntheticType
-            .getEnclosingType()
-            .getTypeParameters()
-            .stream()
-            .filter(undefinedTypeParameters::contains)
-            .collect(toList());
-    // remove the already sorted type parameters
-    undefinedTypeParameters.removeAll(sortedUndefinedTypeParameters);
-    // add the rest by sorting them alphabetically
-    // TODO(b/34858931): order should be based on the order at method definition.
-    sortedUndefinedTypeParameters.addAll(
-        undefinedTypeParameters
-            .stream()
-            .sorted(Ordering.natural().onResultOf(TypeReference::getTypeName))
-            .collect(toList()));
+  private static Collection<TypeReference> sortTypeParameter(
+      Set<TypeReference> undefinedTypeParameters, Type syntheticType) {
+    // Type parameters of a synthetic type refer either to enclosing method's type parameters or the
+    // top level type's type parameters.
+    // In order to avoid breaking changes if someone rename type parameters, we sort the
+    // type parameters based first on the order of type parameter at the method definition and then
+    // on the order of type parameters at top level type definition.
+
+    List<TypeReference> sortedUndefinedTypeParameters = new ArrayList<>();
+
+    // First sort the type parameter using the order of the enclosing method's type parameters if
+    // they are any
+    Method enclosingMethod = findTopEnclosingMethod(syntheticType);
+
+    if (enclosingMethod != null && !enclosingMethod.getTypeParameters().isEmpty()) {
+      sortedUndefinedTypeParameters.addAll(
+          enclosingMethod
+              .getTypeParameters()
+              .stream()
+              .filter(undefinedTypeParameters::contains)
+              .collect(toList()));
+
+      undefinedTypeParameters.removeAll(enclosingMethod.getTypeParameters());
+    }
+
+    // The remaining type parameters are coming from top level enclosing type.
+    if (!undefinedTypeParameters.isEmpty()) {
+      sortedUndefinedTypeParameters.addAll(
+          syntheticType
+              .getTopLevelParentType()
+              .getTypeParameters()
+              .stream()
+              .filter(undefinedTypeParameters::contains)
+              .collect(toList()));
+
+      undefinedTypeParameters.removeAll(sortedUndefinedTypeParameters);
+    }
+
+    checkState(
+        undefinedTypeParameters.isEmpty(),
+        "Undefined type parameter %s for type %s",
+        undefinedTypeParameters,
+        syntheticType);
+
     return sortedUndefinedTypeParameters;
+  }
+
+  private static Method findTopEnclosingMethod(Type syntheticType) {
+    // Type parameters can only be defined on methods of the top level parent.
+    // Synthetic types can be enclosed in another synthetic types, we need first to find the top
+    // level synthetic type in order to be able to find the method of the top level parent
+    // that refer to this type.
+    // Ex:
+    // /**
+    //  * @param {function(V):{foo:T}} foo
+    //  * @return {undefined}
+    //  * @template T,V
+    //  */
+    // Bar.prototype.barMethod = function(foo) {};
+    //
+    // If we are visiting {foo: T}, and in order to find the barMethod where T is defined, we need
+    // to search for method that refer to {function(V):{foo:T}} on Bar.
+
+    Type topLevelSyntheticType = syntheticType;
+    while (topLevelSyntheticType.getEnclosingType().isSynthetic()) {
+      topLevelSyntheticType = topLevelSyntheticType.getEnclosingType();
+    }
+
+    for (Method topLevelMethod : syntheticType.getTopLevelParentType().getMethods()) {
+      if (isReferenceTo(topLevelMethod.getReturnType(), topLevelSyntheticType)) {
+        return topLevelMethod;
+      }
+
+      for (Parameter parameter : topLevelMethod.getParameters()) {
+        if (isReferenceTo(parameter.getType(), topLevelSyntheticType)) {
+          return topLevelMethod;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private static boolean isReferenceTo(TypeReference typeReference, Type type) {
+    if (typeReference instanceof DelegableTypeReference) {
+      return isReferenceTo(((DelegableTypeReference) typeReference).getDelegate(), type);
+    }
+
+    return typeReference instanceof JavaTypeReference
+        && type.equals(((JavaTypeReference) typeReference).getJavaType());
   }
 
   private static Stream<TypeVariableReference> extractTypeParameter(TypeReference typeReference) {

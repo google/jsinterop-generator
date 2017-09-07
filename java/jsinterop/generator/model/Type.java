@@ -83,7 +83,7 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
   private String packageName;
   private Set<TypeReference> inheritedTypes = new LinkedHashSet<>();
   private Set<TypeReference> implementedTypes = new LinkedHashSet<>();
-  private final Set<TypeReference> typeParameters = new LinkedHashSet<>();
+  private Set<TypeReference> typeParameters = new LinkedHashSet<>();
   private List<Field> fields = new ArrayList<>();
   private List<Method> methods = new ArrayList<>();
   private List<Method> constructors = new ArrayList<>();
@@ -114,6 +114,10 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
 
   public void setImplementedTypes(Collection<TypeReference> implementedTypes) {
     this.implementedTypes = new LinkedHashSet<>(implementedTypes);
+  }
+
+  public void setTypeParameters(Collection<TypeReference> typeParameters) {
+    this.typeParameters = new LinkedHashSet<>(typeParameters);
   }
 
   public Set<TypeReference> getImplementedTypes() {
