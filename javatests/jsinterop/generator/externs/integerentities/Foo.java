@@ -46,6 +46,10 @@ public class Foo {
 
   public native int foo(int integerParam, double doubleParam, Foo.FooCallbackFn callback);
 
+  public native void methodWithOptionalParameter(int param1, double optional);
+
+  public native void methodWithOptionalParameter(int param1);
+
   @JsOverlay
   public final Object union(String unionParam) {
     return union(Js.<Foo.UnionUnionParamUnionType>uncheckedCast(unionParam));

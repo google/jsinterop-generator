@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE;
 import static jsinterop.generator.model.PredefinedTypeReference.INT;
 
+import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,10 +32,13 @@ import jsinterop.generator.model.TypeReference;
 /** Handles number javascript entities that need to be converted to int instead of double. */
 public class IntegerEntitiesConverter extends AbstractModelVisitor {
   private final Set<String> integerEntities;
+  private final Set<String> unusedIntegerEntities;
+
   private String currentFqn;
 
   public IntegerEntitiesConverter(List<String> integerEntities) {
-    this.integerEntities = new HashSet<>(integerEntities);
+    this.integerEntities = ImmutableSet.copyOf(integerEntities);
+    this.unusedIntegerEntities = new HashSet<>(integerEntities);
   }
 
   @Override
@@ -44,7 +48,8 @@ public class IntegerEntitiesConverter extends AbstractModelVisitor {
 
   @Override
   public void endVisit(Program program) {
-    checkState(integerEntities.isEmpty(), "These fqn were not found: %s", integerEntities);
+    checkState(
+        unusedIntegerEntities.isEmpty(), "These fqn were not found: %s", unusedIntegerEntities);
   }
 
   @Override
@@ -72,7 +77,7 @@ public class IntegerEntitiesConverter extends AbstractModelVisitor {
   @Override
   public TypeReference endVisit(TypeReference typeReference) {
     if (mustBeConvertedToInt(typeReference)) {
-      integerEntities.remove(currentFqn);
+      unusedIntegerEntities.remove(currentFqn);
       return INT;
     }
 

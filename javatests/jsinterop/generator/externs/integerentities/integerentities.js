@@ -16,6 +16,14 @@ function Foo() {}
  */
 Foo.prototype.foo = function(integerParam, doubleParam, callback) {};
 
+
+/**
+ * @param {number} param1
+ * @param {number=} optional
+ * @return {void}
+ */
+Foo.prototype.methodWithOptionalParameter = function(param1, optional) {};
+
 /**
  * @type {number}
  */
