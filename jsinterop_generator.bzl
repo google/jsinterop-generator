@@ -278,13 +278,13 @@ def jsinterop_generator(
   jsinterop_generator_rule_name = JS_INTEROP_RULE_NAME_PATTERN % name
 
   if srcs:
-    generator_srcs = srcs
+    generator_srcs = srcs[:]
 
     if not package_prefix:
       package_prefix = get_java_package(PACKAGE_NAME)
 
     if conversion_mode == "closure":
-      j2cl_test_externs_list += srcs + exports_srcs + deps_srcs
+      j2cl_test_externs_list = j2cl_test_externs_list + srcs + exports_srcs + deps_srcs
     else:
       fail("Unknown conversion mode")
 
