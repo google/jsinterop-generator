@@ -257,3 +257,13 @@ InterfaceWithStructuralTypeImpl.prototype.bar2 = function(bar) {};
  * @override
  */
 InterfaceWithStructuralTypeImpl.prototype.bar3 = function(param1, param2) {};
+
+/**
+ * Test that a synthetic type is not reused across parameter and return type if
+ * they are typed with a same structural type.
+ * @param {(number|string)} param1
+ * @param {(number|string)} param2
+ * @return {(number|string)}
+ * @override
+ */
+InterfaceWithStructuralTypeImpl.prototype.bar4 = function(param1, param2) {};

@@ -63,8 +63,10 @@ public final class VisitorHelper {
         break;
       }
     }
+    DuplicatedTypesUnifier duplicatedTypesUnifier = new DuplicatedTypesUnifier(useBeanConvention);
+    duplicatedTypesUnifier.accept(program);
 
-    new DuplicatedTypesUnifier(useBeanConvention).accept(program);
+    new FixReferencesToDuplicatedTypes(duplicatedTypesUnifier.getTypesToReplace()).accept(program);
 
     new MembersClassCleaner().accept(program);
 

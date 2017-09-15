@@ -19,8 +19,8 @@ package jsinterop.generator.visitor;
 import static java.util.stream.Collectors.toSet;
 import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +28,8 @@ import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Program;
+import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.Statement;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 
@@ -70,7 +71,7 @@ import jsinterop.generator.model.TypeReference;
  * The example clearly shows that the generated class FooImpl doesn't implement correctly the api of
  * the interface Foo.
  *
- * <p>This visitor will try to detect that case and reuse the type defined on parent interfaces.
+ * <p>This visitor will try to detect that case and collect the duplicated types.
  */
 public class DuplicatedTypesUnifier extends AbstractModelVisitor {
   private static final String TYPE_DELIMITER_PATTERN = "([{(,|<})>]|\\b)";
@@ -99,19 +100,15 @@ public class DuplicatedTypesUnifier extends AbstractModelVisitor {
   private final boolean useBeanConvention;
   private String currentKeyContext;
   private final Map<Type, Map<String, Type>> syntheticTypesByEnclosingType = new HashMap<>();
+  private final Map<Type, Type> syntheticTypesToReplace = new HashMap<>();
   private Set<Type> currentSyntheticTypesSet;
-  private final Set<Type> syntheticTypeToRemove = new HashSet<>();
 
   public DuplicatedTypesUnifier(boolean useBeanConvention) {
     this.useBeanConvention = useBeanConvention;
   }
 
-  @Override
-  public void endVisit(Program program) {
-    // Remove the synthetic types at the end of this visitor. Otherwise we delete the relationship
-    // with their enclosing type and we cannot clean correctly all type references to the synthetic
-    // types.
-    syntheticTypeToRemove.forEach(Type::removeFromParent);
+  public Map<Type, Type> getTypesToReplace() {
+    return ImmutableMap.copyOf(syntheticTypesToReplace);
   }
 
   @Override
@@ -159,6 +156,22 @@ public class DuplicatedTypesUnifier extends AbstractModelVisitor {
   }
 
   @Override
+  public boolean visit(Parameter parameter) {
+    // By adding %p% to the key each time we visit a parameter, we take into account the position of
+    // the parameters in the method definition. With this technique we ensure that we are trying to
+    // match synthetic types that are used in the same method for the same parameter.
+    currentKeyContext += "%p%";
+    return true;
+  }
+
+  @Override
+  public boolean visit(Statement statement) {
+    // We don't want to try to find a structural match for a synthetic type used in a type reference
+    // of a body statement. This process is only done at field/method declaration level.
+    return false;
+  }
+
+  @Override
   public boolean visit(Field field) {
     // If an interface defines a field, the class implementing the interface contains the field
     // definition and the getter and setter. In this case we will try to use the same synthetic type
@@ -185,13 +198,13 @@ public class DuplicatedTypesUnifier extends AbstractModelVisitor {
   @Override
   public boolean visit(TypeReference typeReference) {
     if (typeReference instanceof JavaTypeReference) {
-      maybeFixSyntheticTypeReference(((JavaTypeReference) typeReference));
+      visitJavaTypeReference(((JavaTypeReference) typeReference));
     }
     return true;
   }
 
   @SuppressWarnings("ReferenceEquality")
-  private void maybeFixSyntheticTypeReference(JavaTypeReference typeReference) {
+  private void visitJavaTypeReference(JavaTypeReference typeReference) {
     Type syntheticType = typeReference.getJavaType();
 
     if (!syntheticType.isSynthetic()) {
@@ -208,29 +221,31 @@ public class DuplicatedTypesUnifier extends AbstractModelVisitor {
 
     if (existingSyntheticType != null && existingSyntheticType != syntheticType) {
       // A type with the same structure is already generated.
-      if (syntheticTypeToRemove.add(syntheticType)) {
+      if (syntheticTypesToReplace.put(syntheticType, existingSyntheticType) == null) {
         // A synthetic type can have reference to other synthetic type like a function type in a
         // union type: (function(V):U|string).
-        // Because a synthetic type is only referred one time (where they are used), so we are sure
-        // they are not used outside the current synthetic type we are deleting so they should be
-        // deleted as well.
-        cleanInnerSyntheticTypes(syntheticType);
+        // Because a synthetic type is only referred one time (where they are used), so we are
+        // sure they are not used outside the current synthetic type we are deleting so they
+        // should be deleted as well.
+        visitInnerSyntheticTypes(syntheticType);
       }
-      typeReference.setJavaType(existingSyntheticType);
     } else {
       syntheticTypesByKey.put(typeKey, syntheticType);
     }
   }
 
-  private void cleanInnerSyntheticTypes(Type mainType) {
+  private void visitInnerSyntheticTypes(Type mainType) {
     (new AbstractModelVisitor() {
           @Override
           public boolean visit(TypeReference typeReference) {
             if (typeReference instanceof JavaTypeReference) {
               Type javaType = ((JavaTypeReference) typeReference).getJavaType();
               if (javaType.isSynthetic()
+                  && !mainType.equals(javaType)
                   && mainType.getEnclosingType().equals(javaType.getEnclosingType())) {
-                syntheticTypeToRemove.add(javaType);
+                // These type just need to be removed. Their references doesn't need to be replaced
+                // because they are used in a synthetic type that will be removed as well.
+                syntheticTypesToReplace.put(javaType, javaType);
               }
             }
             return true;
