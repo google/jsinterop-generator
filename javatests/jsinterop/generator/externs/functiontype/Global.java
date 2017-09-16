@@ -6,6 +6,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsConstructorFn;
 
 @JsType(isNative = true, name = "window", namespace = JsPackage.GLOBAL)
 public class Global {
@@ -144,8 +145,10 @@ public class Global {
   public static AliasedFunctionType bar;
   public static Global.BazCallbackFn[] baz;
   public static Global.FooCallbackFn foo;
+  public static JsConstructorFn<SimpleClass> simpleClassCtor;
 
-  public static native void method(Global.MethodFooCallbackFn foo);
+  public static native void method(
+      Global.MethodFooCallbackFn foo, JsConstructorFn<SimpleClass> ctor);
 
   public static native Global.Method1CallbackFn method1(String foo);
 

@@ -100,22 +100,26 @@ var bar;
 var foo;
 
 /**
+ * test FunctionType in generics and arraytype
+ * @type {Array<function(string):boolean>}
+ */
+var baz;
+
+/** @type {function(new:SimpleClass)} */
+var simpleClassCtor;
+
+/**
  * @param {function(string):boolean} foo
+ * @param {function(new:SimpleClass)} ctor
  * @return {undefined}
  */
-function method(foo) {}
+function method(foo, ctor) {}
 
 /**
  * @param {string} foo
  * @return {function(string):boolean}
  */
 function method1(foo) {}
-
-/**
- * test FunctionType in generics and arraytype
- * @type {Array<function(string):boolean>}
- */
-var baz;
 
 /**
  * test FunctionType in union type

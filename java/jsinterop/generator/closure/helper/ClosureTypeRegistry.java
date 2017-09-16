@@ -31,6 +31,7 @@ import static jsinterop.generator.model.PredefinedTypeReference.STRING;
 import static jsinterop.generator.model.PredefinedTypeReference.VOID;
 import static jsinterop.generator.model.PredefinedTypeReference.VOID_OBJECT;
 
+import com.google.common.collect.ImmutableList;
 import com.google.javascript.rhino.jstype.EnumElementType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
@@ -132,6 +133,11 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseFunctionType(FunctionType type) {
+      if (type.isConstructor() && type.getDisplayName() == null) {
+        return new ParametrizedTypeReference(
+            PredefinedTypeReference.JS_CONSTRUCTOR_FN,
+            ImmutableList.of(visit(type.getTypeOfThis())));
+      }
       return new JavaTypeReference(checkNotNull(getJavaType(type)));
     }
 

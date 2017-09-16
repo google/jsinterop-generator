@@ -47,7 +47,9 @@ public enum PredefinedTypeReference implements TypeReference {
   JS_PROPERTY_MAP(
       "JsPropertyMap", null, "jsinterop.base.JsPropertyMap", "Ljsinterop/base/JsPropertyMap"),
   JS("Js", null, "jsinterop.base.Js", "Ljsinterop/base/Js"),
-  ANY("Any", null, "jsinterop.base.Any", "Ljsinterop/base/Any");
+  ANY("Any", null, "jsinterop.base.Any", "Ljsinterop/base/Any"),
+  JS_CONSTRUCTOR_FN(
+      "JsConstructorFn", null, "jsinterop.base.JsConstructorFn", "Ljsinterop/base/JsConstructorFn");
 
   private final String typeName;
   private final String nativeFqn;

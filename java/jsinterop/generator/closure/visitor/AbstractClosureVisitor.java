@@ -17,6 +17,7 @@ package jsinterop.generator.closure.visitor;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static jsinterop.generator.helper.GeneratorUtils.extractName;
 
 import com.google.common.collect.Streams;
 import com.google.javascript.jscomp.NodeUtil;
@@ -37,7 +38,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import jsinterop.generator.closure.helper.ClosureTypeRegistry;
 import jsinterop.generator.closure.helper.GenerationContext;
-import jsinterop.generator.helper.GeneratorUtils;
 import jsinterop.generator.model.Type;
 
 abstract class AbstractClosureVisitor {
@@ -87,13 +87,10 @@ abstract class AbstractClosureVisitor {
     } else if (type.isEnumType()) {
       // TODO(b/28999444): Add support for enum type.
       throw new RuntimeException("Closure Enum are not supported");
-    } else if (type.isConstructor()) {
-      // variable defining a constructor function:
-      // /**
-      //  * @type {function(new:MutationObserver, function(Array<MutationRecord>))}
-      //  */
-      //  Window.prototype.MozMutationObserver;
-      // TODO(b/33673967): add support for constructor function.
+    } else if (isTypeAlias(var)) {
+      // We don't process type alias.
+      //   /** @constructor */ function Foo() {};
+      //   /** @const */ var Bar = Foo;
     } else {
       acceptMember(var, isStatic);
     }
@@ -101,8 +98,12 @@ abstract class AbstractClosureVisitor {
 
   /** Returns {@code true} if var is a type alias (like var mozFooType = FooType). */
   private static boolean isTypeAlias(StaticTypedSlot<JSType> var) {
-    return !GeneratorUtils.extractName(var.getName())
-        .equals(GeneratorUtils.extractName(var.getType().getDisplayName()));
+    if (var.getName() == null || var.getType() == null || var.getType().getDisplayName() == null) {
+      return false;
+    }
+
+    return var.getType().isConstructor()
+        && !extractName(var.getName()).equals(extractName(var.getType().getDisplayName()));
   }
 
   private void acceptType(JSType type) {
@@ -132,6 +133,12 @@ abstract class AbstractClosureVisitor {
   }
 
   private void acceptFunctionType(FunctionType type, String name) {
+    if (type.isConstructor()) {
+      // constructor function {function(new:Foo)} are mapped to JsConstructorFn type and don't
+      // generate any java type
+      return;
+    }
+
     pushCurrentJavaType(type);
 
     if (visitFunctionType(name, type)) {
