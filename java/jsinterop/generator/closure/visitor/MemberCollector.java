@@ -15,9 +15,11 @@
  */
 package jsinterop.generator.closure.visitor;
 
+import static com.google.common.base.Preconditions.checkState;
 import static jsinterop.generator.helper.GeneratorUtils.extractName;
 
 import com.google.common.collect.Sets;
+import com.google.javascript.jscomp.TypedScope;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Visibility;
 import com.google.javascript.rhino.Node;
@@ -26,7 +28,9 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.RecordType;
 import com.google.javascript.rhino.jstype.StaticTypedSlot;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 import jsinterop.generator.closure.helper.GenerationContext;
 import jsinterop.generator.model.AccessModifier;
@@ -42,9 +46,19 @@ public class MemberCollector extends AbstractClosureVisitor {
   // their structure.
   private final Set<JSType> visitedTypes = Sets.newIdentityHashSet();
   private final Deque<Method> currentJavaMethodDeque = new LinkedList<>();
+  private final Map<String, String> parameterNameMapping;
 
   public MemberCollector(GenerationContext ctx) {
     super(ctx);
+    parameterNameMapping = new HashMap<>(getContext().getNameMapping());
+  }
+
+  @Override
+  public void accept(TypedScope scope) {
+    super.accept(scope);
+
+    checkState(
+        parameterNameMapping.isEmpty(), "Unused parameter name mapping: %s", parameterNameMapping);
   }
 
   @Override
@@ -146,8 +160,11 @@ public class MemberCollector extends AbstractClosureVisitor {
 
     String parentFqn = getCurrentJavaType().getJavaFqn() + "." + currentMethod.getName();
 
-    currentMethod.addParameter(
-        convertParameter(parameter, getParameterName(owner, index, parentFqn)));
+    ParameterNameInfo parameterInfo = getParameterInfo(owner, index, parentFqn);
+
+    currentMethod.addParameter(convertParameter(parameter, parameterInfo.getJavaName()));
+
+    parameterNameMapping.remove(parameterInfo.getJavaFqn());
 
     return true;
   }

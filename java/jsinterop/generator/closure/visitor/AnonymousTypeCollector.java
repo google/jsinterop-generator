@@ -176,7 +176,7 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
 
   private String getParameterNameByMethodName(FunctionType owner, int index, String methodName) {
     String methodFqn = getCurrentJavaType().getJavaFqn() + "." + methodName;
-    String paramName = getParameterName(owner, index, methodFqn);
+    String paramName = getParameterInfo(owner, index, methodFqn).getJavaName();
     // By convention, optional parameters are prefixed with "opt_", remove this prefix to clean up a
     // bit the name of the synthetic type.
     return paramName.startsWith("opt_") ? paramName.substring(4) : paramName;

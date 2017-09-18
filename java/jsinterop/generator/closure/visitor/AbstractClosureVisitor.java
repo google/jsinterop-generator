@@ -340,11 +340,47 @@ abstract class AbstractClosureVisitor {
     return currentJavaTypeDeque.peek();
   }
 
-  protected String getParameterName(
+  protected static class ParameterNameInfo {
+    private final String name;
+    private final String fqn;
+
+    ParameterNameInfo(String name, String fqn) {
+      this.name = name;
+      this.fqn = fqn;
+    }
+
+    /**
+     * Return the fully qualified name of the parameter in java.
+     *
+     * <p>Ex: <code>
+     *   interface Foo {
+     *     void bar(String baz);
+     *   }
+     * </code> The java fqn of the parameter baz is: Foo.bar.baz;
+     */
+    public String getJavaFqn() {
+      return fqn;
+    }
+
+    /**
+     * Return the name of the parameter that will be used in the generated java code.
+     *
+     * <p>It could be generated if the closure code doesn't specify a name for the parameter: <code>
+     *   /** @type {function(string):undefined} *\/
+     *   var myFunction;     *
+     * </code> The first parameter of the function myFunction will be generated to <code>p0</code>
+     */
+    public String getJavaName() {
+      return name;
+    }
+  }
+
+  protected ParameterNameInfo getParameterInfo(
       FunctionType functionType, int parameterIndex, String parentFqn) {
 
-    boolean generatedName = false;
     String originalName;
+    boolean generatedName = false;
+
     if (functionType.getSource() == null) {
       // if functionType doesn't have source, it means it's a anonymous function type defined in
       // jsdoc.
@@ -362,7 +398,7 @@ abstract class AbstractClosureVisitor {
     String parameterFqn = parentFqn + "." + originalName;
 
     if (context.getNameMapping().containsKey(parameterFqn)) {
-      return context.getNameMapping().get(parameterFqn);
+      return new ParameterNameInfo(context.getNameMapping().get(parameterFqn), parameterFqn);
     }
 
     if (generatedName) {
@@ -371,7 +407,8 @@ abstract class AbstractClosureVisitor {
               + parameterFqn
               + ". You can override the name by passing a name mapping file to the generator");
     }
-    return originalName;
+
+    return new ParameterNameInfo(originalName, parameterFqn);
   }
 
   private boolean isDefinedInExternFiles(TypedVar symbol) {
