@@ -17,6 +17,7 @@
 
 package jsinterop.generator.model;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.List;
@@ -102,5 +103,10 @@ public class ParametrizedTypeReference extends AbstractTypeReference
     }
 
     return visitor.endVisit(this);
+  }
+
+  @Override
+  public String toString() {
+    return getMainType().getTypeName() + "<" + Joiner.on(", ").join(getActualTypeArguments()) + ">";
   }
 }

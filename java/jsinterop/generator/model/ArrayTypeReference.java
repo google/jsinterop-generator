@@ -108,4 +108,9 @@ public class ArrayTypeReference implements TypeReference, DelegableTypeReference
 
     return visitor.endVisit(this);
   }
+
+  @Override
+  public String toString() {
+    return getArrayType() + "[]";
+  }
 }

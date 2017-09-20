@@ -111,4 +111,9 @@ public class UnionTypeReference implements TypeReference {
 
     return visitor.endVisit(this);
   }
+
+  @Override
+  public String toString() {
+    return "(" + Joiner.on(" | ").join(types) + ")";
+  }
 }

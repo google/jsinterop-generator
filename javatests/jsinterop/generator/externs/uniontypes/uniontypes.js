@@ -72,3 +72,9 @@ Child.prototype.method4 = function(foo, bar) {};
  * @template T,V
  */
 function Foo() {}
+
+/**
+ * Test union type of type parameters involved in parametrized type.
+ * @type {ParentInterface<(T|V)>}
+ */
+Foo.prototype.foo;

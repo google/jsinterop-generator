@@ -75,9 +75,10 @@ public class FixTypeParametersOfReferencesToSyntheticTypes extends AbstractModel
 
   @Override
   public boolean visit(TypeReference typeReference) {
-    // Avoid visiting the reference to the underlying type of a ParametrizedTypeReference otherwise
-    // we will recreate another ParametrizedTypeReference.
-    return !(typeReference instanceof ParametrizedTypeReference);
+    // Avoid visiting the reference to the underlying type of a ParametrizedTypeReference of
+    // a synthetic type otherwise we will recreate another ParametrizedTypeReference.
+    return !(typeReference instanceof ParametrizedTypeReference
+        && getSyntheticType(((ParametrizedTypeReference) typeReference).getMainType()) != null);
   }
 
   @Override

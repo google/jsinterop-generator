@@ -43,7 +43,7 @@ InterfaceWithGeneric.prototype.method2 = function() {};
 function Bar() {}
 
 /**
- * @type {T}
+ * @type {InterfaceWithGeneric<{foo:{baz:T}}>}
  */
 Bar.prototype.bar;
 

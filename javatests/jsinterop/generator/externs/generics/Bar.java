@@ -8,6 +8,24 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public interface Bar<U, T, V> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface BarFieldType<T> {
+    @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+    public interface FooFieldType<T> {
+      @JsProperty
+      T getBaz();
+
+      @JsProperty
+      void setBaz(T baz);
+    }
+
+    @JsProperty
+    Bar.BarFieldType.FooFieldType<T> getFoo();
+
+    @JsProperty
+    void setFoo(Bar.BarFieldType.FooFieldType<T> foo);
+  }
+
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface BarMethod2ParamType<V, T> {
     @JsProperty
     T getBar();
@@ -53,7 +71,7 @@ public interface Bar<U, T, V> {
   <Z, Y> void barMethod3(Bar.BarMethod3FooCallbackFn<Z, Y, T, V> foo);
 
   @JsProperty
-  T getBar();
+  InterfaceWithGeneric<Bar.BarFieldType<T>> getBar();
 
   @JsProperty
   InterfaceWithGeneric<Double> getBar2();
@@ -65,7 +83,7 @@ public interface Bar<U, T, V> {
   U getFoo();
 
   @JsProperty
-  void setBar(T bar);
+  void setBar(InterfaceWithGeneric<Bar.BarFieldType<T>> bar);
 
   @JsProperty
   void setBar2(InterfaceWithGeneric<Double> bar2);

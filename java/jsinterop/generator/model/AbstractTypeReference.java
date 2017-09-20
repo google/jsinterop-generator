@@ -44,4 +44,9 @@ public abstract class AbstractTypeReference implements TypeReference {
   public Expression getDefaultValue() {
     return NULL;
   }
+
+  @Override
+  public String toString() {
+    return getTypeName();
+  }
 }
