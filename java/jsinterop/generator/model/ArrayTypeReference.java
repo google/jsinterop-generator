@@ -83,7 +83,7 @@ public class ArrayTypeReference implements TypeReference, DelegableTypeReference
 
   @Override
   public int hashCode() {
-    return Objects.hash(true, getJsDocAnnotationString());
+    return Objects.hash("array", arrayType);
   }
 
   @Override

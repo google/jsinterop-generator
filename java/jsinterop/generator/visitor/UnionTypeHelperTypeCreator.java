@@ -291,10 +291,14 @@ public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
       return !isNativeInterface(((JavaTypeReference) typeReference).getJavaType());
     }
 
-    if (typeReference == JS_PROPERTY_MAP || typeReference == JS_ARRAY_LIKE) {
+    if (typeReference == JS_PROPERTY_MAP
+        || typeReference == JS_ARRAY_LIKE
+        || typeReference == OBJECT) {
       // TODO(b/35804724): we can not generate an instanceof statement against JsPropertyMap and
       // JsArrayLike because they are native jstype interface. Remove that when both type implement
       // $isinstance method.
+      // We dont generate an instanceof statement against Objet because it will always return true
+      // and that can be misleading for the end users.
       return false;
     }
 

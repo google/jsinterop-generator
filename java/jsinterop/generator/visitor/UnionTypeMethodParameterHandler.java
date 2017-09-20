@@ -52,18 +52,19 @@ import jsinterop.generator.model.UnionTypeReference;
  * methods overloading.
  */
 public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
-  private final Deque<Set<Method>> parentInterfaceMethodsStack = new LinkedList<>();
+  private final Deque<Set<String>> parentInterfaceMethodsStack = new LinkedList<>();
 
   @Override
   public boolean visit(Type type) {
-    parentInterfaceMethodsStack.push(getParentInterfacesMethods(type));
+    parentInterfaceMethodsStack.push(getParentInterfacesMethodsWithUnionTypes(type));
     return true;
   }
 
-  private Set<Method> getParentInterfacesMethods(Type type) {
+  private Set<String> getParentInterfacesMethodsWithUnionTypes(Type type) {
     return getParentInterfaces(type, true)
         .stream()
         .flatMap(t -> t.getMethods().stream())
+        .map(Method::getName)
         .collect(toSet());
   }
 
@@ -140,7 +141,13 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
   }
 
   private boolean isParentInterfaceMethod(Method method) {
-    return parentInterfaceMethodsStack.peek().contains(method);
+    System.out.println(
+        method.getEnclosingType().getName()
+            + "."
+            + method
+            + ": "
+            + parentInterfaceMethodsStack.peek());
+    return parentInterfaceMethodsStack.peek().contains(method.getName());
   }
 
   private static Expression createOriginalMethodInvocation(

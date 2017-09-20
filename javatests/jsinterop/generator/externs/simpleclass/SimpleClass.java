@@ -1,6 +1,5 @@
 package jsinterop.generator.externs.simpleclass;
 
-import java.lang.String;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -15,7 +14,7 @@ public class SimpleClass {
 
   public static native boolean staticMethod(String foo, String bar);
 
-  public String fooProperty;
+  public Object fooProperty;
   public String[][][] fooProperty2;
   public boolean readonlyProperty;
   public SimpleClass thisType;

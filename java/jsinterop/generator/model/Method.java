@@ -23,7 +23,6 @@ import static com.google.common.collect.Lists.transform;
 import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 import static jsinterop.generator.model.EntityKind.METHOD;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
@@ -136,13 +135,6 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
     return new Method(true);
   }
 
-  private static final Function<Parameter, String> toParameterTypeName =
-      parameter -> {
-        TypeReference type =
-            parameter.isVarargs() ? new ArrayTypeReference(parameter.type) : parameter.type;
-        return type.getJavaTypeFqn();
-      };
-
   private List<Parameter> parameters = new LinkedList<>();
   private TypeReference returnType;
   private List<TypeReference> typeParameters = new LinkedList<>();
@@ -250,15 +242,16 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
       return false;
     }
 
-    List<String> parameterTypes = transform(parameters, toParameterTypeName);
-    List<String> otherParameterTypes = transform(((Method) o).parameters, toParameterTypeName);
+    List<TypeReference> parameterTypes = transform(parameters, Parameter::getType);
+    List<TypeReference> otherParameterTypes =
+        transform(((Method) o).parameters, Parameter::getType);
 
     return Objects.equals(parameterTypes, otherParameterTypes);
   }
 
   @Override
   public int hashCode() {
-    List<String> parameterTypes = transform(parameters, toParameterTypeName);
+    List<TypeReference> parameterTypes = transform(parameters, Parameter::getType);
     return Objects.hash(super.hashCode(), parameterTypes);
   }
 
