@@ -6,11 +6,17 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class AnonymousTypes<T> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface BarFooType<T> {
+    @JsOverlay
+    static AnonymousTypes.BarFooType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
     @JsProperty
     T getBar();
 
@@ -20,6 +26,11 @@ public class AnonymousTypes<T> {
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface FooFooType<V, U, T> {
+    @JsOverlay
+    static AnonymousTypes.FooFooType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
     @JsProperty
     U getBar();
 
@@ -51,6 +62,11 @@ public class AnonymousTypes<T> {
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface TypeLiteralFooType<T> {
+    @JsOverlay
+    static AnonymousTypes.TypeLiteralFooType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
     @JsProperty
     T getBar();
 

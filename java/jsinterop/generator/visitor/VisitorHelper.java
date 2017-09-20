@@ -27,6 +27,8 @@ public final class VisitorHelper {
       Program program, boolean useBeanConvention, List<String> integerEntities) {
     new EmptyNamespaceFilter().accept(program);
 
+    new DictionaryTypeVisitor().accept(program);
+
     new FieldsConverter(useBeanConvention).accept(program);
 
     new ClosureOptionalParameterCleaner().accept(program);

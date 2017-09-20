@@ -1,4 +1,4 @@
-package jsinterop.generator.externs.structuraltypes;
+package jsinterop.generator.externs.dictionarytype;
 
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -8,21 +8,21 @@ import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public interface FooBar {
+public interface DictionaryType {
   @JsOverlay
-  static FooBar create() {
+  static DictionaryType create() {
     return Js.uncheckedCast(JsPropertyMap.of());
   }
 
   @JsProperty
-  String getBar();
+  double getBar();
 
   @JsProperty
-  double getFoo();
+  String getFoo();
 
   @JsProperty
-  void setBar(String bar);
+  void setBar(double bar);
 
   @JsProperty
-  void setFoo(double foo);
+  void setFoo(String foo);
 }

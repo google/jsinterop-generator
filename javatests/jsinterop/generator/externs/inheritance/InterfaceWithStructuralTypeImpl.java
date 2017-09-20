@@ -6,6 +6,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class InterfaceWithStructuralTypeImpl<V, U> implements InterfaceWithStructuralType<V, U> {
@@ -100,6 +101,11 @@ public class InterfaceWithStructuralTypeImpl<V, U> implements InterfaceWithStruc
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface FooFooType {
+    @JsOverlay
+    static InterfaceWithStructuralTypeImpl.FooFooType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
     @JsProperty
     String getFoo();
 
@@ -109,6 +115,11 @@ public class InterfaceWithStructuralTypeImpl<V, U> implements InterfaceWithStruc
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface FooReturnType {
+    @JsOverlay
+    static InterfaceWithStructuralTypeImpl.FooReturnType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
     @JsProperty
     double getBar();
 

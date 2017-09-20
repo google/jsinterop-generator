@@ -5,6 +5,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class SimpleClass {
@@ -38,6 +39,11 @@ public class SimpleClass {
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface ConsumeAndReturnAnonymousReturnType {
+    @JsOverlay
+    static SimpleClass.ConsumeAndReturnAnonymousReturnType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
     @JsProperty
     String getBar();
 
@@ -47,6 +53,11 @@ public class SimpleClass {
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface ConsumeAndReturnAnonymousTypeFooType {
+    @JsOverlay
+    static SimpleClass.ConsumeAndReturnAnonymousTypeFooType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
     @JsProperty
     double getFoo();
 
@@ -56,6 +67,11 @@ public class SimpleClass {
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface ConsumeUnionTypeWithRecordTypeStringOrFooType {
+    @JsOverlay
+    static SimpleClass.ConsumeUnionTypeWithRecordTypeStringOrFooType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
     @JsProperty
     String getFoo();
 
@@ -89,6 +105,11 @@ public class SimpleClass {
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface RecordTypeArrayFieldType {
+    @JsOverlay
+    static SimpleClass.RecordTypeArrayFieldType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
     @JsProperty
     double getFoo();
 

@@ -126,6 +126,7 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
         cleanThisFromNativeFqn(recordOrFunctionType.toAnnotationString(Nullability.IMPLICIT)));
     javaType.addAnnotation(annotation);
     javaType.setSynthetic(true);
+    javaType.setStructural(true);
 
     javaType.setName(
         toSafeTypeName(toCamelUpperCase(currentName), getCurrentJavaType().getInnerTypesNames()));

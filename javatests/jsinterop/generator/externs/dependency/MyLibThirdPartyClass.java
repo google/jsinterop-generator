@@ -5,6 +5,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import jsinterop.generator.externs.dependency.thirdparty.ThirdPartyClass;
 import jsinterop.generator.externs.dependency.thirdparty2.ThirdParty2Class;
 
@@ -12,6 +13,11 @@ import jsinterop.generator.externs.dependency.thirdparty2.ThirdParty2Class;
 public class MyLibThirdPartyClass<T> extends ThirdPartyClass<T> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface ExtraMethodBarType<T> {
+    @JsOverlay
+    static MyLibThirdPartyClass.ExtraMethodBarType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
     @JsProperty
     T getBar();
 

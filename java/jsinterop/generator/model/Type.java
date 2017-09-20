@@ -47,6 +47,7 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     clonedType.setPackageName(type.getPackageName());
     clonedType.setNativeNamespace(type.getNativeNamespace());
     clonedType.setSynthetic(type.isSynthetic());
+    clonedType.setStructural(type.isStructural());
     clonedType.setExtern(type.isExtern());
 
     for (Method m : type.getMethods()) {
@@ -91,6 +92,7 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
   private boolean extern;
   private boolean extensionType;
   private boolean synthetic;
+  private boolean structural;
   private String nativeNamespace;
   private String nativeFqn;
 
@@ -330,6 +332,14 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
 
   public void setExtensionType(boolean extensionType) {
     this.extensionType = extensionType;
+  }
+
+  public boolean isStructural() {
+    return structural;
+  }
+
+  public void setStructural(boolean structural) {
+    this.structural = structural;
   }
 
   public void removeFromParent() {

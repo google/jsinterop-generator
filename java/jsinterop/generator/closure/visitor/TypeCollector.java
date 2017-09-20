@@ -97,6 +97,7 @@ public class TypeCollector extends AbstractClosureVisitor {
   protected boolean visitClassOrInterface(FunctionType type) {
     Type javaType =
         createJavaType(type.getDisplayName(), type.isInterface() ? INTERFACE : CLASS, false);
+    javaType.setStructural(type.isStructuralInterface());
     getJavaTypeRegistry().registerJavaType(javaType, type.getInstanceType());
 
     // keep the current java type to be able to create an extension type later.
@@ -137,7 +138,8 @@ public class TypeCollector extends AbstractClosureVisitor {
       return false;
     }
 
-    Type javaType = createJavaType(jsFqn, CLASS, false);
+    Type javaType = createJavaType(jsFqn, INTERFACE, false);
+    javaType.setStructural(true);
     getJavaTypeRegistry().registerJavaType(javaType, type);
     return false;
   }
@@ -152,6 +154,7 @@ public class TypeCollector extends AbstractClosureVisitor {
     }
 
     Type javaType = createJavaType(jsFqn, INTERFACE, true);
+    javaType.setStructural(true);
     getJavaTypeRegistry().registerJavaType(javaType, type);
     return false;
   }

@@ -1,9 +1,12 @@
 package jsinterop.generator.externs.generics;
 
 import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public interface Bar<U, T, V> {
@@ -11,11 +14,21 @@ public interface Bar<U, T, V> {
   public interface BarFieldType<T> {
     @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface FooFieldType<T> {
+      @JsOverlay
+      static Bar.BarFieldType.FooFieldType create() {
+        return Js.uncheckedCast(JsPropertyMap.of());
+      }
+
       @JsProperty
       T getBaz();
 
       @JsProperty
       void setBaz(T baz);
+    }
+
+    @JsOverlay
+    static Bar.BarFieldType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
     }
 
     @JsProperty
@@ -27,6 +40,11 @@ public interface Bar<U, T, V> {
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface BarMethod2ParamType<V, T> {
+    @JsOverlay
+    static Bar.BarMethod2ParamType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
     @JsProperty
     T getBar();
 
@@ -44,6 +62,11 @@ public interface Bar<U, T, V> {
   public interface BarMethod3FooCallbackFn<Z, Y, T, V> {
     @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface ReturnType<Z, Y, T> {
+      @JsOverlay
+      static Bar.BarMethod3FooCallbackFn.ReturnType create() {
+        return Js.uncheckedCast(JsPropertyMap.of());
+      }
+
       @JsProperty
       Y getBar();
 

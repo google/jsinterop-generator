@@ -7,6 +7,7 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
+import jsinterop.base.JsPropertyMap;
 
 @JsType(isNative = true, name = "window", namespace = JsPackage.GLOBAL)
 public class Global {
@@ -77,6 +78,11 @@ public class Global {
   public interface Method5FooCallbackFn {
     @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface P0Type {
+      @JsOverlay
+      static Global.Method5FooCallbackFn.P0Type create() {
+        return Js.uncheckedCast(JsPropertyMap.of());
+      }
+
       @JsProperty
       String getFoo();
 
@@ -86,6 +92,11 @@ public class Global {
 
     @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface ReturnType {
+      @JsOverlay
+      static Global.Method5FooCallbackFn.ReturnType create() {
+        return Js.uncheckedCast(JsPropertyMap.of());
+      }
+
       @JsProperty
       double getFoo();
 

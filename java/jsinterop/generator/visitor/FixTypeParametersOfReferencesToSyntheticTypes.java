@@ -61,10 +61,10 @@ public class FixTypeParametersOfReferencesToSyntheticTypes extends AbstractModel
   public boolean visit(Method method) {
     // We don't retrofit type parameters on static method of synthetic type.
     if (inSyntheticType && method.isStatic()) {
-      // For the time being we only generate one static method: of() method on UnionType helper
-      // object
+      // For the time being we only generate two static methods: of() method on UnionType helper
+      // object and create method for dictionary types.
       checkState(
-          "of".equals(method.getName()),
+          "of".equals(method.getName()) || "create".equals(method.getName()),
           "We don't expect a static method named [%s] in a synthetic type",
           method.getName());
       return false;
