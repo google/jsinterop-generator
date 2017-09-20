@@ -74,8 +74,6 @@ public final class VisitorHelper {
 
     new ConstructorVisitor().accept(program);
 
-    new JsOverlayMethodsCleaner().accept(program);
-
     new NamespaceAttributeRewriter().accept(program);
   }
 
