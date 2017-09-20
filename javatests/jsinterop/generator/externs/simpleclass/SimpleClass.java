@@ -14,7 +14,7 @@ public class SimpleClass {
 
   public static native boolean staticMethod(String foo, String bar);
 
-  public Object fooProperty;
+  public String fooProperty;
   public String[][][] fooProperty2;
   public boolean readonlyProperty;
   public SimpleClass thisType;

@@ -68,12 +68,6 @@ Child.prototype.method3 = function(foo) {};
 Child.prototype.method4 = function(foo, bar) {};
 
 /**
- * @param {(string|Object)} foo
- * Tests isObject() method is not generated.
- */
-Child.prototype.method5 = function(foo) {};
-
-/**
  * @interface
  * @template T,V
  */

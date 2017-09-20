@@ -28,7 +28,7 @@ SimpleClass.staticMethod = function(foo, bar, opt_baz) {};
 SimpleClass.staticReadonlyProperty
 
 /**
- * @type {Object}
+ * @type {string}
  */
 SimpleClass.prototype.fooProperty;
 

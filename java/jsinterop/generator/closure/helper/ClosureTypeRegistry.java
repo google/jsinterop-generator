@@ -143,10 +143,6 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseObjectType(ObjectType type) {
-      if (type.isNativeObjectType() && "Object".equals(type.getReferenceName())) {
-        // Reference to js built-in Object type is converted to java.lang.Object
-        return OBJECT;
-      }
       return new JavaTypeReference(checkNotNull(getJavaType(type)));
     }
 

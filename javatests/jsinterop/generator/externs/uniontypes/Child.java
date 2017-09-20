@@ -320,29 +320,6 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface Method5FooUnionType {
-    @JsOverlay
-    static Child.Method5FooUnionType of(Object o) {
-      return Js.cast(o);
-    }
-
-    @JsOverlay
-    default Object asObject() {
-      return Js.cast(this);
-    }
-
-    @JsOverlay
-    default String asString() {
-      return Js.asString(this);
-    }
-
-    @JsOverlay
-    default boolean isString() {
-      return (Object) this instanceof String;
-    }
-  }
-
-  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface MethodUnionType {
     @JsOverlay
     static Child.MethodUnionType of(Object o) {
@@ -557,18 +534,6 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
 
   public native <T, V> V method4(
       Child.Method4FooUnionType<T, V> foo, Child.Method4BarCallbackFn<T, V> bar);
-
-  public native Object method5(Child.Method5FooUnionType foo);
-
-  @JsOverlay
-  public final Object method5(Object foo) {
-    return method5(Js.<Child.Method5FooUnionType>uncheckedCast(foo));
-  }
-
-  @JsOverlay
-  public final Object method5(String foo) {
-    return method5(Js.<Child.Method5FooUnionType>uncheckedCast(foo));
-  }
 
   public native Object parentMethod(ParentInterface.ParentMethodFooUnionType foo);
 }
