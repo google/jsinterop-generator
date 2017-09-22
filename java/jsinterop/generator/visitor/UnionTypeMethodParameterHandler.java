@@ -64,8 +64,15 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
     return getParentInterfaces(type, true)
         .stream()
         .flatMap(t -> t.getMethods().stream())
-        .map(Method::getName)
+        .map(UnionTypeMethodParameterHandler::getOverrideKey)
         .collect(toSet());
+  }
+
+  private static String getOverrideKey(Method m) {
+    // The only way a class in closure or typescript can redefine a method from a parent interface
+    // is by adding optional parameters. Creating a key containing the name of the method and the
+    // nbr of parameters is enough to check if a method exists on a parent interface.
+    return m.getName() + "%" + m.getParameters().size();
   }
 
   @Override
@@ -80,6 +87,7 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
     if (isParentInterfaceMethod(method)) {
       return false;
     }
+
     Type currentType = method.getEnclosingType();
 
     List<Method> overloadingMethods = new ArrayList<>();
@@ -141,13 +149,7 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
   }
 
   private boolean isParentInterfaceMethod(Method method) {
-    System.out.println(
-        method.getEnclosingType().getName()
-            + "."
-            + method
-            + ": "
-            + parentInterfaceMethodsStack.peek());
-    return parentInterfaceMethodsStack.peek().contains(method.getName());
+    return parentInterfaceMethodsStack.peek().contains(getOverrideKey(method));
   }
 
   private static Expression createOriginalMethodInvocation(

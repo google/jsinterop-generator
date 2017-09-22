@@ -15,6 +15,11 @@ function ParentInterface() {}
 ParentInterface.prototype.parentMethod = function(foo) {};
 
 /**
+ * @param {(string| number)} foo
+ */
+ParentInterface.prototype.parentMethod2 = function(foo) {};
+
+/**
  * @constructor
  * @param {(string|number)} foo
  * @implements {ParentInterface<(string|number)>}
@@ -27,6 +32,13 @@ function Child(foo) {}
  * Test that overridden methods with UnionTypes use helper types from the parent
  */
 Child.prototype.parentMethod = function(foo) {};
+
+/**
+ * Augment parent method with optional parameter.
+ * @param {(string| number)} foo
+ * @param {(string|boolean)=} bar
+ */
+Child.prototype.parentMethod2 = function(foo, bar) {};
 
 /**
  * @return {(string|number|Child)}
