@@ -16,6 +16,7 @@
 package jsinterop.generator.helper;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.util.stream.Collectors.toList;
 import static jsinterop.generator.helper.GeneratorUtils.createJavaPackage;
 import static jsinterop.generator.helper.GeneratorUtils.extractName;
 import static jsinterop.generator.helper.GeneratorUtils.extractNamespace;
@@ -28,10 +29,15 @@ import static jsinterop.generator.model.EntityKind.INTERFACE;
 import static jsinterop.generator.model.EntityKind.NAMESPACE;
 import static jsinterop.generator.model.PredefinedTypeReference.JS;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
+import static jsinterop.generator.model.PredefinedTypeReference.VOID;
 
 import com.google.common.collect.ImmutableList;
+import java.util.ArrayList;
+import java.util.List;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.EntityKind;
+import jsinterop.generator.model.Expression;
+import jsinterop.generator.model.ExpressionStatement;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.LiteralExpression;
 import jsinterop.generator.model.Method;
@@ -41,6 +47,7 @@ import jsinterop.generator.model.Program;
 import jsinterop.generator.model.ReturnStatement;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeQualifier;
+import jsinterop.generator.model.TypeReference;
 
 /** Helper methods around our java model. */
 public class ModelHelper {
@@ -173,6 +180,83 @@ public class ModelHelper {
 
   public static boolean isGlobalType(Type type) {
     return GLOBAL_NAMESPACE.equals(type.getNativeNamespace());
+  }
+
+  /**
+   * Callback object used to decide what argument to create for delegation when the type of a
+   * parameter of the original method doesn't match the type of the corresponding parameter of an
+   * overlay method.
+   */
+  public interface ArgumentRewriter {
+    Expression rewriteArgument(Parameter originalParameter, Parameter overloadParameter);
+  }
+
+  /** Callback object used to rewrite parameter during method overlay creation. */
+  public interface ParameterRewriter {
+    Parameter rewriteParameter(int index, Parameter originalParameter);
+  }
+
+  public static Method createDelegatingOverlayMethod(
+      Method originalMethod,
+      ParameterRewriter parameterRewriter,
+      ArgumentRewriter argumentRewriter) {
+
+    Method jsOverlayMethod = Method.from(originalMethod);
+
+    List<Parameter> overlayParameters = new ArrayList<>();
+    int parameterIndex = 0;
+    for (Parameter parameter : originalMethod.getParameters()) {
+      overlayParameters.add(parameterRewriter.rewriteParameter(parameterIndex++, parameter));
+    }
+
+    jsOverlayMethod.setParameters(overlayParameters);
+
+    if (jsOverlayMethod.equals(originalMethod)) {
+      return null;
+    }
+
+    // If the method is a constructor, we don't need the JSOverlay annotation and native constructor
+    // cannot define any body.
+    if (originalMethod.getKind() != EntityKind.CONSTRUCTOR) {
+      boolean defaultMethod = originalMethod.getEnclosingType().isInterface();
+
+      jsOverlayMethod.getAnnotations().clear();
+      jsOverlayMethod.addAnnotation(Annotation.builder().type(JS_OVERLAY).build());
+
+      jsOverlayMethod.setDefault(defaultMethod);
+      jsOverlayMethod.setFinal(!defaultMethod);
+      createInvocationToOriginalMethod(originalMethod, jsOverlayMethod, argumentRewriter);
+    }
+
+    return jsOverlayMethod;
+  }
+
+  private static void createInvocationToOriginalMethod(
+      Method original, Method overload, ArgumentRewriter onNonEqualParameters) {
+    List<Expression> arguments = new ArrayList<>();
+
+    for (int i = 0; i < original.getParameters().size(); i++) {
+      Parameter originalParameter = original.getParameters().get(i);
+      Parameter overloadParameter = overload.getParameters().get(i);
+
+      if (originalParameter.getType().equals(overloadParameter.getType())) {
+        // pass the parameter
+        arguments.add(new LiteralExpression(overloadParameter.getName()));
+      } else {
+        arguments.add(onNonEqualParameters.rewriteArgument(originalParameter, overloadParameter));
+      }
+    }
+
+    List<TypeReference> originalParameterTypes =
+        original.getParameters().stream().map(Parameter::getType).collect(toList());
+
+    Expression delegation =
+        new MethodInvocation(null, original.getName(), originalParameterTypes, arguments);
+
+    overload.setBody(
+        overload.getReturnType() == VOID
+            ? new ExpressionStatement(delegation)
+            : new ReturnStatement(delegation));
   }
 
   private ModelHelper() {}

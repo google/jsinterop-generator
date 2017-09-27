@@ -17,13 +17,11 @@
 
 package jsinterop.generator.visitor;
 
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Lists.cartesianProduct;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toSet;
-import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
-import static jsinterop.generator.model.PredefinedTypeReference.VOID;
 
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
@@ -32,16 +30,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import jsinterop.generator.model.Annotation;
-import jsinterop.generator.model.EntityKind;
+import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.Expression;
-import jsinterop.generator.model.ExpressionStatement;
 import jsinterop.generator.model.LiteralExpression;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Method.Parameter;
 import jsinterop.generator.model.MethodInvocation;
 import jsinterop.generator.model.PredefinedTypeReference;
-import jsinterop.generator.model.ReturnStatement;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeQualifier;
 import jsinterop.generator.model.TypeReference;
@@ -105,34 +100,16 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
 
     // Create one new method by permutation
     for (List<TypeReference> parameterTypes : typesReferencesPermutations) {
-      Method overloadingMethod = Method.from(method);
-      // clean any JsProperty or JsMethod jsinterop annotations
-      overloadingMethod.getAnnotations().clear();
+      Method overloadingMethod =
+          ModelHelper.createDelegatingOverlayMethod(
+              method,
+              (i, p) ->
+                  new Parameter(p.getName(), parameterTypes.get(i), p.isVarargs(), p.isOptional()),
+              UnionTypeMethodParameterHandler::callUncheckedCast);
 
-      // change the type of all parameters by the types from the permutation.
-      for (int i = 0; i < parameterTypes.size(); i++) {
-        overloadingMethod.getParameters().get(i).setType(parameterTypes.get(i));
+      if (overloadingMethod != null) {
+        overloadingMethods.add(overloadingMethod);
       }
-
-      if (method.equals(overloadingMethod)) {
-        continue;
-      }
-
-      if (method.getKind() != EntityKind.CONSTRUCTOR) {
-        // Because JsType can be extended, we need to create default JsOverlay method that delegates
-        // to the original method in order to force developer to override only the original method.
-        boolean needDefaultMethod = currentType.isInterface();
-        overloadingMethod.setDefault(needDefaultMethod);
-        overloadingMethod.setFinal(!needDefaultMethod);
-        overloadingMethod.addAnnotation(Annotation.builder().type(JS_OVERLAY).build());
-        Expression delegation = createOriginalMethodInvocation(method, overloadingMethod);
-        overloadingMethod.setBody(
-            method.getReturnType() == VOID
-                ? new ExpressionStatement(delegation)
-                : new ReturnStatement(delegation));
-      }
-
-      overloadingMethods.add(overloadingMethod);
     }
 
     // Check if the overloading methods don't collide together. That happens when several generics
@@ -152,47 +129,19 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
     return parentInterfaceMethodsStack.peek().contains(getOverrideKey(method));
   }
 
-  private static Expression createOriginalMethodInvocation(
-      Method originalMethod, Method overloadingMethod) {
-    List<TypeReference> originalParameterTypes =
-        originalMethod
-            .getParameters()
-            .stream()
-            .map(Parameter::getType)
-            .collect(Collectors.toList());
-    List<TypeReference> overloadingParameterTypes =
-        overloadingMethod
-            .getParameters()
-            .stream()
-            .map(Parameter::getType)
-            .collect(Collectors.toList());
-    List<Expression> arguments = new ArrayList<>();
+  private static Expression callUncheckedCast(
+      Parameter originalParameter, Parameter overloadParameter) {
+    checkArgument(originalParameter.getType() instanceof UnionTypeReference);
 
-    for (int i = 0; i < originalParameterTypes.size(); i++) {
-      LiteralExpression parameterName =
-          new LiteralExpression(overloadingMethod.getParameters().get(i).getName());
-
-      if (originalParameterTypes.get(i).equals(overloadingParameterTypes.get(i))) {
-        // pass the parameter
-        arguments.add(parameterName);
-      } else {
-        TypeReference originalTypeParameter = originalParameterTypes.get(i);
-        checkState(originalTypeParameter instanceof UnionTypeReference);
-
-        // Use an unchecked cast because we know the cast is safe.
-        // will generate: Js.<UnionTypeHelperType>uncheckedCast(parameterName)
-        // We need to add the local type argument to ensure to call the original method.
-        arguments.add(
-            new MethodInvocation(
-                new TypeQualifier(PredefinedTypeReference.JS),
-                "uncheckedCast",
-                ImmutableList.of(OBJECT),
-                ImmutableList.of(parameterName),
-                ImmutableList.of(originalTypeParameter)));
-      }
-    }
-
-    return new MethodInvocation(null, originalMethod.getName(), originalParameterTypes, arguments);
+    // Use an unchecked cast because we know the cast is safe.
+    // will generate: Js.<UnionTypeHelperType>uncheckedCast(parameterName)
+    // We need to add the local type argument to ensure to call the original method.
+    return new MethodInvocation(
+        new TypeQualifier(PredefinedTypeReference.JS),
+        "uncheckedCast",
+        ImmutableList.of(OBJECT),
+        ImmutableList.of(new LiteralExpression(overloadParameter.getName())),
+        ImmutableList.of(originalParameter.getType()));
   }
 
   /**

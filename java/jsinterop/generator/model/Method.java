@@ -153,6 +153,10 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
     return ImmutableList.copyOf(parameters);
   }
 
+  public void setParameters(List<Parameter> parameters) {
+    this.parameters = parameters;
+  }
+
   public void clearParameters() {
     parameters.clear();
   }

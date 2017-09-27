@@ -74,6 +74,8 @@ public final class VisitorHelper {
 
     new ConstructorVisitor().accept(program);
 
+    new JsConstructorFnParameterVisitor().accept(program);
+
     new NamespaceAttributeRewriter().accept(program);
   }
 

@@ -158,6 +158,11 @@ public class Global {
   public static Global.FooCallbackFn foo;
   public static JsConstructorFn<SimpleClass> simpleClassCtor;
 
+  @JsOverlay
+  public static final void method(Global.MethodFooCallbackFn foo, Class<SimpleClass> ctor) {
+    method(foo, Js.asConstructorFn(ctor));
+  }
+
   public static native void method(
       Global.MethodFooCallbackFn foo, JsConstructorFn<SimpleClass> ctor);
 
