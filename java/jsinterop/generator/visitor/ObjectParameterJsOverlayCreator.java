@@ -23,8 +23,8 @@ import jsinterop.generator.model.Method.Parameter;
 import jsinterop.generator.model.PredefinedTypeReference;
 
 /**
- * In order to add flexibility in the generated API, this visitor will create a JsOverlay method
- * that will accept java.lang.Object as parameter and delegate to native method.
+ * Creates a JsOverlay method that will accept java.lang.Object as parameter and delegate to
+ * existing native method that accepts JavaScript object so the API becomes Java friendly.
  *
  * <p>We cannot convert native js Object reference to java.lang.Object because java.lang.Object
  * reference is transpiled by J2CL to any type '*'. That breaks closure type checking.
