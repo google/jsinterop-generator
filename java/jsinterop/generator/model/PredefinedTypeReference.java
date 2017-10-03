@@ -31,7 +31,7 @@ public enum PredefinedTypeReference implements TypeReference {
   LONG("long", "number", null, "J", ZERO),
   DOUBLE("double", "number", null, "D", ZERO),
   DOUBLE_OBJECT("Double", "number", "java.lang.Double", "Ljava/lang/Double"),
-  OBJECT("Object", "Object", "java.lang.Object", "Ljava/lang/Object"),
+  OBJECT("Object", "*", "java.lang.Object", "Ljava/lang/Object"),
   STRING("String", "string", "java.lang.String", "Ljava/lang/String"),
   CLASS("Class", null, "java.lang.Class", "Ljava/lang/Class"),
   JS_TYPE("JsType", null, "jsinterop.annotations.JsType", "Ljsinterop/annotations/JsType"),

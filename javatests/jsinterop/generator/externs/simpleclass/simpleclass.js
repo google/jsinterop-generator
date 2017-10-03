@@ -50,7 +50,7 @@ SimpleClass.prototype.thisType;
 /**
  * @param {string} foo
  * @param {string} bar
- * @param {boolean=} opt_baz
+ * @param {Object=} opt_baz
  * @return {boolean}
  */
 SimpleClass.prototype.fooMethod = function(foo, bar, opt_baz) {};

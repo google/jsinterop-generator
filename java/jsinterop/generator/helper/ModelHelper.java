@@ -43,6 +43,7 @@ import jsinterop.generator.model.LiteralExpression;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Method.Parameter;
 import jsinterop.generator.model.MethodInvocation;
+import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.ReturnStatement;
 import jsinterop.generator.model.Type;
@@ -257,6 +258,18 @@ public class ModelHelper {
         overload.getReturnType() == VOID
             ? new ExpressionStatement(delegation)
             : new ReturnStatement(delegation));
+  }
+
+  public static Expression callUncheckedCast(
+      Parameter originalParameter, Parameter overloadParameter) {
+    // will generate: Js.<$originalParameter.type>uncheckedCast($overloadParameter.name)
+    // We need to add the local type argument to ensure to call the original method.
+    return new MethodInvocation(
+        new TypeQualifier(PredefinedTypeReference.JS),
+        "uncheckedCast",
+        ImmutableList.of(OBJECT),
+        ImmutableList.of(new LiteralExpression(overloadParameter.getName())),
+        ImmutableList.of(originalParameter.getType()));
   }
 
   private ModelHelper() {}

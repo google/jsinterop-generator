@@ -17,13 +17,10 @@
 
 package jsinterop.generator.visitor;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Lists.cartesianProduct;
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toSet;
-import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -31,14 +28,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import jsinterop.generator.helper.ModelHelper;
-import jsinterop.generator.model.Expression;
-import jsinterop.generator.model.LiteralExpression;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Method.Parameter;
-import jsinterop.generator.model.MethodInvocation;
-import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.Type;
-import jsinterop.generator.model.TypeQualifier;
 import jsinterop.generator.model.TypeReference;
 import jsinterop.generator.model.UnionTypeReference;
 
@@ -105,7 +97,7 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
               method,
               (i, p) ->
                   new Parameter(p.getName(), parameterTypes.get(i), p.isVarargs(), p.isOptional()),
-              UnionTypeMethodParameterHandler::callUncheckedCast);
+              ModelHelper::callUncheckedCast);
 
       if (overloadingMethod != null) {
         overloadingMethods.add(overloadingMethod);
@@ -127,21 +119,6 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
 
   private boolean isParentInterfaceMethod(Method method) {
     return parentInterfaceMethodsStack.peek().contains(getOverrideKey(method));
-  }
-
-  private static Expression callUncheckedCast(
-      Parameter originalParameter, Parameter overloadParameter) {
-    checkArgument(originalParameter.getType() instanceof UnionTypeReference);
-
-    // Use an unchecked cast because we know the cast is safe.
-    // will generate: Js.<UnionTypeHelperType>uncheckedCast(parameterName)
-    // We need to add the local type argument to ensure to call the original method.
-    return new MethodInvocation(
-        new TypeQualifier(PredefinedTypeReference.JS),
-        "uncheckedCast",
-        ImmutableList.of(OBJECT),
-        ImmutableList.of(new LiteralExpression(overloadParameter.getName())),
-        ImmutableList.of(originalParameter.getType()));
   }
 
   /**

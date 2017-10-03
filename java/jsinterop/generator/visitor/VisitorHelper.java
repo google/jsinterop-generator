@@ -76,6 +76,8 @@ public final class VisitorHelper {
 
     new JsConstructorFnParameterVisitor().accept(program);
 
+    new ObjectParameterJsOverlayCreator().accept(program);
+
     new NamespaceAttributeRewriter().accept(program);
   }
 
