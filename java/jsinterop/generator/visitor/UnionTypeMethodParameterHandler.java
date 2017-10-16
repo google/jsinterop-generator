@@ -22,8 +22,6 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,43 +36,9 @@ import jsinterop.generator.model.UnionTypeReference;
  * This visitor will handle methods where union types are involved in the parameters by creating
  * methods overloading.
  */
-public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
-  private final Deque<Set<String>> parentInterfaceMethodsStack = new LinkedList<>();
-
+public class UnionTypeMethodParameterHandler extends AbstractJsOverlayMethodCreator {
   @Override
-  public boolean visit(Type type) {
-    parentInterfaceMethodsStack.push(getParentInterfacesMethodsWithUnionTypes(type));
-    return true;
-  }
-
-  private Set<String> getParentInterfacesMethodsWithUnionTypes(Type type) {
-    return getParentInterfaces(type, true)
-        .stream()
-        .flatMap(t -> t.getMethods().stream())
-        .map(UnionTypeMethodParameterHandler::getOverrideKey)
-        .collect(toSet());
-  }
-
-  private static String getOverrideKey(Method m) {
-    // The only way a class in closure or typescript can redefine a method from a parent interface
-    // is by adding optional parameters. Creating a key containing the name of the method and the
-    // nbr of parameters is enough to check if a method exists on a parent interface.
-    return m.getName() + "%" + m.getParameters().size();
-  }
-
-  @Override
-  public void endVisit(Type type) {
-    parentInterfaceMethodsStack.pop();
-  }
-
-  @Override
-  public boolean visit(Method method) {
-    // if the method are defined in a parent interfaces, default overloading methods will be created
-    // on that interface. These methods cannot be overridden, so we don't need to do anything here.
-    if (isParentInterfaceMethod(method)) {
-      return false;
-    }
-
+  protected boolean processMethod(Method method) {
     Type currentType = method.getEnclosingType();
 
     List<Method> overloadingMethods = new ArrayList<>();
@@ -115,10 +79,6 @@ public class UnionTypeMethodParameterHandler extends AbstractModelVisitor {
     }
 
     return false;
-  }
-
-  private boolean isParentInterfaceMethod(Method method) {
-    return parentInterfaceMethodsStack.peek().contains(getOverrideKey(method));
   }
 
   /**

@@ -35,8 +35,8 @@ import jsinterop.generator.model.TypeQualifier;
 import jsinterop.generator.model.TypeReference;
 
 /**
- * Visit method that takes {@code JsConstructorFn} as parameter and create a JsOverlay method
- * allowing end-users to call this method by passing a {@code java.lang.Class}.
+ * Creates a JsOverlay method that accepts {@code java.lang.Class} as parameter and delegate to
+ * existing native method that accepts {@code JsConstructorFn} so the API becomes Java friendly.
  *
  * <pre>
  *   public native void consumeConstructor(JsConstructorFn<Foo> ctor);
@@ -46,22 +46,23 @@ import jsinterop.generator.model.TypeReference;
  *   }
  * </pre>
  */
-public class JsConstructorFnParameterVisitor extends AbstractModelVisitor {
+public class JsConstructorFnParameterJsOverlayCreator extends AbstractJsOverlayMethodCreator {
   @Override
-  public boolean visit(Method method) {
+  protected boolean processMethod(Method method) {
     if (method.getKind() == CONSTRUCTOR) {
       return false;
     }
 
-    if (methodContainsJsConstructorFnReference(method)) {
-      method
-          .getEnclosingType()
-          .addMethod(
-              ModelHelper.createDelegatingOverlayMethod(
-                  method,
-                  JsConstructorFnParameterVisitor::toJavaLangClass,
-                  JsConstructorFnParameterVisitor::callAsJsConstructorFn));
+    Method overlayMethod =
+        ModelHelper.createDelegatingOverlayMethod(
+            method,
+            JsConstructorFnParameterJsOverlayCreator::toJavaLangClass,
+            JsConstructorFnParameterJsOverlayCreator::callAsJsConstructorFn);
+
+    if (overlayMethod != null) {
+      method.getEnclosingType().addMethod(overlayMethod);
     }
+
     return false;
   }
 
@@ -91,17 +92,6 @@ public class JsConstructorFnParameterVisitor extends AbstractModelVisitor {
         "asConstructorFn",
         ImmutableList.of(overloadParameter.getType()),
         ImmutableList.of(new LiteralExpression(overloadParameter.getName())));
-  }
-
-  private static boolean methodContainsJsConstructorFnReference(Method method) {
-    // We can replace JsConstructorFn type by Class type only when they are directly used as type of
-    // parameters. We don't support cases where the method uses a array of JsConstructorFn or
-    // other parametrized types (e.g. Map<JsConstructoFn<?>>)
-    return method
-        .getParameters()
-        .stream()
-        .map(Parameter::getType)
-        .anyMatch(JsConstructorFnParameterVisitor::isDirectJsConstructorReference);
   }
 
   private static boolean isDirectJsConstructorReference(TypeReference typeReference) {

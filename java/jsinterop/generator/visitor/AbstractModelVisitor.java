@@ -151,7 +151,7 @@ public abstract class AbstractModelVisitor implements ModelVisitor {
     return getParentInterfaces(type, false);
   }
 
-  protected List<Type> getParentInterfaces(Type type, boolean transitive) {
+  protected static List<Type> getParentInterfaces(Type type, boolean transitive) {
     Set<TypeReference> parentInterfaceReferences =
         type.isInterface() ? type.getInheritedTypes() : type.getImplementedTypes();
 

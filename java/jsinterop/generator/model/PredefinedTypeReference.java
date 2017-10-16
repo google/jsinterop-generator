@@ -44,9 +44,10 @@ public enum PredefinedTypeReference implements TypeReference {
       "JsFunction", null, "jsinterop.annotations.JsFunction", "Ljsinterop/annotations/JsFunction"),
   JS_OVERLAY(
       "JsOverlay", null, "jsinterop.annotations.JsOverlay", "Ljsinterop/annotations/JsOverlay"),
-  JS_ARRAY_LIKE("JsArrayLike", null, "jsinterop.base.JsArrayLike", "Ljsinterop/base/JsArrayLike"),
+  JS_ARRAY_LIKE(
+      "JsArrayLike", "IArrayLike", "jsinterop.base.JsArrayLike", "Ljsinterop/base/JsArrayLike"),
   JS_PROPERTY_MAP(
-      "JsPropertyMap", null, "jsinterop.base.JsPropertyMap", "Ljsinterop/base/JsPropertyMap"),
+      "JsPropertyMap", "IObject", "jsinterop.base.JsPropertyMap", "Ljsinterop/base/JsPropertyMap"),
   JS("Js", null, "jsinterop.base.Js", "Ljsinterop/base/Js"),
   ANY("Any", null, "jsinterop.base.Any", "Ljsinterop/base/Any"),
   JS_CONSTRUCTOR_FN(

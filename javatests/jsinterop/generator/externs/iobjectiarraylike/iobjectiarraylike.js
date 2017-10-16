@@ -50,9 +50,23 @@ Bar.prototype.asIObject = function() {};
  * is converted to JsPropertyMap and JsArrayLike
  * @param {IObject<string, string>} object
  * @param {IArrayLike<string>} arrayLike
+ * @param {IArrayLike<IArrayLike<string>>} doubleArrayLike
  * @return {undefined}
  */
-Bar.prototype.consumeIObjectAndIArrayLike = function(object, arrayLike) {};
+Bar.prototype.consumeIObjectAndIArrayLike = function(
+    object, arrayLike, doubleArrayLike) {};
+
+
+/**
+ * Test that type reference to IObject and IArrayLike in parameters of a method
+ * is converted to JsPropertyMap and JsArrayLike
+ * @param {Object} object
+ * @param {IArrayLike<string>} arrayLike
+ * @param {function(new:Bar, string)} ctor
+ * @return {undefined}
+ */
+Bar.prototype.consumeObjectIArrayLikeAndCtorFn = function(
+    object, arrayLike, ctor) {};
 
 /**
  * Test that type reference to IObject in field is converted to JsPropertyMap.

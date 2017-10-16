@@ -29,10 +29,10 @@ import jsinterop.generator.model.PredefinedTypeReference;
  * <p>We cannot convert native js Object reference to java.lang.Object because java.lang.Object
  * reference is transpiled by J2CL to any type '*'. That breaks closure type checking.
  */
-public class ObjectParameterJsOverlayCreator extends AbstractModelVisitor {
+public class ObjectParameterJsOverlayCreator extends AbstractJsOverlayMethodCreator {
 
   @Override
-  public boolean visit(Method method) {
+  protected boolean processMethod(Method method) {
     Method jsOverlayMethod =
         ModelHelper.createDelegatingOverlayMethod(
             method,

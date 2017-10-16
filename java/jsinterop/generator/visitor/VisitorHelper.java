@@ -74,7 +74,9 @@ public final class VisitorHelper {
 
     new ConstructorVisitor().accept(program);
 
-    new JsConstructorFnParameterVisitor().accept(program);
+    new JsConstructorFnParameterJsOverlayCreator().accept(program);
+
+    new JsArrayLikeParameterJsOverlayCreator().accept(program);
 
     new ObjectParameterJsOverlayCreator().accept(program);
 
