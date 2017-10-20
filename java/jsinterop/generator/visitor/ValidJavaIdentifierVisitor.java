@@ -41,28 +41,26 @@ import jsinterop.generator.model.Type;
 /** Ensure that all our java identifier are valid in Java. */
 public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
   private static final ImmutableSet<String> JAVA_RESERVERD_WORDS =
-      ImmutableSet.<String>builder()
-          .addAll(
-              Splitter.on(' ')
-                  .omitEmptyStrings()
-                  .split(
-                      "abstract continue new switch assert default goto package synchronized "
-                          + "boolean do if private this break double implements protected throw "
-                          + "byte else import public throws case enum instanceof return transient"
-                          + " catch extends int short try char final interface static void class "
-                          + "finally long strictfp volatile const float native super while null "
-                          + "true false"))
-          .build();
+      ImmutableSet.copyOf(
+          Splitter.on(' ')
+              .omitEmptyStrings()
+              .split(
+                  "abstract continue new switch assert default goto package synchronized "
+                      + "boolean do if private this break double implements protected throw "
+                      + "byte else import public throws case enum instanceof return transient"
+                      + " catch extends int short try char final interface static void class "
+                      + "finally long strictfp volatile const float native super while null "
+                      + "true false"));
 
-  private static final ImmutableSet<String> JAVA_LANG_CLASS_NAMES =
-      ImmutableSet.<String>builder()
-          .addAll(
-              Splitter.on(' ')
-                  .omitEmptyStrings()
-                  .split(
-                      "Boolean Byte Character Class Double Enum Float Integer Long Math Number "
-                          + "Object Short String StringBuffer StringBuilder"))
-          .build();
+  // TODO(b/67912344): add a logic driven by config file that remanes any entity.
+  private static final ImmutableSet<String> TYPES_TO_PREFIX =
+      ImmutableSet.copyOf(
+          Splitter.on(' ')
+              .omitEmptyStrings()
+              .split(
+                  "Array Boolean Byte Character Class Date Double Enum Error Float Integer Iterable"
+                      + " Iterator IteratorIterable IIterableResult Long Map Math Number Object"
+                      + " RegExp Set Short String StringBuffer StringBuilder WeakMap WeakSet"));
 
   // All types inherit automatically those methods and we want to avoid clash with javascript
   // methods having the same signature. See {@link #visit(Method)}
@@ -112,18 +110,19 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
 
   @Override
   public boolean visit(Type type) {
-    validEntityName(type, JS_TYPE, false);
+    if (!type.isExtern()) {
+      validEntityName(type, JS_TYPE, false);
 
-    String originalName = type.getName();
-    // in order to avoid Clash with java.lang classes.
-    String validName = escapeBasicJavaClassName(originalName);
+      String originalName = type.getName();
+      // in order to avoid Clash with java.lang classes.
+      String validName = maybeEscapeJavaClassName(originalName, type.getNativeFqn());
 
-    if (!validName.equals(originalName)) {
-      type.setName(validName);
+      if (!validName.equals(originalName)) {
+        type.setName(validName);
 
-      addAnnotationNameAttributeIfNotEmpty(type, originalName, JS_TYPE, false);
+        addAnnotationNameAttributeIfNotEmpty(type, originalName, JS_TYPE, false);
+      }
     }
-
     return true;
   }
 
@@ -175,8 +174,8 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
     }
   }
 
-  private String escapeBasicJavaClassName(String className) {
-    if (JAVA_LANG_CLASS_NAMES.contains(className)) {
+  private String maybeEscapeJavaClassName(String className, String nativeFqn) {
+    if (TYPES_TO_PREFIX.contains(nativeFqn)) {
       return "Js" + className;
     }
 

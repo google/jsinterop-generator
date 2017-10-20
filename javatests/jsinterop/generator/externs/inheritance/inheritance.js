@@ -4,15 +4,6 @@
  */
 
 /**
- * TODO(dramaix): should be part of a dependency
- * @constructor
- * @param {...*} args
- * @template T
- * @suppress {duplicate}
- */
-function Array(args) {}
-
-/**
  * @interface
  */
 function GreatParentInterface() {}
