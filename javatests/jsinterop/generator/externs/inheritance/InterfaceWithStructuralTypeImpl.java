@@ -95,7 +95,7 @@ public class InterfaceWithStructuralTypeImpl<V, U> implements InterfaceWithStruc
   }
 
   @JsFunction
-  public interface BarCallbackFn {
+  public interface BarFn {
     void onInvoke(boolean p0);
   }
 
@@ -128,14 +128,14 @@ public class InterfaceWithStructuralTypeImpl<V, U> implements InterfaceWithStruc
   }
 
   @JsProperty(name = "bar")
-  public static InterfaceWithStructuralTypeImpl.BarCallbackFn bar_STATIC;
+  public static InterfaceWithStructuralTypeImpl.BarFn bar_STATIC;
 
   public static native InterfaceWithStructuralTypeImpl.FooReturnType foo(
       InterfaceWithStructuralTypeImpl.FooFooType[][] foo);
 
-  public InterfaceWithStructuralType.BarCallbackFn bar;
+  public InterfaceWithStructuralType.BarFn bar;
 
-  public native void bar2(InterfaceWithStructuralType.Bar2BarUnionType<V, U> bar);
+  public native void bar2(InterfaceWithStructuralType.Bar2BarCallbackUnionType<V, U> bar);
 
   public native <U> void bar3(InterfaceWithStructuralType.Bar3Param1UnionType<U> param1, U param2);
 
@@ -207,8 +207,8 @@ public class InterfaceWithStructuralTypeImpl<V, U> implements InterfaceWithStruc
       InterfaceWithStructuralType.FooFooType[][] foo);
 
   @JsProperty
-  public native InterfaceWithStructuralType.BarCallbackFn getBar();
+  public native InterfaceWithStructuralType.BarFn getBar();
 
   @JsProperty
-  public native void setBar(InterfaceWithStructuralType.BarCallbackFn bar);
+  public native void setBar(InterfaceWithStructuralType.BarFn bar);
 }

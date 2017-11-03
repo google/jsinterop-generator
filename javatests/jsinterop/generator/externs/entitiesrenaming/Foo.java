@@ -31,5 +31,5 @@ public class Foo {
 
   public native void bar(Foo.BarBarType bar);
 
-  public native void foo(Foo.FooFooCallbackFn foo);
+  public native void foo(Foo.FooFooCallbackFn fooCallback);
 }

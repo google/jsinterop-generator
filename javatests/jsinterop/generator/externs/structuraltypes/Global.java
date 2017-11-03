@@ -27,11 +27,11 @@ public class Global {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Method1FooType {
     @JsFunction
-    public interface FooCallbackFn {
+    public interface FooFn {
       @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
       public interface P0Type {
         @JsOverlay
-        static Global.Method1FooType.FooCallbackFn.P0Type create() {
+        static Global.Method1FooType.FooFn.P0Type create() {
           return Js.uncheckedCast(JsPropertyMap.of());
         }
 
@@ -42,7 +42,7 @@ public class Global {
         void setBar(String bar);
       }
 
-      void onInvoke(Global.Method1FooType.FooCallbackFn.P0Type p0);
+      void onInvoke(Global.Method1FooType.FooFn.P0Type p0);
     }
 
     @JsOverlay
@@ -51,10 +51,10 @@ public class Global {
     }
 
     @JsProperty
-    Global.Method1FooType.FooCallbackFn getFoo();
+    Global.Method1FooType.FooFn getFoo();
 
     @JsProperty
-    void setFoo(Global.Method1FooType.FooCallbackFn foo);
+    void setFoo(Global.Method1FooType.FooFn foo);
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)

@@ -28,10 +28,10 @@ function SimpleInterface() {}
 
 /**
  * Test renaming in function type.
- * @param {function((function(string):undefined)):boolean} foo
+ * @param {function((function(string):undefined)):boolean} fooCallback
  * @return {undefined}
  */
-SimpleInterface.prototype.method = function(foo) {};
+SimpleInterface.prototype.method = function(fooCallback) {};
 
 
 /**

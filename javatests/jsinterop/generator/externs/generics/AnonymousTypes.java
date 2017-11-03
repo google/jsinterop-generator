@@ -56,7 +56,7 @@ public class AnonymousTypes<T> {
   }
 
   @JsFunction
-  public interface FunctionTypeWithGenericInReturnTypeFooCallbackFn<T> {
+  public interface FunctionTypeWithGenericInReturnTypeFooFn<T> {
     T onInvoke(boolean p0);
   }
 
@@ -108,10 +108,10 @@ public class AnonymousTypes<T> {
   public native <V, U> void foo(AnonymousTypes.FooFooType<V, U, T> foo);
 
   public native void functionTypeWithGenericInParameter(
-      AnonymousTypes.FunctionTypeWithGenericInParameterFooCallbackFn<T> foo);
+      AnonymousTypes.FunctionTypeWithGenericInParameterFooCallbackFn<T> fooCallback);
 
   public native void functionTypeWithGenericInReturnType(
-      AnonymousTypes.FunctionTypeWithGenericInReturnTypeFooCallbackFn<T> foo);
+      AnonymousTypes.FunctionTypeWithGenericInReturnTypeFooFn<T> foo);
 
   public native void typeLiteral(AnonymousTypes.TypeLiteralFooType<T> foo);
 

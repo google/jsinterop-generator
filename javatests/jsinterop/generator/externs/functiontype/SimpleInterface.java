@@ -1,8 +1,5 @@
 package jsinterop.generator.externs.functiontype;
 
-import java.lang.Double;
-import java.lang.Object;
-import java.lang.String;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -13,12 +10,12 @@ import jsinterop.base.Js;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public interface SimpleInterface {
   @JsFunction
-  public interface FooCallbackFn {
+  public interface FooFn {
     boolean onInvoke(String p0);
   }
 
   @JsFunction
-  public interface Method1CallbackFn {
+  public interface Method1Fn {
     boolean onInvoke(String p0);
   }
 
@@ -74,17 +71,17 @@ public interface SimpleInterface {
   AliasedFunctionType getBar();
 
   @JsProperty
-  SimpleInterface.FooCallbackFn getFoo();
+  SimpleInterface.FooFn getFoo();
 
-  void method(SimpleInterface.MethodFooCallbackFn foo);
+  void method(SimpleInterface.MethodFooCallbackFn fooCallback);
 
-  SimpleInterface.Method1CallbackFn method1(String foo);
+  SimpleInterface.Method1Fn method1(String foo);
 
   @JsProperty
   void setBar(AliasedFunctionType bar);
 
   @JsProperty
-  void setFoo(SimpleInterface.FooCallbackFn foo);
+  void setFoo(SimpleInterface.FooFn foo);
 
-  void withUnionType(SimpleInterface.WithUnionTypeFooCallbackFn foo);
+  void withUnionType(SimpleInterface.WithUnionTypeFooCallbackFn fooCallback);
 }

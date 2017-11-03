@@ -24,10 +24,10 @@ SimpleClass.prototype.bar;
 SimpleClass.prototype.foo;
 
 /**
- * @param {function(string):boolean} foo
+ * @param {function(string):boolean} fooCallback
  * @return {undefined}
  */
-SimpleClass.prototype.method = function(foo) {};
+SimpleClass.prototype.method = function(fooCallback) {};
 
 /**
  * @param {string} foo
@@ -50,10 +50,10 @@ SimpleInterface.prototype.bar;
 SimpleInterface.prototype.foo;
 
 /**
- * @param {function(string):boolean} foo
+ * @param {function(string):boolean} fooCallback
  * @return {undefined}
  */
-SimpleInterface.prototype.method = function(foo) {};
+SimpleInterface.prototype.method = function(fooCallback) {};
 
 /**
  * @param {string} foo
@@ -62,10 +62,10 @@ SimpleInterface.prototype.method = function(foo) {};
 SimpleInterface.prototype.method1 = function(foo) {};
 
 /**
- * @param {function((string|number)):boolean} foo
+ * @param {function((string|number)):boolean} fooCallback
  * @return {undefined}
  */
-SimpleInterface.prototype.withUnionType = function(foo) {};
+SimpleInterface.prototype.withUnionType = function(fooCallback) {};
 
 /**
  * test FunctionType used in variable, function(return type + parameters) of a
@@ -80,10 +80,10 @@ SimpleModule.bar;
 SimpleModule.foo;
 
 /**
- * @param {function(string):boolean} foo
+ * @param {function(string):boolean} fooCallback
  * @return {undefined}
  */
-SimpleModule.method = function(foo) {};
+SimpleModule.method = function(fooCallback) {};
 
 /**
  * @param {string} foo
@@ -109,11 +109,11 @@ var baz;
 var simpleClassCtor;
 
 /**
- * @param {function(string):boolean} foo
+ * @param {function(string):boolean} fooCallback
  * @param {function(new:SimpleClass)} ctor
  * @return {undefined}
  */
-function method(foo, ctor) {}
+function method(fooCallback, ctor) {}
 
 /**
  * @param {string} foo
@@ -123,17 +123,17 @@ function method1(foo) {}
 
 /**
  * test FunctionType in union type
- * @param {function(string)|string} foo
+ * @param {function(string)|string} fooCallback
  * @return {undefined}
  */
-function method2(foo) {}
+function method2(fooCallback) {}
 
 /**
  * test inner function type
- * @param {function(function():boolean):string} foo
+ * @param {function(function():boolean):string} fooCallback
  * @return {undefined}
  */
-function method3(foo) {}
+function method3(fooCallback) {}
 
 /**
  * test naming of function type when the name of parameter contains callback

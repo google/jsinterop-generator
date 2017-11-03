@@ -1,6 +1,5 @@
 package jsinterop.generator.externs.functiontype;
 
-import java.lang.String;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -8,12 +7,12 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class SimpleClass {
   @JsFunction
-  public interface FooCallbackFn {
+  public interface FooFn {
     boolean onInvoke(String p0);
   }
 
   @JsFunction
-  public interface Method1CallbackFn {
+  public interface Method1Fn {
     boolean onInvoke(String p0);
   }
 
@@ -23,9 +22,9 @@ public class SimpleClass {
   }
 
   public AliasedFunctionType bar;
-  public SimpleClass.FooCallbackFn foo;
+  public SimpleClass.FooFn foo;
 
-  public native void method(SimpleClass.MethodFooCallbackFn foo);
+  public native void method(SimpleClass.MethodFooCallbackFn fooCallback);
 
-  public native SimpleClass.Method1CallbackFn method1(String foo);
+  public native SimpleClass.Method1Fn method1(String foo);
 }

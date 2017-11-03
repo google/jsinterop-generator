@@ -73,11 +73,11 @@ Child.prototype.method3 = function(foo) {};
  * Test that we don't create conflicting methods overloads for union type where
  * raw generics are involved.
  * @param {(T|V)} foo
- * @param {function((T|V)):boolean} bar
+ * @param {function((T|V)):boolean} barCallback
  * @return {V}
  * @template T,V
  */
-Child.prototype.method4 = function(foo, bar) {};
+Child.prototype.method4 = function(foo, barCallback) {};
 
 /**
  * @interface

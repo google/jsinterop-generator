@@ -174,10 +174,10 @@ InterfaceWithStructuralType.prototype.baz = function(baz, baz2) {};
 
 /**
  * test union type in inheritance
- * @param {(function(V):U|string)}  bar
+ * @param {(function(V):U|string)}  barCallback
  * @return {undefined}
  */
-InterfaceWithStructuralType.prototype.bar2 = function(bar) {};
+InterfaceWithStructuralType.prototype.bar2 = function(barCallback) {};
 
 /**
  * @template U

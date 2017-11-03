@@ -41,7 +41,7 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
   private static final ImmutableList<String> RECORD_TYPE_SUFFIXES_TO_REMOVE =
       ImmutableList.of("type");
   private static final ImmutableList<String> FUNCTION_TYPE_SUFFIXES_TO_REMOVE =
-      ImmutableList.of("callback", "callbackfn", "fn");
+      ImmutableList.of("fn");
   private static final Pattern THIS_TYPE_DEFINITION = Pattern.compile("\\(this:[a-zA-Z_]+, *");
 
   private String currentNameForRecordType;
@@ -188,7 +188,6 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
   }
 
   private void initNameForFunctionType(String baseName) {
-    currentNameForFunctionType =
-        addSuffix(baseName, "CallbackFn", FUNCTION_TYPE_SUFFIXES_TO_REMOVE);
+    currentNameForFunctionType = addSuffix(baseName, "Fn", FUNCTION_TYPE_SUFFIXES_TO_REMOVE);
   }
 }

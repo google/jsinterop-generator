@@ -31,11 +31,11 @@ public interface SimpleDictionaryType {
   }
 
   @JsFunction
-  public interface BazCallbackFn {
+  public interface BazFn {
     @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface P0Type {
       @JsOverlay
-      static SimpleDictionaryType.BazCallbackFn.P0Type create() {
+      static SimpleDictionaryType.BazFn.P0Type create() {
         return Js.uncheckedCast(JsPropertyMap.of());
       }
 
@@ -52,7 +52,7 @@ public interface SimpleDictionaryType {
       void setFoo(String foo);
     }
 
-    void onInvoke(SimpleDictionaryType.BazCallbackFn.P0Type p0);
+    void onInvoke(SimpleDictionaryType.BazFn.P0Type p0);
   }
 
   @JsOverlay
@@ -64,7 +64,7 @@ public interface SimpleDictionaryType {
   SimpleDictionaryType.BarFieldType getBar();
 
   @JsProperty
-  SimpleDictionaryType.BazCallbackFn getBaz();
+  SimpleDictionaryType.BazFn getBaz();
 
   @JsProperty
   double getFoo();
@@ -73,7 +73,7 @@ public interface SimpleDictionaryType {
   void setBar(SimpleDictionaryType.BarFieldType bar);
 
   @JsProperty
-  void setBaz(SimpleDictionaryType.BazCallbackFn baz);
+  void setBaz(SimpleDictionaryType.BazFn baz);
 
   @JsProperty
   void setFoo(double foo);

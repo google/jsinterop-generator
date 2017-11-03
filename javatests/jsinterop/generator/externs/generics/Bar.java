@@ -91,7 +91,7 @@ public interface Bar<U, T, V> {
 
   <V> V barMethod2(Bar.BarMethod2ParamType<V, T> param);
 
-  <Z, Y> void barMethod3(Bar.BarMethod3FooCallbackFn<Z, Y, T, V> foo);
+  <Z, Y> void barMethod3(Bar.BarMethod3FooCallbackFn<Z, Y, T, V> fooCallback);
 
   @JsProperty
   InterfaceWithGeneric<Bar.BarFieldType<T>> getBar();

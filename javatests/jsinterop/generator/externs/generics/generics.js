@@ -73,11 +73,11 @@ Bar.prototype.barMethod2 = function(param) {};
 
 /**
  * Test generics used in structural type enclosed in another structural type.
- * @param {function(V):{foo:T, bar: Y, baz: Z}} foo
+ * @param {function(V):{foo:T, bar: Y, baz: Z}} fooCallback
  * @return {undefined}
  * @template Z,Y
  */
-Bar.prototype.barMethod3 = function(foo) {};
+Bar.prototype.barMethod3 = function(fooCallback) {};
 
 /**
  * test generics used in anonymous types
@@ -100,10 +100,11 @@ AnonymousTypes.bar = function(foo) {};
 AnonymousTypes.prototype.typeLiteral = function(foo) {};
 
 /**
- * @param {function(T):boolean} foo
+ * @param {function(T):boolean} fooCallback
  * @return {undefined}
  */
-AnonymousTypes.prototype.functionTypeWithGenericInParameter = function(foo) {};
+AnonymousTypes.prototype.functionTypeWithGenericInParameter = function(
+    fooCallback) {};
 
 /**
  * @param {(T|string)} foo

@@ -16,10 +16,9 @@ public interface InterfaceWithStructuralType<U, V> {
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface Bar2BarUnionType<U, V> {
+  public interface Bar2BarCallbackUnionType<U, V> {
     @JsOverlay
-    // TODO(dramaix): could be: static <V,U> Bar2BarUnionType<V,U> of(Object o);
-    static InterfaceWithStructuralType.Bar2BarUnionType of(Object o) {
+    static InterfaceWithStructuralType.Bar2BarCallbackUnionType of(Object o) {
       return Js.cast(o);
     }
 
@@ -68,7 +67,7 @@ public interface InterfaceWithStructuralType<U, V> {
   }
 
   @JsFunction
-  public interface BarCallbackFn {
+  public interface BarFn {
     void onInvoke(boolean p0);
   }
 
@@ -141,15 +140,15 @@ public interface InterfaceWithStructuralType<U, V> {
   }
 
   @JsOverlay
-  default void bar2(InterfaceWithStructuralType.Bar2BarCallbackFn<U, V> bar) {
-    bar2(Js.<InterfaceWithStructuralType.Bar2BarUnionType<U, V>>uncheckedCast(bar));
+  default void bar2(InterfaceWithStructuralType.Bar2BarCallbackFn<U, V> barCallback) {
+    bar2(Js.<InterfaceWithStructuralType.Bar2BarCallbackUnionType<U, V>>uncheckedCast(barCallback));
   }
 
-  void bar2(InterfaceWithStructuralType.Bar2BarUnionType<U, V> bar);
+  void bar2(InterfaceWithStructuralType.Bar2BarCallbackUnionType<U, V> barCallback);
 
   @JsOverlay
-  default void bar2(String bar) {
-    bar2(Js.<InterfaceWithStructuralType.Bar2BarUnionType<U, V>>uncheckedCast(bar));
+  default void bar2(String barCallback) {
+    bar2(Js.<InterfaceWithStructuralType.Bar2BarCallbackUnionType<U, V>>uncheckedCast(barCallback));
   }
 
   <U> void bar3(InterfaceWithStructuralType.Bar3Param1UnionType<U> param1, U param2);
@@ -171,8 +170,8 @@ public interface InterfaceWithStructuralType<U, V> {
   InterfaceWithStructuralType.FooReturnType foo(InterfaceWithStructuralType.FooFooType[][] foo);
 
   @JsProperty
-  InterfaceWithStructuralType.BarCallbackFn getBar();
+  InterfaceWithStructuralType.BarFn getBar();
 
   @JsProperty
-  void setBar(InterfaceWithStructuralType.BarCallbackFn bar);
+  void setBar(InterfaceWithStructuralType.BarFn bar);
 }
