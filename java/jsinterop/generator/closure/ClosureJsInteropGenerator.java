@@ -17,7 +17,6 @@ package jsinterop.generator.closure;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.javascript.jscomp.CompilerOptions.LanguageMode.ECMASCRIPT5;
-import static com.google.javascript.jscomp.CompilerOptions.LanguageMode.ECMASCRIPT_2015;
 import static java.io.File.separatorChar;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -163,7 +162,6 @@ class ClosureJsInteropGenerator {
   private CompilerOptions createCompilerOptions() {
     CompilerOptions options = new CompilerOptions();
 
-    options.setLanguage(ECMASCRIPT_2015);
     options.setLanguageOut(ECMASCRIPT5);
     options.setChecksOnly(true);
     options.setStrictModeInput(true);
