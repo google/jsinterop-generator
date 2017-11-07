@@ -156,15 +156,16 @@ public class Global {
   public static AliasedFunctionType bar;
   public static Global.BazFn[] baz;
   public static Global.FooFn foo;
-  public static JsConstructorFn<SimpleClass> simpleClassCtor;
+  public static JsConstructorFn<? extends SimpleClass> simpleClassCtor;
 
   @JsOverlay
-  public static final void method(Global.MethodFooCallbackFn fooCallback, Class<SimpleClass> ctor) {
+  public static final void method(
+      Global.MethodFooCallbackFn fooCallback, Class<? extends SimpleClass> ctor) {
     method(fooCallback, Js.asConstructorFn(ctor));
   }
 
   public static native void method(
-      Global.MethodFooCallbackFn fooCallback, JsConstructorFn<SimpleClass> ctor);
+      Global.MethodFooCallbackFn fooCallback, JsConstructorFn<? extends SimpleClass> ctor);
 
   public static native Global.Method1Fn method1(String foo);
 

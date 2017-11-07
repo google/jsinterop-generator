@@ -140,7 +140,8 @@ public interface InterfaceWithStructuralType<U, V> {
   }
 
   @JsOverlay
-  default void bar2(InterfaceWithStructuralType.Bar2BarCallbackFn<U, V> barCallback) {
+  default void bar2(
+      InterfaceWithStructuralType.Bar2BarCallbackFn<? extends U, ? super V> barCallback) {
     bar2(Js.<InterfaceWithStructuralType.Bar2BarCallbackUnionType<U, V>>uncheckedCast(barCallback));
   }
 

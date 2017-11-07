@@ -54,6 +54,7 @@ import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 import jsinterop.generator.model.TypeVariableReference;
 import jsinterop.generator.model.UnionTypeReference;
+import jsinterop.generator.model.WildcardTypeReference;
 
 /** Implementation of {@link AbstractTypeRegistry} specific to closure. */
 public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
@@ -134,9 +135,11 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
     @Override
     public TypeReference caseFunctionType(FunctionType type) {
       if (type.isConstructor() && type.getDisplayName() == null) {
+        // We use upper bounded wildcard type because constructor function are always producers.
         return new ParametrizedTypeReference(
             PredefinedTypeReference.JS_CONSTRUCTOR_FN,
-            ImmutableList.of(visit(type.getTypeOfThis())));
+            ImmutableList.of(
+                WildcardTypeReference.createWildcardUpperBound(visit(type.getTypeOfThis()))));
       }
       return new JavaTypeReference(checkNotNull(getJavaType(type)));
     }

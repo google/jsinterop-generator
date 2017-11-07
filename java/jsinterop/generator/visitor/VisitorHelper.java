@@ -41,7 +41,8 @@ public final class VisitorHelper {
 
     new UnionTypeMethodParameterHandler().accept(program);
 
-    new UnionTypeHelperTypeCreator().accept(program);
+    UnionTypeHelperTypeCreator unionTypeHelperTypeCreator = new UnionTypeHelperTypeCreator();
+    unionTypeHelperTypeCreator.accept(program);
 
     // These 2 visitors below have to visit our model until no more changes are made.
     // This is because inner types can refer to other inner types. Fixing one inner type has impact
@@ -73,6 +74,8 @@ public final class VisitorHelper {
     new MembersClassCleaner().accept(program);
 
     new ConstructorVisitor().accept(program);
+
+    new WildcardTypeCreator(unionTypeHelperTypeCreator.getUnionTypeHelperTypes()).accept(program);
 
     new JsConstructorFnParameterJsOverlayCreator().accept(program);
 

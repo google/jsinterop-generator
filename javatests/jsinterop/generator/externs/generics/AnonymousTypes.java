@@ -108,10 +108,10 @@ public class AnonymousTypes<T> {
   public native <V, U> void foo(AnonymousTypes.FooFooType<V, U, T> foo);
 
   public native void functionTypeWithGenericInParameter(
-      AnonymousTypes.FunctionTypeWithGenericInParameterFooCallbackFn<T> fooCallback);
+      AnonymousTypes.FunctionTypeWithGenericInParameterFooCallbackFn<? super T> fooCallback);
 
   public native void functionTypeWithGenericInReturnType(
-      AnonymousTypes.FunctionTypeWithGenericInReturnTypeFooFn<T> foo);
+      AnonymousTypes.FunctionTypeWithGenericInReturnTypeFooFn<? extends T> foo);
 
   public native void typeLiteral(AnonymousTypes.TypeLiteralFooType<T> foo);
 

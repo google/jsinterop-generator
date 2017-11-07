@@ -46,6 +46,7 @@ import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeQualifier;
 import jsinterop.generator.model.TypeReference;
 import jsinterop.generator.model.TypeVariableReference;
+import jsinterop.generator.model.WildcardTypeReference;
 
 /** CodeWriter is used to generate basic piece of java code. */
 // TODO(b/34251635): rewrite the code writing process as a visitor that visit the model. That will
@@ -212,6 +213,14 @@ public class CodeWriter {
 
       if (!parametrizedTypeReference.getActualTypeArguments().isEmpty()) {
         emitGenerics(parametrizedTypeReference.getActualTypeArguments(), emitConstraint);
+      }
+    } else if (typeReference instanceof WildcardTypeReference) {
+      WildcardTypeReference wildcardTypeReference = (WildcardTypeReference) typeReference;
+      emit("?");
+      if (wildcardTypeReference.getLowerBound() != null) {
+        emit(" super ").emitTypeReference(wildcardTypeReference.getLowerBound());
+      } else if (wildcardTypeReference.getUpperBound() != null) {
+        emit(" extends ").emitTypeReference(wildcardTypeReference.getUpperBound());
       }
     } else {
       // Due to a bug in javac with import of inner type of inner type, we don't create import for

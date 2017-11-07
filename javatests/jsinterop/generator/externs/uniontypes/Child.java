@@ -560,7 +560,8 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   }
 
   public native <T, V> V method4(
-      Child.Method4FooUnionType<T, V> foo, Child.Method4BarCallbackFn<T, V> barCallback);
+      Child.Method4FooUnionType<T, V> foo,
+      Child.Method4BarCallbackFn<? super T, ? super V> barCallback);
 
   public native Object parentMethod(ParentInterface.ParentMethodFooUnionType foo);
 

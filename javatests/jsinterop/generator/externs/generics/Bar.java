@@ -89,9 +89,63 @@ public interface Bar<U, T, V> {
     Bar.BarMethod3FooCallbackFn.ReturnType<Z, Y, T> onInvoke(V p0);
   }
 
+  @JsFunction
+  public interface BarMethod4FooCallbackFn<U> {
+    U onInvoke(U p0);
+  }
+
+  @JsFunction
+  public interface BarMethod5FooCallbackFn<U, T> {
+    @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+    public interface P2UnionType<T> {
+      @JsOverlay
+      static Bar.BarMethod5FooCallbackFn.P2UnionType of(Object o) {
+        return Js.cast(o);
+      }
+
+      @JsOverlay
+      default String asString() {
+        return Js.asString(this);
+      }
+
+      @JsOverlay
+      default T asT() {
+        return Js.cast(this);
+      }
+
+      @JsOverlay
+      default boolean isString() {
+        return (Object) this instanceof String;
+      }
+    }
+
+    void onInvoke(U p0, U[] p1, Bar.BarMethod5FooCallbackFn.P2UnionType<T> p2);
+
+    @JsOverlay
+    default void onInvoke(U p0, U[] p1, String p2) {
+      onInvoke(p0, p1, Js.<Bar.BarMethod5FooCallbackFn.P2UnionType<T>>uncheckedCast(p2));
+    }
+
+    @JsOverlay
+    default void onInvoke(U p0, U[] p1, T p2) {
+      onInvoke(p0, p1, Js.<Bar.BarMethod5FooCallbackFn.P2UnionType<T>>uncheckedCast(p2));
+    }
+  }
+
+  @JsFunction
+  public interface BarMethod6FooCallbackFn<U, T> {
+    InterfaceWithGeneric<T> onInvoke(U p0, InterfaceWithGeneric<U> p1);
+  }
+
   <V> V barMethod2(Bar.BarMethod2ParamType<V, T> param);
 
-  <Z, Y> void barMethod3(Bar.BarMethod3FooCallbackFn<Z, Y, T, V> fooCallback);
+  <Z, Y> void barMethod3(Bar.BarMethod3FooCallbackFn<Z, Y, T, ? super V> fooCallback);
+
+  void barMethod4(Bar.BarMethod4FooCallbackFn<U> fooCallback);
+
+  void barMethod5(Bar.BarMethod5FooCallbackFn<? super U, ? super T> fooCallback);
+
+  void barMethod6(Bar.BarMethod6FooCallbackFn<U, T> fooCallback);
 
   @JsProperty
   InterfaceWithGeneric<Bar.BarFieldType<T>> getBar();

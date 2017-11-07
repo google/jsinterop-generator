@@ -33,12 +33,14 @@ import static jsinterop.generator.model.PredefinedTypeReference.JS_PROPERTY_MAP;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Streams;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.IdentityHashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.CastExpression;
@@ -66,8 +68,12 @@ import jsinterop.generator.model.UnionTypeReference;
 public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
   private final IdentityHashMap<UnionTypeReference, Type> typeHelperByUnionTypeReference =
       new IdentityHashMap<>();
-  private final Deque<Type> currentType = new LinkedList<>();
-  private final Deque<String> currentNameStack = new LinkedList<>();
+  private final Deque<Type> currentType = new ArrayDeque<>();
+  private final Deque<String> currentNameStack = new ArrayDeque<>();
+
+  public Set<Type> getUnionTypeHelperTypes() {
+    return ImmutableSet.copyOf(typeHelperByUnionTypeReference.values());
+  }
 
   @Override
   public boolean visit(Type type) {

@@ -80,6 +80,28 @@ Bar.prototype.barMethod2 = function(param) {};
 Bar.prototype.barMethod3 = function(fooCallback) {};
 
 /**
+ * Test wildcard type: TypeParameter used in return type and parameter should
+ * not use wildcardtype.
+ * @param {function(U):U} fooCallback
+ * @return {undefined}
+ */
+Bar.prototype.barMethod4 = function(fooCallback) {};
+
+/**
+ * Test wildcard type: Array asd union type are considered as direct reference.
+ * @param {function(U, Array<U>, (T|string)):undefined} fooCallback
+ * @return {undefined}
+ */
+Bar.prototype.barMethod5 = function(fooCallback) {};
+
+/**
+ * Test wildcard type: indirect reference don't create wildcard type.
+ * @param {function(U, InterfaceWithGeneric<U>):InterfaceWithGeneric<T>} fooCallback
+ * @return {undefined}
+ */
+Bar.prototype.barMethod6 = function(fooCallback) {};
+
+/**
  * test generics used in anonymous types
  * @constructor
  * @template T

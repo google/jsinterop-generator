@@ -35,48 +35,48 @@ public class Bar implements JsArrayLike<String> {
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      JsObject object, JsArrayLike<String> arrayLike, Class<Bar> ctor) {
+      JsObject object, JsArrayLike<String> arrayLike, Class<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(object, arrayLike, Js.asConstructorFn(ctor));
   }
 
   public native void consumeObjectIArrayLikeAndCtorFn(
-      JsObject object, JsArrayLike<String> arrayLike, JsConstructorFn<Bar> ctor);
+      JsObject object, JsArrayLike<String> arrayLike, JsConstructorFn<? extends Bar> ctor);
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      JsObject object, String[] arrayLike, Class<Bar> ctor) {
+      JsObject object, String[] arrayLike, Class<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(
         object, Js.<JsArrayLike<String>>uncheckedCast(arrayLike), ctor);
   }
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      JsObject object, String[] arrayLike, JsConstructorFn<Bar> ctor) {
+      JsObject object, String[] arrayLike, JsConstructorFn<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(
         object, Js.<JsArrayLike<String>>uncheckedCast(arrayLike), ctor);
   }
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      Object object, JsArrayLike<String> arrayLike, Class<Bar> ctor) {
+      Object object, JsArrayLike<String> arrayLike, Class<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(Js.<JsObject>uncheckedCast(object), arrayLike, ctor);
   }
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      Object object, JsArrayLike<String> arrayLike, JsConstructorFn<Bar> ctor) {
+      Object object, JsArrayLike<String> arrayLike, JsConstructorFn<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(Js.<JsObject>uncheckedCast(object), arrayLike, ctor);
   }
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      Object object, String[] arrayLike, Class<Bar> ctor) {
+      Object object, String[] arrayLike, Class<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(Js.<JsObject>uncheckedCast(object), arrayLike, ctor);
   }
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      Object object, String[] arrayLike, JsConstructorFn<Bar> ctor) {
+      Object object, String[] arrayLike, JsConstructorFn<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(Js.<JsObject>uncheckedCast(object), arrayLike, ctor);
   }
 }
