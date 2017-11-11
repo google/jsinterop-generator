@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 /** Options for the closure jsinterop generator. */
 @AutoValue
 public abstract class Options {
-
   @AutoValue.Builder
   abstract static class Builder {
     abstract Builder outputJarFile(String outputJarFile);
@@ -47,6 +46,8 @@ public abstract class Options {
     abstract Builder nameMappingFiles(List<String> nameMappingFiles);
 
     abstract Builder integerEntitiesFiles(List<String> integerMappingFiles);
+
+    abstract Builder wildcardTypesFiles(List<String> wildcardTypesFiles);
 
     abstract Options build();
   }
@@ -78,6 +79,8 @@ public abstract class Options {
   public abstract List<String> getNameMappingFiles();
 
   public abstract List<String> getIntegerEntitiesFiles();
+
+  public abstract List<String> getWildcardTypesFiles();
 
   static Builder builder() {
     return new AutoValue_Options.Builder();

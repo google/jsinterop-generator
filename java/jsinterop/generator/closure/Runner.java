@@ -69,10 +69,19 @@ public class Runner {
   List<String> nameMappingFilePaths = new ArrayList<>();
 
   @Option(
+    name = "--wildcard_types_file",
+    usage =
+        "File containing a list of key/value where the key is the"
+            + " fully qualify name of the type parameter and the value is the kind of wildcard type"
+            + "to use. Possible value: SUPER and EXTENDS"
+  )
+  List<String> wildcardTypesFiles = new ArrayList<>();
+
+  @Option(
     name = "--integer_entities_file",
     usage =
-        "File containing the list of entities typed as number and need to be converted to integer "
-            + "instead of double. The entity is represented by its fqn."
+        "File containing the list of entities typed as number and need to be converted to integer"
+            + " instead of double. The entity is represented by its fqn."
   )
   List<String> integerEntitiesFiles = new ArrayList<>();
 
@@ -94,6 +103,7 @@ public class Runner {
             .dependencyMappingFiles(dependencyMappingFilePaths)
             .nameMappingFiles(nameMappingFilePaths)
             .integerEntitiesFiles(integerEntitiesFiles)
+            .wildcardTypesFiles(wildcardTypesFiles)
             .dependencies(
                 dependencyFilePaths.stream().map(SourceFile::fromFile).collect(toImmutableList()))
             .sources(sourceFilePaths.stream().map(SourceFile::fromFile).collect(toImmutableList()))

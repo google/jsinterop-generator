@@ -101,6 +101,7 @@ def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
   arguments += ["--dependency_mapping_file=%s" % f.path for f in dep_types_mapping_files]
   arguments += ["--name_mapping_file=%s" % f.path for f in  names_mapping_files]
   arguments += ["--integer_entities_file=%s" % f.path for f in  ctx.files.integer_entities_files]
+  arguments += ["--wildcard_types_file=%s" % f.path for f in  ctx.files.wildcard_types_files]
 
   if ctx.attr.debug:
     arguments += ["--debug_mode"]
@@ -110,8 +111,11 @@ def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
 
   arguments += ["%s" % f.path for f in srcs]
 
+  inputs = srcs + deps_srcs + dep_types_mapping_files + names_mapping_files
+  inputs += ctx.files.integer_entities_files + ctx.files.wildcard_types_files
+
   ctx.action(
-      inputs = srcs + deps_srcs + dep_types_mapping_files + names_mapping_files + ctx.files.integer_entities_files,
+      inputs = inputs,
       outputs=[ctx.outputs._generated_jar, types_mapping_file],
       executable = ctx.executable._closure_generator,
       progress_message = "Generating jsinterop classes from extern closure files",
@@ -195,6 +199,7 @@ _jsinterop_generator = rule(
         "extension_type_prefix": attr.string(),
         "name_mapping_files": attr.label_list(allow_files = True),
         "integer_entities_files": attr.label_list(allow_files = True),
+        "wildcard_types_files": attr.label_list(allow_files = True),
         "use_bean_convention": attr.bool(),
         "debug": attr.bool(),
         "conversion_mode": attr.string(),
@@ -245,6 +250,7 @@ def jsinterop_generator(
     extension_type_prefix = None,
     name_mapping_files = [],
     integer_entities_files = [],
+    wildcard_types_files = [],
     use_bean_convention = True,
     package_prefix = None,
     generate_j2cl_library = True,
@@ -301,6 +307,7 @@ def jsinterop_generator(
         extension_type_prefix = extension_type_prefix,
         name_mapping_files = name_mapping_files,
         integer_entities_files = integer_entities_files,
+        wildcard_types_files = wildcard_types_files,
         use_bean_convention = use_bean_convention,
         # TODO(dramaix): replace it by a blaze flag
         debug = False,

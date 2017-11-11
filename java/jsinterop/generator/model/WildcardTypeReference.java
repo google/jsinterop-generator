@@ -78,7 +78,7 @@ public class WildcardTypeReference implements TypeReference {
     this.upperBound = upperBound;
   }
 
-  private TypeReference getBound() {
+  public TypeReference getBound() {
     return (lowerBound != null) ? lowerBound : (upperBound != null) ? upperBound : OBJECT;
   }
 

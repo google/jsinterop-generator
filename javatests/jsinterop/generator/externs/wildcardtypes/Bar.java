@@ -1,0 +1,15 @@
+package jsinterop.generator.externs.wildcardtypes;
+
+import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public interface Bar<U, T, V> {
+  @JsFunction
+  public interface BarCallbackFn<U, T, V> {
+    void onInvoke(U p0, T p1, V p2);
+  }
+
+  void bar(Bar.BarCallbackFn<? super U, T, ? extends V> callback);
+}

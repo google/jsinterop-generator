@@ -1,0 +1,5 @@
+jsinterop.generator.externs.wildcardtypes.Foo.foo.foo#0=SUPER
+jsinterop.generator.externs.wildcardtypes.Foo.foo.foo#2=EXTENDS
+jsinterop.generator.externs.wildcardtypes.Foo.bar.bar#0=SUPER
+jsinterop.generator.externs.wildcardtypes.Bar.bar.callback#1=NONE
+jsinterop.generator.externs.wildcardtypes.Bar.bar.callback#2=EXTENDS

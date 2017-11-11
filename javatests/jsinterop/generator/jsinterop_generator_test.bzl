@@ -28,6 +28,7 @@ def jsinterop_generator_test(
     conversion_mode = "closure",
     j2cl_test_externs_list = [],
     integer_entities_files = [],
+    wildcard_types_files = [],
     generate_j2cl_build_test = None,
     ):
 
@@ -46,6 +47,7 @@ def jsinterop_generator_test(
       conversion_mode = conversion_mode,
       j2cl_test_externs_list = j2cl_test_externs_list,
       integer_entities_files = integer_entities_files,
+      wildcard_types_files = wildcard_types_files,
       generate_j2cl_build_test = generate_j2cl_build_test,
   )
 

@@ -155,6 +155,8 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
 
   public void setParameters(List<Parameter> parameters) {
     this.parameters = parameters;
+
+    parameters.forEach(m -> m.setEnclosingMethod(this));
   }
 
   public void clearParameters() {

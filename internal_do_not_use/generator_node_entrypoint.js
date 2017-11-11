@@ -37,6 +37,12 @@ flags.option('--output <file>', 'Output file path')
             'converted to integer instead of double. The entity is ' +
             'represented by its fqn.',
         __collect, [])
+    .option(
+        '--wildcard_types_file <file>',
+        'File containing a list of key/value where the key is the fully ' +
+            'qualify name of the type parameter and the value is the kind of ' +
+            'wildcard type to use. Possible value: SUPER and EXTENDS',
+        __collect, [])
     .option('--output_dependency_file <file>', 'Output dependency file path')
     .parse(process.argv);
 
@@ -50,6 +56,7 @@ const config = {
   'depsTypesMapping': flags.dependency_mapping_file,
   'integerEntities': flags.integer_entities_file,
   'outputDependencyFile': flags.output_dependency_file,
+  'wildcardTypesFiles': flags.wildcard_types_file,
 };
 
 // arrays containing paths to d.ts files.

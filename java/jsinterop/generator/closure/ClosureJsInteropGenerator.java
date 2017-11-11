@@ -85,7 +85,8 @@ class ClosureJsInteropGenerator {
     VisitorHelper.finalizeJavaProgram(
         javaProgram,
         options.isBeanConventionUsed(),
-        readListFiles(options.getIntegerEntitiesFiles()));
+        readListFiles(options.getIntegerEntitiesFiles()),
+        readKeyValueFiles(options.getWildcardTypesFiles()));
   }
 
   private void generateJarFile(Program javaProgram) {

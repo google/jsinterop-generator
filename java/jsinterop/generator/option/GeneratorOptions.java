@@ -44,6 +44,9 @@ public class GeneratorOptions {
   @JsProperty(name = "integerEntities")
   public native String[] integerEntities();
 
+  @JsProperty(name = "wildcardTypesFiles")
+  public native String[] wildcardTypesFiles();
+
   @JsProperty
   public native String getOutputDependencyFile();
 }
