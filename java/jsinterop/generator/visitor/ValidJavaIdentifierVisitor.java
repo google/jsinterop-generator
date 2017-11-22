@@ -19,6 +19,7 @@ package jsinterop.generator.visitor;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static jsinterop.generator.model.AnnotationType.JS_METHOD;
+import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
 import static jsinterop.generator.model.AnnotationType.JS_PROPERTY;
 import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
@@ -27,9 +28,9 @@ import static jsinterop.generator.model.PredefinedTypeReference.LONG;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
 import java.util.List;
 import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.Entity;
@@ -62,15 +63,18 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
                       + " Iterator IteratorIterable IIterableResult Long Map Math Number Object"
                       + " RegExp Set Short String StringBuffer StringBuilder WeakMap WeakSet"));
 
-  // All types inherit automatically those methods and we want to avoid clash with javascript
-  // methods having the same signature. See {@link #visit(Method)}
-  private static final ImmutableSet<Method> OBJECT_METHODS =
+  // 1. In Javascript, static and instance method can have the same signature. This is invalid in
+  // Java. To avoid to conflict with instance methods defined on java.lang.Object, we need to detect
+  // static methods with the same signature and rename them.
+  // 2. We rename  also instance methods that conflict with those on java.lang.Object in order to
+  // to avoid confusion and potential compile errors due to override of final method.
+  private static final ImmutableSet<Method> OBJECT_METHODS_TO_RENAME =
       ImmutableSet.<Method>builder()
           .addAll(methods("getClass", Lists.<Method.Parameter>newArrayList()))
           .addAll(methods("hashCode", Lists.<Method.Parameter>newArrayList()))
           .addAll(methods("equals", newArrayList(new Method.Parameter("o", OBJECT, false, false))))
-          .addAll(methods("clone", Lists.<Method.Parameter>newArrayList()))
           .addAll(methods("toString", Lists.<Method.Parameter>newArrayList()))
+          .addAll(methods("clone", Lists.<Method.Parameter>newArrayList()))
           .addAll(methods("notify", Lists.<Method.Parameter>newArrayList()))
           .addAll(methods("notifyAll", Lists.<Method.Parameter>newArrayList()))
           .addAll(methods("wait", Lists.<Method.Parameter>newArrayList()))
@@ -82,30 +86,23 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
                   newArrayList(
                       new Method.Parameter("timeout", LONG, false, false),
                       new Method.Parameter("nanos", INT, false, false))))
-          .addAll(methods("finalize", Lists.<Method.Parameter>newArrayList()))
+          .addAll(methods("finalize", Lists.newArrayList()))
           .build();
 
   private static List<Method> methods(String name, List<Method.Parameter> parameterList) {
-    List<Method> methods = new ArrayList<>();
+    return ImmutableList.of(method(name, parameterList, false), method(name, parameterList, true));
+  }
 
+  private static Method method(
+      String name, List<Method.Parameter> parameterList, boolean isStatic) {
     Method method = new Method();
     method.setName(name);
     for (Method.Parameter parameter : parameterList) {
-      method.addParameter(parameter);
+      method.addParameter(Parameter.from(parameter));
     }
+    method.setStatic(isStatic);
 
-    // We don't need to include it since it is inherited from JavaScript
-    if (!name.equals("toString")) {
-      methods.add(method);
-    }
-
-    // We want to avoid clash with static method too. For example if a javascript type
-    // defines a static method toString(), the java compilation will fail.
-    Method staticMethod = Method.from(method);
-    staticMethod.setStatic(true);
-    methods.add(staticMethod);
-
-    return methods;
+    return method;
   }
 
   @Override
@@ -139,16 +136,24 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
       return true;
     }
 
-    AnnotationType jsInteropAnnotation =
-        method.hasAnnotation(JS_PROPERTY) ? JS_PROPERTY : JS_METHOD;
+    AnnotationType jsInteropAnnotation;
+    if (method.hasAnnotation(JS_PROPERTY)) {
+      jsInteropAnnotation = JS_PROPERTY;
+    } else if (method.hasAnnotation(JS_OVERLAY)) {
+      jsInteropAnnotation = JS_OVERLAY;
+    } else {
+      jsInteropAnnotation = JS_METHOD;
+    }
+
     validEntityName(method, jsInteropAnnotation, true);
 
-    if (OBJECT_METHODS.contains(method)) {
+    if (OBJECT_METHODS_TO_RENAME.contains(method)) {
       String methodName = method.getName();
       method.setName(methodName + "_");
 
       addAnnotationNameAttributeIfNotEmpty(method, methodName, jsInteropAnnotation, true);
     }
+
     return true;
   }
 
