@@ -16,7 +16,7 @@
  */
 package jsinterop.generator.model;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,7 +32,7 @@ public abstract class Entity implements HasName {
   private String name;
   private AccessModifier accessModifier = AccessModifier.PUBLIC;
   private EntityKind kind;
-  private List<Annotation> annotations = new LinkedList<>();
+  private List<Annotation> annotations = new ArrayList<>();
   private boolean finalModifier;
   private boolean staticModifier;
   private Type enclosingType;
@@ -91,15 +91,14 @@ public abstract class Entity implements HasName {
     return null;
   }
 
-  public boolean removeAnnotation(AnnotationType annotationType) {
+  public Annotation removeAnnotation(AnnotationType annotationType) {
     for (int i = 0; i < annotations.size(); i++) {
       if (annotations.get(i).getType() == annotationType) {
-        annotations.remove(i);
-        return true;
+        return annotations.remove(i);
       }
     }
 
-    return false;
+    return null;
   }
 
   @Override

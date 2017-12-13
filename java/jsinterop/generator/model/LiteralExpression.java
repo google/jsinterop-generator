@@ -24,6 +24,7 @@ public class LiteralExpression implements Expression {
   public static final LiteralExpression ZERO = new LiteralExpression("0");
   public static final LiteralExpression FALSE = new LiteralExpression("false");
   public static final LiteralExpression NULL = new LiteralExpression("null");
+  public static final LiteralExpression THIS = new LiteralExpression("this");
 
   private final String literal;
 

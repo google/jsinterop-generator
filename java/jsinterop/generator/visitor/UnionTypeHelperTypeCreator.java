@@ -232,7 +232,7 @@ public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
     instanceOfMethod.setBody(
         new ReturnStatement(
             new InstanceOfExpression(
-                new CastExpression(OBJECT, new LiteralExpression("this")), rightOperand)));
+                new CastExpression(OBJECT, LiteralExpression.THIS), rightOperand)));
     return instanceOfMethod;
   }
 

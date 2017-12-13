@@ -114,7 +114,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseEnumElementType(EnumElementType type) {
-      throw new UnsupportedOperationException("Not implemented yet");
+      return new JavaTypeReference(checkNotNull(getJavaType(type)));
     }
 
     @Override

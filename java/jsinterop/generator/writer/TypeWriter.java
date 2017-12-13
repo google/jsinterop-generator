@@ -65,6 +65,7 @@ public class TypeWriter {
         .emit(type.getAccessModifier())
         .emit(" ")
         .emit(type.isStatic() && !type.isInterface() ? "static " : "")
+        .emit(type.isFinal() && !type.isInterface() ? "final " : "")
         .emit(type.isInterface() ? "interface " : "class ")
         .emit(type.getName())
         .emitGenerics(type.getTypeParameters(), true);

@@ -27,9 +27,9 @@ import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.RecordType;
 import com.google.javascript.rhino.jstype.StaticTypedSlot;
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import jsinterop.generator.closure.helper.GenerationContext;
@@ -45,7 +45,7 @@ public class MemberCollector extends AbstractClosureVisitor {
   // In our case, we need to differentiate RecordType based on their definition and not based on
   // their structure.
   private final Set<JSType> visitedTypes = Sets.newIdentityHashSet();
-  private final Deque<Method> currentJavaMethodDeque = new LinkedList<>();
+  private final Deque<Method> currentJavaMethodDeque = new ArrayDeque<>();
   private final Map<String, String> parameterNameMapping;
 
   public MemberCollector(GenerationContext ctx) {

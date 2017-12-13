@@ -152,6 +152,7 @@ public class FieldsConverter extends AbstractModelVisitor {
               copy.setAccessModifier(DEFAULT);
               constantWrapper.addField(copy);
 
+              f.removeAnnotation(JS_PROPERTY);
               f.addAnnotation(Annotation.builder().type(JS_OVERLAY).build());
               f.setFinal(true);
               f.setInitialValue(constantWrapper.getName() + "." + f.getName());

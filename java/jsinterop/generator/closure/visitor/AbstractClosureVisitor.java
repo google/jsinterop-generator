@@ -25,14 +25,16 @@ import com.google.javascript.jscomp.TypedScope;
 import com.google.javascript.jscomp.TypedVar;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.StaticSourceFile;
+import com.google.javascript.rhino.jstype.EnumType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
+import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.RecordType;
 import com.google.javascript.rhino.jstype.StaticTypedSlot;
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -45,7 +47,7 @@ abstract class AbstractClosureVisitor {
 
   private final GenerationContext context;
   private final Set<String> externFileNamesSet;
-  private final Deque<Type> currentJavaTypeDeque = new LinkedList<>();
+  private final Deque<Type> currentJavaTypeDeque = new ArrayDeque<>();
 
   AbstractClosureVisitor(GenerationContext context) {
     this.context = context;
@@ -85,8 +87,7 @@ abstract class AbstractClosureVisitor {
     } else if (isTypedef(var)) {
       acceptTypedef(var);
     } else if (type.isEnumType()) {
-      // TODO(b/28999444): Add support for enum type.
-      throw new RuntimeException("Closure Enum are not supported");
+      acceptEnumType(toEnumType(type));
     } else if (isTypeAlias(var)) {
       // We don't process type alias.
       //   /** @constructor */ function Foo() {};
@@ -118,6 +119,25 @@ abstract class AbstractClosureVisitor {
     } else if (type.isUnionType()) {
       type.toMaybeUnionType().getAlternates().forEach(this::acceptType);
     }
+  }
+
+  private void acceptEnumType(EnumType type) {
+    pushCurrentJavaType(type);
+
+    if (visitEnumType(type)) {
+      type.getOwnPropertyNames()
+          .stream()
+          .sorted()
+          .forEach(propertyName -> acceptEnumMember(type.getOwnSlot(propertyName)));
+    }
+
+    endVisitEnumType(type);
+
+    popCurrentJavaType();
+  }
+
+  private void acceptEnumMember(Property enumMember) {
+    visitEnumMember(enumMember);
   }
 
   private void acceptRecordType(RecordType type, String name) {
@@ -327,6 +347,16 @@ abstract class AbstractClosureVisitor {
 
   protected void endVisitModule(StaticTypedSlot<JSType> module) {}
 
+  protected boolean visitEnumType(EnumType type) {
+    return true;
+  }
+
+  protected void endVisitEnumType(EnumType type) {}
+
+  protected boolean visitEnumMember(Property enumMember) {
+    return true;
+  }
+
   protected ClosureTypeRegistry getJavaTypeRegistry() {
     return context.getTypeRegistry();
   }
@@ -442,6 +472,10 @@ abstract class AbstractClosureVisitor {
 
   private static RecordType toRecordType(JSType type) {
     return checkNotNull(type.toMaybeRecordType());
+  }
+
+  private static EnumType toEnumType(JSType type) {
+    return checkNotNull(type.toMaybeEnumType());
   }
 
   private boolean maybePushCurrentExtensionType(StaticTypedSlot<JSType> member) {

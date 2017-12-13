@@ -18,11 +18,13 @@ package jsinterop.generator.closure.visitor;
 import static jsinterop.generator.helper.GeneratorUtils.extractName;
 import static jsinterop.generator.helper.GeneratorUtils.extractNamespace;
 import static jsinterop.generator.helper.ModelHelper.createGlobalJavaType;
+import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 import static jsinterop.generator.model.EntityKind.CLASS;
 import static jsinterop.generator.model.EntityKind.INTERFACE;
 import static jsinterop.generator.model.EntityKind.NAMESPACE;
 
 import com.google.javascript.jscomp.TypedScope;
+import com.google.javascript.rhino.jstype.EnumType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.Property;
@@ -30,6 +32,7 @@ import com.google.javascript.rhino.jstype.RecordType;
 import com.google.javascript.rhino.jstype.StaticTypedSlot;
 import jsinterop.generator.closure.helper.GenerationContext;
 import jsinterop.generator.helper.ModelHelper;
+import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.EntityKind;
 import jsinterop.generator.model.Type;
 
@@ -109,6 +112,26 @@ public class TypeCollector extends AbstractClosureVisitor {
   @Override
   protected void endVisitClassOrInterface(FunctionType type) {
     super.popCurrentJavaType();
+  }
+
+  @Override
+  protected boolean visitEnumType(EnumType type) {
+    Type javaType = createJavaType(type.getDisplayName(), NAMESPACE, false);
+    // you cannot extends an enum
+    javaType.setFinal(true);
+
+    // The class containing the static fields can be mapped to the javascript Object. The static
+    // fields representing the enum members will define a JsProperty annotation with the right
+    // name and namespace.
+    Annotation jsType = javaType.removeAnnotation(JS_TYPE);
+    javaType.addAnnotation(jsType.withNameAttribute("Object").withNamespaceAttribute(""));
+
+    // In closure, the type used for the enum and the type for the enum members are different.
+    // In our model, it's the same java type. We need to register the java type two times.
+    getJavaTypeRegistry().registerJavaType(javaType, type);
+    getJavaTypeRegistry().registerJavaType(javaType, type.getElementsType());
+
+    return false;
   }
 
   @Override
