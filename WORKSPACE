@@ -55,5 +55,5 @@ http_jar(
 
 maven_jar(
     name = "com_google_jsinterop_base",
-    artifact = "com.google.jsinterop:base:1.0.0-beta-3",
+    artifact = "com.google.jsinterop:base:1.0.0-RC1",
 )
