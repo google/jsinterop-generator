@@ -1,6 +1,5 @@
 package jsinterop.generator.externs.optionalparameters;
 
-import java.lang.String;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
@@ -15,4 +14,8 @@ public class SimpleClass {
   public native void foo(String foo, String bar);
 
   public native void foo(String foo);
+
+  public native void optionalParameterWithVarArgs();
+
+  public native void optionalParameterWithVarArgs(String foo, Object... bar);
 }

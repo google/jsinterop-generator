@@ -18,6 +18,12 @@ function SimpleClass(opt_foo) {}
  */
 SimpleClass.prototype.foo = function(foo, opt_bar, opt_baz) {};
 
+/**
+ * @param {string=} opt_foo
+ * @param {...*} bar
+ * @return {undefined}
+ */
+SimpleClass.prototype.optionalParameterWithVarArgs = function(opt_foo, bar) {};
 
 /**
  * @interface

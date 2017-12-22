@@ -50,8 +50,12 @@ public class OptionalParameterHandler extends AbstractModelVisitor {
       Parameter currentParameter = method.getParameters().get(i);
       if (currentParameter.isOptional()) {
         method.getEnclosingType().addMethod(createOverloadMethod(method, i));
+      } else if (currentParameter.isVarargs()) {
+        // We don't create a method overload for a var_args parameter because java consider it
+        // already as optional. But we continue the for loop because the others parameters could be
+        // optional and we need to create method overload for them.
       } else {
-        // if a non optional parameter is found, the others are non optional too
+        // if the parameter is not optional nor a varargs, the others are non optional too
         return false;
       }
     }
