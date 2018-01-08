@@ -9,10 +9,7 @@
  */
 var AliasedFunctionType;
 
-
 /**
- * test function type used in field, method(return type + parameters) of an
- * class
  * @constructor
  */
 function SimpleClass() {}
@@ -37,8 +34,6 @@ SimpleClass.prototype.method1 = function(foo) {};
 
 
 /**
- * test function type used in field, method(return type + parameters) of an
- * interface
  * @interface
  */
 function SimpleInterface() {}
@@ -68,8 +63,6 @@ SimpleInterface.prototype.method1 = function(foo) {};
 SimpleInterface.prototype.withUnionType = function(fooCallback) {};
 
 /**
- * test FunctionType used in variable, function(return type + parameters) of a
- * module
  * @const
  */
 var SimpleModule = {};
@@ -100,7 +93,6 @@ var bar;
 var foo;
 
 /**
- * test FunctionType in generics and arraytype
  * @type {Array<function(string):boolean>}
  */
 var baz;
@@ -122,42 +114,38 @@ function method(fooCallback, ctor) {}
 function method1(foo) {}
 
 /**
- * test FunctionType in union type
  * @param {function(string)|string} fooCallback
  * @return {undefined}
  */
 function method2(fooCallback) {}
 
 /**
- * test inner function type
  * @param {function(function():boolean):string} fooCallback
  * @return {undefined}
  */
 function method3(fooCallback) {}
 
 /**
- * test naming of function type when the name of parameter contains callback
  * @param {function()} fooCallback
  * @return {undefined}
  */
 function method4(fooCallback) {}
 
 /**
- * test naming of synthetic type with structural type inside function type
  * @param {function({foo:string}):{foo:number}} fooCallback
  * @return {undefined}
  */
 function method5(fooCallback) {}
 
 /**
- * Test naming of function type inside function type
  * @param {function((function():boolean), (function():string)):(function():number)} fooCallback
  * @return {undefined}
  */
 function method6(fooCallback) {}
 
+// Both inner function types will be named P0Fn. This test checks that
+// references to those classes don't conflict together.
 /**
- * Test symbol conflict
  * @param {function(function():boolean):undefined} fooCallback
  * @param {function(function():number):undefined} barCallback
  * @return {undefined}

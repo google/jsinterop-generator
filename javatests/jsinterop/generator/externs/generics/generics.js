@@ -10,33 +10,28 @@
 function SimpleInterface() {}
 
 /**
- * test simple type parameter
  * @interface
  * @template T
  */
 function InterfaceWithGeneric() {}
 
 /**
- * test type parameter used in field
  * @type {T}
  */
 InterfaceWithGeneric.prototype.foo;
 
 /**
- * test type parameter used in parameter type
  * @param {T} foo
  * @return {undefined}
  */
 InterfaceWithGeneric.prototype.method = function(foo) {};
 
 /**
- * test type parameter used in return type
  * @return {T}
  */
 InterfaceWithGeneric.prototype.method2 = function() {};
 
 /**
- * test several type parameters
  * @interface
  * @template U,T,V
  */
@@ -58,13 +53,11 @@ Bar.prototype.foo;
 Bar.prototype.baz;
 
 /**
- * test reference to a parametrized type
  * @type {InterfaceWithGeneric<number>}
  */
 Bar.prototype.bar2;
 
 /**
- * test type parameter scope.
  * @template V
  * @param {{foo: V, bar: T}} param
  * @return {V}
@@ -72,37 +65,35 @@ Bar.prototype.bar2;
 Bar.prototype.barMethod2 = function(param) {};
 
 /**
- * Test generics used in structural type enclosed in another structural type.
  * @param {function(V):{foo:T, bar: Y, baz: Z}} fooCallback
  * @return {undefined}
  * @template Z,Y
  */
 Bar.prototype.barMethod3 = function(fooCallback) {};
 
+// Test wildcard type: TypeParameter used in return type and parameter should
+// not use wildcardtype.
 /**
- * Test wildcard type: TypeParameter used in return type and parameter should
- * not use wildcardtype.
  * @param {function(U):U} fooCallback
  * @return {undefined}
  */
 Bar.prototype.barMethod4 = function(fooCallback) {};
 
+// Test wildcard type: Array asd union type are considered as direct reference.
 /**
- * Test wildcard type: Array asd union type are considered as direct reference.
  * @param {function(U, Array<U>, (T|string)):undefined} fooCallback
  * @return {undefined}
  */
 Bar.prototype.barMethod5 = function(fooCallback) {};
 
+// Test wildcard type: indirect reference don't create wildcard type.
 /**
- * Test wildcard type: indirect reference don't create wildcard type.
  * @param {function(U, InterfaceWithGeneric<U>):InterfaceWithGeneric<T>} fooCallback
  * @return {undefined}
  */
 Bar.prototype.barMethod6 = function(fooCallback) {};
 
 /**
- * test generics used in anonymous types
  * @constructor
  * @template T
  */
@@ -149,15 +140,14 @@ AnonymousTypes.prototype.foo = function(foo) {};
 
 
 /**
- * test generics in extension clause
  * @interface
  * @extends {InterfaceWithGeneric<number>}
  */
 function ExtendInterfaceWithGeneric() {}
 
+// Type Array should be converted to classic java array when used in type
+// parameter. param should be of type InterfaceWithGenerics<boolean[]>
 /**
- * TypeArray should be converted to classic java array when used in type
- * parameter
  * @param {InterfaceWithGeneric<Array<boolean>>} param
  * @return {undefined}
  */
@@ -168,17 +158,16 @@ ExtendInterfaceWithGeneric.prototype.bar = function(param) {};
  */
 function SimpleClass() {}
 
+// The class has a static and instance methods with same name. The logic 
+// collecting type parameters is based on method name. We check here that the 
+// TypeParameter V is collected for both methods and not only the first one.
 /**
- * Static and instance methods with same name, test that generics are collected
- * on the right method
  * @template V
  * @return {V}
  */
 SimpleClass.prototype.foo = function() {};
 
 /**
- * Static and instance methods with same name, test that generics are collected
- * on the right method
  * @template V
  * @param {SimpleClass} obj
  * @return {V}

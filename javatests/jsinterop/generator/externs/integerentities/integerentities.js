@@ -40,7 +40,6 @@ Foo.baz;
 Foo.prototype.union = function(unionParam) {};
 
 /**
- * Test method on the global Scope.
  * @param {number} bar
  * @return {number}
  */

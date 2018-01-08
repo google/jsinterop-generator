@@ -26,8 +26,8 @@
  */
 function Bar() {}
 
+// Override automatic wildcard type creation.
 /**
- * Override automatic wildcard type creation
  * @param {function(U,T,V):undefined} callback
  * @return {undefined}
  */

@@ -22,51 +22,44 @@ SimpleClass.staticProperty;
  */
 SimpleClass.staticMethod = function(foo, bar, opt_baz) {};
 
+// Static methods conflicting with java.lang.Object methods need to be renamed.
 /**
- * Static methods conflicting with java.lang.Object methods need to be renamed.
  * @return {string}
  */
 SimpleClass.getClass = function() {};
 
 /**
- * Static methods conflicting with java.lang.Object methods need to be renamed.
  * @return {number}
  */
 SimpleClass.hashCode = function() {};
 
 /**
- * Static methods conflicting with java.lang.Object methods need to be renamed.
  * @param {*} other
  * @return {boolean}
  */
 SimpleClass.equals = function(other) {};
 
 /**
- * Static methods conflicting with java.lang.Object methods need to be renamed.
  * @return {?}
  */
 SimpleClass.clone = function() {};
 
 /**
- * Static methods conflicting with java.lang.Object methods need to be renamed.
  * @return {string}
  */
 SimpleClass.toString = function() {};
 
 /**
- * Static methods conflicting with java.lang.Object methods need to be renamed.
  * @return {undefined}
  */
 SimpleClass.notify = function() {};
 
 /**
- * Static methods conflicting with java.lang.Object methods need to be renamed.
  * @return {undefined}
  */
 SimpleClass.notifyAll = function() {};
 
 /**
- * Static methods conflicting with java.lang.Object methods need to be renamed.
  * @return {undefined}
  */
 SimpleClass.wait = function() {};
@@ -104,59 +97,45 @@ SimpleClass.prototype.thisType;
  */
 SimpleClass.prototype.fooMethod = function(foo, bar, opt_baz) {};
 
+// Instance methods conflicting with java.lang.Object methods need to be
+// renamed.
 /**
- * Instance methods conflicting with java.lang.Object methods need to be
- * renamed.
  * @return {string}
  */
 SimpleClass.prototype.toString = function() {};
 
 /**
- * Instance methods conflicting with java.lang.Object methods need to be
- * renamed.
  * @return {number}
  */
 SimpleClass.prototype.hashCode = function() {};
 
 /**
- * Instance methods conflicting with java.lang.Object methods need to be
- * renamed.
  * @param {*} other
  * @return {boolean}
  */
 SimpleClass.prototype.equals = function(other) {};
 
 /**
- * Instance methods conflicting with java.lang.Object methods need to be
- * renamed.
  * @return {string}
  */
 SimpleClass.prototype.getClass = function() {};
 
 /**
- * Instance methods conflicting with java.lang.Object methods need to be
- * renamed.
  * @return {?}
  */
 SimpleClass.prototype.clone = function() {};
 
 /**
- * Instance methods conflicting with java.lang.Object methods need to be
- * renamed.
  * @return {undefined}
  */
 SimpleClass.prototype.notify = function() {};
 
 /**
- * Instance methods conflicting with java.lang.Object methods need to be
- * renamed.
  * @return {undefined}
  */
 SimpleClass.prototype.notifyAll = function() {};
 
 /**
- * Instance methods conflicting with java.lang.Object methods need to be
- * renamed.
  * @return {undefined}
  */
 SimpleClass.prototype.wait = function() {};
@@ -203,8 +182,8 @@ function SimpleStructuralInterface() {}
  */
 SimpleStructuralInterface.prototype.fooMethod = function(foo, bar, opt_baz) {};
 
+// TODO(b/34389745): Type alias with a constant is not supported.
 /**
- * TODO(b/34389745): Type alias with a constant is not supported.
  * @const
  */
 var SimpleClassAlias = SimpleClass;

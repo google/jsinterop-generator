@@ -4,13 +4,11 @@
  */
 
 /**
- * Test typedef used as an alias
  * @typedef {(string|number)}
  */
 var NumberLike;
 
 /**
- * Test typedef used as an structural type
  * @typedef {{
  *      foo: number,
  *      bar: string
@@ -18,9 +16,9 @@ var NumberLike;
  */
 var FooBar;
 
+// As Closure inlines typedefs, we test that when several typedefs have the same
+// structure, we still refer to the right named typedef.
 /**
- * As Closure inlines typedefs, we test that when several typedefs have the same
- * structure, we still refer to the right named typedef.
  * @typedef {{
  *      foo: number,
  *      bar: string,
@@ -29,7 +27,6 @@ var FooBar;
 var FooBar2;
 
 /**
- * Test structural type defining inner structural type.
  * @typedef {{
  *      foo: number,
  *      bar: {baz:string}
@@ -43,14 +40,13 @@ var InnerStructuralType;
 function SimpleClass() {}
 
 /**
- * Record type in generics
  * @type {Array<{foo: number}>}
  */
 SimpleClass.prototype.recordTypeArray;
 
+// As Closure inlines typedefs, we test that when several typedefs have the same
+// we still refer to the right named typedef.
 /**
- * As Closure inlines typedefs, we test that when several typedefs have the same
- * we still refer to the right named typedef.
  * @param {FooBar2} fooBar
  * @return {FooBar}
  */
@@ -75,7 +71,6 @@ SimpleClass.prototype.consumeAndReturnAnonymousType = function(opt_foo) {};
 SimpleClass.prototype.consumeInnerStructuralType = function(foo) {};
 
 /**
- * Test RecordType in UnionType
  * @param {(string| {foo: string})} stringOrFoo
  * @return {undefined}
  */
@@ -110,21 +105,20 @@ SimpleModule.ClassInModule.prototype.foo = function(baz) {};
 var foo = function(bar) {};
 
 /**
- * test naming of function type inside structural type
  * @param {{foo:function({bar:string}):undefined}} foo
  * @return {undefined}
  */
 function method1(foo) {}
 
 /**
- * Test naming of inner structural type
  * @param {{bar: {foo:string}, foo: {baz: {insane:string}}}} foo
  * @return {undefined}
  */
 function method2(foo) {}
 
+// Both inner record types will be named BarFieldType on java side. This test
+// checks that references to those classes don't conflict together.
 /**
- * Test symbol conflict
  * @param {{bar: {foo:string}, foo: string}} foo
  * @param {{bar: {foo:string}}} bar
  * @return {undefined}

@@ -19,8 +19,6 @@ GreatParentInterface.prototype.greatParentInterfaceProperty;
 GreatParentInterface.prototype.greatParentInterfaceMethod = function(foo) {};
 
 /**
- * test interface extension
- *
  * @interface
  * @extends {GreatParentInterface}
  */
@@ -73,7 +71,6 @@ GreatParentClass.prototype.greatParentClassProperty;
 GreatParentClass.prototype.greatParentClassMethod = function() {};
 
 /**
- * test class extension
  * @constructor
  * @extends {GreatParentClass}
  */
@@ -90,7 +87,6 @@ ParentClass.prototype.parentClassProperty;
 ParentClass.prototype.parentClassMethod = function() {};
 
 /**
- * test class extension and interfaces implementation
  * @constructor
  * @extends {ParentClass}
  * @implements {Parent1Interface}
@@ -143,29 +139,25 @@ SimpleClass.prototype.greatParentInterfaceMethod = function(foo) {};
 
 
 /**
- * test inheritance with structural types.
  * @interface
  * @template U,V
  */
 function InterfaceWithStructuralType() {}
 
 /**
- * test with function types and field
  * @type {function(boolean):undefined}
  */
 InterfaceWithStructuralType.prototype.bar;
 
 /**
- * test parameter method, method return type and array reference
  * @param {Array<Array<{foo: string}>>}  foo
  * @return {{bar: number}}
  */
 InterfaceWithStructuralType.prototype.foo = function(foo) {};
 
+// test with generic used in anonymous type. This test ensure the type key
+// generation handles correctly generics.
 /**
- * test with generic used in anonymous type. This test ensure the type key
- * generation handles correctly generics.
- *
  * @param {{baz: U, baz2: V}} baz
  * @param {{baz: V, baz2: U}} baz2
  * @return {V}
@@ -173,7 +165,6 @@ InterfaceWithStructuralType.prototype.foo = function(foo) {};
 InterfaceWithStructuralType.prototype.baz = function(baz, baz2) {};
 
 /**
- * test union type in inheritance
  * @param {(function(V):U|string)}  barCallback
  * @return {undefined}
  */
@@ -188,32 +179,32 @@ InterfaceWithStructuralType.prototype.bar2 = function(barCallback) {};
  */
 InterfaceWithStructuralType.prototype.bar3 = function(param1, param2) {};
 
+// we deliberately switch generics name in class definition.
 /**
- * we deliberately switch generics name in class definition.
  * @constructor
  * @implements InterfaceWithStructuralType<V,U>
  * @template V,U
  */
 function InterfaceWithStructuralTypeImpl() {}
 
+// Test that a static field with same name than instance field, don't reuse the
+// synthetic type of the instance field.
 /**
- * Test that a static field with same name than instance field, don't reuse the
- * synthetic type of the instance field.
  * @type {function(boolean):undefined}
  */
 InterfaceWithStructuralTypeImpl.bar;
 
+// Test that a static method with same signature than instance method,
+// don't reuse the synthetic types of the instance method.
 /**
- * Test that a static method with same signature than instance method,
- * don't reuse the synthetic types of the instance method.
  * @param {Array<Array<{foo: string}>>}  foo
  * @return {{bar: number}}
  */
 InterfaceWithStructuralTypeImpl.foo = function(foo) {};
 
+// The implementation will extends getter and setter for the field and create
+// a field using the type defined on the parent interface.
 /**
- * The implementation will extends getter and setter for the field and create
- * a field using the type defined on the parent interface.
  * @type {function(boolean):undefined}
  */
 InterfaceWithStructuralTypeImpl.prototype.bar;
@@ -249,9 +240,9 @@ InterfaceWithStructuralTypeImpl.prototype.bar2 = function(bar) {};
  */
 InterfaceWithStructuralTypeImpl.prototype.bar3 = function(param1, param2) {};
 
+// Test that a synthetic type is not reused across parameter and return type if
+// they are typed with a same structural type.
 /**
- * Test that a synthetic type is not reused across parameter and return type if
- * they are typed with a same structural type.
  * @param {(number|string)} param1
  * @param {(number|string)} param2
  * @return {(number|string)}
