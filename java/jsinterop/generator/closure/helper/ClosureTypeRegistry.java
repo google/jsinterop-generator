@@ -183,6 +183,12 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
     }
 
     @Override
+    public TypeReference caseSymbolType() {
+      // TODO(b/73255220): add support for symbol type.
+      return OBJECT;
+    }
+
+    @Override
     public TypeReference caseVoidType() {
       return referenceContext == REGULAR ? VOID : VOID_OBJECT;
     }
