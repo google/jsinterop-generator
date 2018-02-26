@@ -373,7 +373,8 @@ def jsinterop_generator(
 
     # bazel doesn't support constraint and gwtxml attributes
     if _is_bazel:
-      java_library_args["resources"] = [gwt_xml_file]
+      if gwt_xml_file:
+        java_library_args["resources"] = [gwt_xml_file]
     else:
       java_library_args["gwtxml"] = gwt_xml_file
       java_library_args["constraints"] = ["gwt","public"]
