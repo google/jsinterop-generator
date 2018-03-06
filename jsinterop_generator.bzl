@@ -287,7 +287,7 @@ def jsinterop_generator(
     generator_srcs = srcs[:]
 
     if not package_prefix:
-      package_prefix = get_java_package(PACKAGE_NAME)
+      package_prefix = get_java_package(native.package_name())
 
     if conversion_mode == "closure":
       j2cl_test_externs_list = j2cl_test_externs_list + srcs + exports_srcs + deps_srcs

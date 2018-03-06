@@ -64,7 +64,7 @@ def jsinterop_generator_test(
           ] + expected_output,
       args = [
           "$(location %s)" % generator_output,
-          PACKAGE_NAME,
+          native.package_name(),
           "$(location //third_party:jar)",
           "$(location //third_party:google_java_format)",
      ],
