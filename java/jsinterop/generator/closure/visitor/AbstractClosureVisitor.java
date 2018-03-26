@@ -173,7 +173,8 @@ abstract class AbstractClosureVisitor {
 
   private void acceptTypedef(StaticTypedSlot<JSType> typedef) {
     // The type linked to symbol is not the type represented in the @typedef annotations.
-    JSType realType = checkNotNull(getJsTypeRegistry().getType(typedef.getName()));
+    JSType realType = checkNotNull(getJsTypeRegistry().getType(
+        typedef.getScope(), typedef.getName()));
 
     if (realType.isRecordType()) {
       acceptRecordType(toRecordType(realType), typedef.getName());
