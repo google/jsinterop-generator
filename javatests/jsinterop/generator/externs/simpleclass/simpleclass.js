@@ -67,12 +67,31 @@ SimpleClass.wait = function() {};
 /**
  * @const {string}
  */
-SimpleClass.staticReadonlyProperty
+SimpleClass.staticReadonlyProperty;
+
+/**
+ * @deprecated
+ * @const {string}
+ */
+SimpleClass.deprecatedConstant;
+
+/**
+ * @deprecated
+ * @type {string}
+ */
+SimpleClass.deprecatedStaticProperty;
+
 
 /**
  * @type {string}
  */
 SimpleClass.prototype.fooProperty;
+
+/**
+ * @deprecated
+ * @type {string}
+ */
+SimpleClass.prototype.deprecatedProperty;
 
 /**
  * @const {boolean}
@@ -96,6 +115,15 @@ SimpleClass.prototype.thisType;
  * @return {boolean}
  */
 SimpleClass.prototype.fooMethod = function(foo, bar, opt_baz) {};
+
+/**
+ * @deprecated
+ * @param {string} bar
+ * @param {string|number} foo
+ * @param {Object=} opt_baz
+ * @return {boolean}
+ */
+SimpleClass.prototype.deprecatedMethod = function(bar, foo, opt_baz) {};
 
 // Instance methods conflicting with java.lang.Object methods need to be
 // renamed.
@@ -151,6 +179,12 @@ function SimpleInterface() {}
 SimpleInterface.staticProperty;
 
 /**
+ * @deprecated
+ * @const {boolean}
+ */
+SimpleInterface.deprecatedStaticProperty;
+
+/**
  * @type {string}
  */
 SimpleInterface.prototype.fooProperty;
@@ -161,12 +195,27 @@ SimpleInterface.prototype.fooProperty;
 SimpleInterface.prototype.readonlyProperty;
 
 /**
+ * @deprecated
+ * @type {string}
+ */
+SimpleInterface.prototype.deprecatedProperty;
+
+/**
  * @param {string} foo
  * @param {string} bar
  * @param {boolean=} opt_baz
  * @return {boolean}
  */
 SimpleInterface.prototype.fooMethod = function(foo, bar, opt_baz) {};
+
+/**
+ * @deprecated
+ * @param {string} bar
+ * @param {string} foo
+ * @param {boolean=} opt_baz
+ * @return {boolean}
+ */
+SimpleInterface.prototype.deprecatedMethod = function(bar, foo, opt_baz) {};
 
 
 /**
@@ -181,6 +230,19 @@ function SimpleStructuralInterface() {}
  * @return {boolean}
  */
 SimpleStructuralInterface.prototype.fooMethod = function(foo, bar, opt_baz) {};
+
+/**@deprecated
+ * @record
+ */
+function DeprecatedInterface() {}
+
+/**
+ * @param {string} bar
+ * @param {string} foo
+ * @param {boolean=} opt_baz
+ * @return {boolean}
+ */
+DeprecatedInterface.prototype.deprecatedMethod = function(bar, foo, opt_baz) {};
 
 // TODO(b/34389745): Type alias with a constant is not supported.
 /**

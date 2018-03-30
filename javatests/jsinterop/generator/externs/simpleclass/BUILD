@@ -35,6 +35,7 @@ jsinterop_generator_test(
         "SimpleInterface.java",
         "SimpleInterface__Constants.java",
         "SimpleStructuralInterface.java",
+        "DeprecatedInterface.java",
     ],
     deps = [":native_types"],
 )

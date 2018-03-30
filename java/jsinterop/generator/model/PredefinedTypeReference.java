@@ -34,6 +34,7 @@ public enum PredefinedTypeReference implements TypeReference {
   OBJECT("Object", "*", "java.lang.Object", "Ljava/lang/Object"),
   STRING("String", "string", "java.lang.String", "Ljava/lang/String"),
   CLASS("Class", null, "java.lang.Class", "Ljava/lang/Class"),
+  DEPRECATED("Deprecated", "deprecated", "java.lang.Deprecated", "Ljava/lang/Deprecated"),
   JS_TYPE("JsType", null, "jsinterop.annotations.JsType", "Ljsinterop/annotations/JsType"),
   JS_PROPERTY(
       "JsProperty", null, "jsinterop.annotations.JsProperty", "Ljsinterop/annotations/JsProperty"),

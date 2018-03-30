@@ -22,6 +22,7 @@ import static jsinterop.generator.helper.GeneratorUtils.extractName;
 import static jsinterop.generator.helper.GeneratorUtils.extractNamespace;
 import static jsinterop.generator.helper.GeneratorUtils.toCamelUpperCase;
 import static jsinterop.generator.model.Annotation.builder;
+import static jsinterop.generator.model.AnnotationType.DEPRECATED;
 import static jsinterop.generator.model.AnnotationType.JS_FUNCTION;
 import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
 import static jsinterop.generator.model.AnnotationType.JS_TYPE;
@@ -223,6 +224,10 @@ public class ModelHelper {
 
       jsOverlayMethod.getAnnotations().clear();
       jsOverlayMethod.addAnnotation(Annotation.builder().type(JS_OVERLAY).build());
+
+      if (originalMethod.hasAnnotation(DEPRECATED)) {
+        jsOverlayMethod.addAnnotation(Annotation.builder().type(DEPRECATED).build());
+      }
 
       jsOverlayMethod.setDefault(defaultMethod);
       jsOverlayMethod.setFinal(!defaultMethod);
