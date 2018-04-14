@@ -11,6 +11,7 @@ licenses(["notice"])
 java_library(
     name = "closure",
     srcs = glob(["*.java"]),
+    javacopts = ["-Xep:BetaApi:OFF"],
     deps = [
         "//java/jsinterop/generator/closure/helper",
         "//java/jsinterop/generator/closure/visitor",

@@ -16,6 +16,6 @@ java_library(
         "//third_party:auto_value",
         "//third_party:guava",
         "//third_party:jsr305_annotations",
-        "@error_prone//jar",
+        "@google_bazel_common//third_party/java/error_prone:annotations",
     ],
 )

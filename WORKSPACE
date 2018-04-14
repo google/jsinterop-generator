@@ -1,28 +1,25 @@
 workspace(name = "com_google_jsinterop_generator")
 
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
 maven_server(
     name = "sonatype_snapshot",
     url = "https://oss.sonatype.org/content/repositories/snapshots",
 )
 
-maven_jar(
-    name = "jsr305",
-    artifact = "com.google.code.findbugs:jsr305:3.0.1",
+http_archive(
+    name = "google_bazel_common",
+    strip_prefix = "bazel-common-2782531da81d4002bce16e853953d9e8117a6fc1",
+    url = "https://github.com/google/bazel-common/archive/2782531da81d4002bce16e853953d9e8117a6fc1.tar.gz",
 )
 
-maven_jar(
-    name = "guava",
-    artifact = "com.google.guava:guava:21.0",
-)
+load("@google_bazel_common//:workspace_defs.bzl", "google_common_workspace_rules")
+
+google_common_workspace_rules()
 
 maven_jar(
     name = "args4j",
     artifact = "args4j:args4j:2.33",
-)
-
-maven_jar(
-    name = "auto_value",
-    artifact = "com.google.auto.value:auto-value:1.4",
 )
 
 maven_jar(
@@ -36,21 +33,11 @@ maven_jar(
     artifact = "com.google.jsinterop:jsinterop-annotations:1.0.2",
 )
 
-maven_jar(
-    name = "error_prone",
-    artifact = "com.google.errorprone:error_prone_annotations:2.0.19",
-)
-
-new_http_archive(
-  name="com_google_closure_compiler",
-  url="https://github.com/google/closure-compiler/archive/v20170409.tar.gz",
-  build_file="jscomp.BUILD",
-  strip_prefix="closure-compiler-20170409"
-)
-
-http_jar(
-    name = "com_google_google_java_format",
-    url = "https://github.com/google/google-java-format/releases/download/google-java-format-1.3/google-java-format-1.3-all-deps.jar",
+http_archive(
+    name = "com_google_closure_compiler",
+    build_file = "//:BUILD.jscomp",
+    strip_prefix = "closure-compiler-20170409",
+    url = "https://github.com/google/closure-compiler/archive/v20170409.tar.gz",
 )
 
 maven_jar(

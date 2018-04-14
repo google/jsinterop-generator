@@ -11,6 +11,7 @@ licenses(["notice"])
 java_library(
     name = "visitor",
     srcs = glob(["*.java"]),
+    javacopts = ["-Xep:BetaApi:OFF"],
     deps = [
         "//java/jsinterop/generator/helper",
         "//java/jsinterop/generator/model",

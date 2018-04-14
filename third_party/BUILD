@@ -7,25 +7,9 @@ licenses(["notice"])
 
 # Direct dependencies for compiling java src code of the closure jsinterop generator.
 # These targets don't need to be public.
-java_plugin(
-    name = "auto_annotation_plugin",
-    processor_class = "com.google.auto.value.processor.AutoAnnotationProcessor",
-    deps = ["@auto_value//jar"],
-)
-
-java_plugin(
-    name = "auto_value_plugin",
-    processor_class = "com.google.auto.value.processor.AutoValueProcessor",
-    deps = ["@auto_value//jar"],
-)
-
 java_library(
     name = "auto_value",
-    exported_plugins = [
-        ":auto_annotation_plugin",
-        ":auto_value_plugin",
-    ],
-    exports = ["@auto_value//jar"],
+    exports = ["@google_bazel_common//third_party/java/auto:value"],
 )
 
 java_library(
@@ -40,12 +24,12 @@ java_library(
 
 java_library(
     name = "jsr305_annotations",
-    exports = ["@jsr305//jar"],
+    exports = ["@google_bazel_common//third_party/java/jsr305_annotations"],
 )
 
 java_library(
     name = "guava",
-    exports = ["@guava//jar"],
+    exports = ["@google_bazel_common//third_party/java/guava"],
 )
 
 java_library(
@@ -66,8 +50,8 @@ filegroup(
 java_binary(
     name = "google_java_format",
     main_class = "com.google.googlejavaformat.java.Main",
-    runtime_deps = ["@com_google_google_java_format//jar"],
     visibility = ["//visibility:public"],
+    runtime_deps = ["@google_bazel_common//third_party/java/google_java_format"],
 )
 
 alias(
@@ -91,6 +75,6 @@ alias(
 
 java_library(
     name = "jsinterop-base",
-    exports = ["@com_google_jsinterop_base//jar"],
     visibility = ["//javatests:__subpackages__"],
+    exports = ["@com_google_jsinterop_base//jar"],
 )
