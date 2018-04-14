@@ -8,7 +8,7 @@ package(default_visibility = ["//:__subpackages__"])
 licenses(["notice"])
 
 load(
-    "//third_party/java/jsinterop:jsinterop_generator.bzl",
+    "//:jsinterop_generator.bzl",
     "jsinterop_generator",
 )
 
