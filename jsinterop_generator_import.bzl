@@ -38,7 +38,10 @@ def jsinterop_generator_import(
     types_mapping_files=[],
     gwt_module_name=None,
     gwt_xml = None,
-    visibility=None):
+    visibility=None,
+    gwt_library_tags = [],
+#    j2cl_library_tags = [],
+    ):
 
   _jsinterop_generator_import(
       name = JS_INTEROP_RULE_NAME_PATTERN % name,
@@ -54,6 +57,7 @@ def jsinterop_generator_import(
           "//third_party:gwt-jsinterop-annotations",
           "//third_party:jsinterop-base",
       ],
+      "tags" : gwt_library_tags,
       "visibility" : visibility,
   }
 

@@ -260,6 +260,8 @@ def jsinterop_generator(
     visibility = None,
     testonly = None,
     j2cl_test_externs_list = [],
+    gwt_library_tags = [],
+#    j2cl_library_tags = [],
     ):
 
   if not srcs and not exports:
@@ -369,6 +371,7 @@ def jsinterop_generator(
         "exports" : exports_java,
         "visibility" : visibility,
         "testonly" : testonly,
+        "tags" : gwt_library_tags,
     }
 
     # bazel doesn't support constraint and gwtxml attributes
