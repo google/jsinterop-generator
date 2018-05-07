@@ -25,9 +25,9 @@ import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 
 import com.google.common.collect.ImmutableList;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.TypeI.Nullability;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.JSType.Nullability;
 import com.google.javascript.rhino.jstype.RecordType;
 import com.google.javascript.rhino.jstype.StaticTypedSlot;
 import java.util.regex.Pattern;
