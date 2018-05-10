@@ -60,7 +60,7 @@ merge_jars ${jars} generator.jar ${tmp_artifact_dir}
 merge_jars ${src_jars} generator-src.jar ${tmp_artifact_dir}
 
 
-pom_template=${bazel_root}/pom-closure-generator.xml
+pom_template=${bazel_root}/maven/pom-closure-generator.xml
 
 # we cannot run the script directly from Bazel as bazel doesn't allow interactive script
 runcmd="$(mktemp /tmp/bazel-run.XXXXXX)"
