@@ -48,12 +48,24 @@ new_http_archive(
   strip_prefix="closure-compiler-20170409"
 )
 
+http_archive(
+    name = "com_google_jsinterop_base",
+    url = "https://github.com/google/jsinterop-base/archive/master.zip",
+    strip_prefix="jsinterop-base-master",
+)
+
 http_jar(
     name = "com_google_google_java_format",
     url = "https://github.com/google/google-java-format/releases/download/google-java-format-1.3/google-java-format-1.3-all-deps.jar",
 )
 
+# third_party libs used by jsinterop-base
 maven_jar(
-    name = "com_google_jsinterop_base",
-    artifact = "com.google.jsinterop:base:1.0.0-RC1",
+    name = "gwt_dev",
+    artifact = "com.google.gwt:gwt-dev:2.8.1",
+)
+
+http_archive(
+  name="org_gwtproject_gwt",
+  url="https://gwt.googlesource.com/gwt/+archive/master.tar.gz",
 )

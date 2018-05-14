@@ -91,6 +91,6 @@ alias(
 
 java_library(
     name = "jsinterop-base",
-    exports = ["@com_google_jsinterop_base//jar"],
+    exports = ["@com_google_jsinterop_base//java/jsinterop/base:base"],
     visibility = ["//javatests:__subpackages__"],
 )
