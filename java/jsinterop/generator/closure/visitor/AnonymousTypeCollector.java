@@ -73,7 +73,7 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
   }
 
   @Override
-  protected boolean visitField(StaticTypedSlot<JSType> property, boolean isStatic) {
+  protected boolean visitField(StaticTypedSlot property, boolean isStatic) {
     initNameForRecordType(property.getName(), isStatic ? "Type" : "FieldType");
     initNameForFunctionType(property.getName());
     return true;

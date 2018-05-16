@@ -122,7 +122,7 @@ public class MemberCollector extends AbstractClosureVisitor {
   }
 
   @Override
-  protected boolean visitField(StaticTypedSlot<JSType> jsField, boolean isStatic) {
+  protected boolean visitField(StaticTypedSlot jsField, boolean isStatic) {
     getCurrentJavaType()
         .addField(
             Field.create(
@@ -177,7 +177,7 @@ public class MemberCollector extends AbstractClosureVisitor {
         jsParameter.isOptionalArg());
   }
 
-  private static boolean isConstant(StaticTypedSlot<JSType> jsField) {
+  private static boolean isConstant(StaticTypedSlot jsField) {
     JSDocInfo jsdoc = jsField.getJSDocInfo();
     return jsdoc != null && jsdoc.isConstant();
   }

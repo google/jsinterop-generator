@@ -74,7 +74,7 @@ abstract class AbstractClosureVisitor {
     return !symbol.getName().contains(".");
   }
 
-  private void accept(StaticTypedSlot<JSType> var, boolean isStatic) {
+  private void accept(StaticTypedSlot var, boolean isStatic) {
     JSType type = var.getType();
 
     if ((type.isInterface() || type.isConstructor())
@@ -98,7 +98,7 @@ abstract class AbstractClosureVisitor {
   }
 
   /** Returns {@code true} if var is a type alias (like var mozFooType = FooType). */
-  private static boolean isTypeAlias(StaticTypedSlot<JSType> var) {
+  private static boolean isTypeAlias(StaticTypedSlot var) {
     if (var.getName() == null || var.getType() == null || var.getType().getDisplayName() == null) {
       return false;
     }
@@ -171,7 +171,7 @@ abstract class AbstractClosureVisitor {
     popCurrentJavaType();
   }
 
-  private void acceptTypedef(StaticTypedSlot<JSType> typedef) {
+  private void acceptTypedef(StaticTypedSlot typedef) {
     // The type linked to symbol is not the type represented in the @typedef annotations.
     JSType realType = checkNotNull(getJsTypeRegistry().getType(
         typedef.getScope(), typedef.getName()));
@@ -190,7 +190,7 @@ abstract class AbstractClosureVisitor {
     }
   }
 
-  private void acceptModule(StaticTypedSlot<JSType> module) {
+  private void acceptModule(StaticTypedSlot module) {
     pushCurrentJavaType(module.getType());
 
     if (visitModule(module)) {
@@ -245,7 +245,7 @@ abstract class AbstractClosureVisitor {
             });
   }
 
-  protected void acceptMember(StaticTypedSlot<JSType> member, boolean isStatic) {
+  protected void acceptMember(StaticTypedSlot member, boolean isStatic) {
     JSType propertyType = member.getType();
     // Check if this member is an extension of the API of a type provided by an external third party
     // library. If it's the case, use the extension class if it has already been created.
@@ -332,7 +332,7 @@ abstract class AbstractClosureVisitor {
 
   protected void endVisitMethod(FunctionType method) {}
 
-  protected boolean visitField(StaticTypedSlot<JSType> property, boolean isStatic) {
+  protected boolean visitField(StaticTypedSlot property, boolean isStatic) {
     return true;
   }
 
@@ -342,11 +342,11 @@ abstract class AbstractClosureVisitor {
 
   protected void endVisitClassOrInterface(FunctionType type) {}
 
-  protected boolean visitModule(StaticTypedSlot<JSType> module) {
+  protected boolean visitModule(StaticTypedSlot module) {
     return true;
   }
 
-  protected void endVisitModule(StaticTypedSlot<JSType> module) {}
+  protected void endVisitModule(StaticTypedSlot module) {}
 
   protected boolean visitEnumType(EnumType type) {
     return true;
@@ -446,7 +446,7 @@ abstract class AbstractClosureVisitor {
     return externFileNamesSet.contains(symbol.getInputName());
   }
 
-  private static boolean isTypedef(StaticTypedSlot<JSType> var) {
+  private static boolean isTypedef(StaticTypedSlot var) {
     return var.getJSDocInfo() != null && var.getJSDocInfo().hasTypedefType();
   }
 
@@ -479,7 +479,7 @@ abstract class AbstractClosureVisitor {
     return checkNotNull(type.toMaybeEnumType());
   }
 
-  private boolean maybePushCurrentExtensionType(StaticTypedSlot<JSType> member) {
+  private boolean maybePushCurrentExtensionType(StaticTypedSlot member) {
     if (isApiExtension(member)) {
       Type extensionType = getJavaTypeRegistry().getExtensionType(getCurrentJavaType());
       pushCurrentJavaType(extensionType);
@@ -488,7 +488,7 @@ abstract class AbstractClosureVisitor {
     return false;
   }
 
-  protected boolean isApiExtension(StaticTypedSlot<JSType> member) {
+  protected boolean isApiExtension(StaticTypedSlot member) {
     return getCurrentJavaType().isExtern()
         && !getContext()
             .getExternDependencyFiles()

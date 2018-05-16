@@ -65,7 +65,7 @@ public class TypeCollector extends AbstractClosureVisitor {
   }
 
   @Override
-  protected void acceptMember(StaticTypedSlot<JSType> member, boolean isStatic) {
+  protected void acceptMember(StaticTypedSlot member, boolean isStatic) {
     // Check if the member is an extension of the API of a type provided by an external third
     // party library. In this case, we create a new type extending the provided type. We will
     // collect all new members and synthetic types on this new type to make them available.
@@ -135,7 +135,7 @@ public class TypeCollector extends AbstractClosureVisitor {
   }
 
   @Override
-  protected boolean visitModule(StaticTypedSlot<JSType> module) {
+  protected boolean visitModule(StaticTypedSlot module) {
     String jsFqn =
         module instanceof Property
             ? ((Property) module).getNode().getOriginalQualifiedName()
@@ -148,7 +148,7 @@ public class TypeCollector extends AbstractClosureVisitor {
   }
 
   @Override
-  protected void endVisitModule(StaticTypedSlot<JSType> module) {
+  protected void endVisitModule(StaticTypedSlot module) {
     super.popCurrentJavaType();
   }
 
