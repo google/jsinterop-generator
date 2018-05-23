@@ -37,6 +37,8 @@ import jsinterop.generator.model.AccessModifier;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.AnnotationType;
+import jsinterop.generator.model.Annotation;
 
 /** Collect type information. */
 public class MemberCollector extends AbstractClosureVisitor {
@@ -123,13 +125,17 @@ public class MemberCollector extends AbstractClosureVisitor {
 
   @Override
   protected boolean visitField(StaticTypedSlot jsField, boolean isStatic) {
-    getCurrentJavaType()
-        .addField(
-            Field.create(
-                extractName(jsField.getName()),
-                getJavaTypeRegistry().createTypeReference(jsField.getType()),
-                isConstant(jsField),
-                isStatic));
+    Field field = Field.create(
+            extractName(jsField.getName()),
+            getJavaTypeRegistry().createTypeReference(jsField.getType()),
+            isConstant(jsField),
+            isStatic);
+
+    if (jsField.getJSDocInfo() != null && jsField.getJSDocInfo().isDeprecated()) {
+      field.addAnnotation(Annotation.builder().type(AnnotationType.DEPRECATED).build());
+    }
+
+    getCurrentJavaType().addField(field);
     return true;
   }
 
@@ -138,6 +144,9 @@ public class MemberCollector extends AbstractClosureVisitor {
     FunctionType jsMethod = method.toMaybeFunctionType();
 
     Method javaMethod = new Method();
+    if (method.getJSDocInfo() != null && method.getJSDocInfo().isDeprecated()) {
+      javaMethod.addAnnotation(Annotation.builder().type(AnnotationType.DEPRECATED).build());
+    }
     javaMethod.setName(extractName(jsMethod.getDisplayName()));
     javaMethod.setStatic(isStatic);
 

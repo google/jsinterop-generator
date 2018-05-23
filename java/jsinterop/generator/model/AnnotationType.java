@@ -23,7 +23,8 @@ public enum AnnotationType {
   JS_METHOD(PredefinedTypeReference.JS_METHOD, false, true, true),
   JS_PACKAGE(PredefinedTypeReference.JS_PACKAGE, false, true, false),
   JS_FUNCTION(PredefinedTypeReference.JS_FUNCTION, false, false, false),
-  JS_OVERLAY(PredefinedTypeReference.JS_OVERLAY, false, false, false);
+  JS_OVERLAY(PredefinedTypeReference.JS_OVERLAY, false, false, false),
+  DEPRECATED(PredefinedTypeReference.DEPRECATED, false, false, false);
 
   private final PredefinedTypeReference type;
   private boolean hasNamespaceAttribute;
