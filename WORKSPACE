@@ -56,7 +56,7 @@ http_archive(
 
 http_jar(
     name = "com_google_google_java_format",
-    url = "https://github.com/google/google-java-format/releases/download/google-java-format-1.3/google-java-format-1.3-all-deps.jar",
+    url = "https://github.com/google/google-java-format/releases/download/google-java-format-1.6/google-java-format-1.6-all-deps.jar",
 )
 
 # third_party libs used by jsinterop-base
