@@ -33,6 +33,7 @@ import com.google.javascript.rhino.jstype.StaticTypedSlot;
 import jsinterop.generator.closure.helper.GenerationContext;
 import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.Annotation;
+import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.EntityKind;
 import jsinterop.generator.model.Type;
 
@@ -101,6 +102,10 @@ public class TypeCollector extends AbstractClosureVisitor {
     Type javaType =
         createJavaType(type.getDisplayName(), type.isInterface() ? INTERFACE : CLASS, false);
     javaType.setStructural(type.isStructuralInterface());
+
+    if (type.getJSDocInfo() != null && type.getJSDocInfo().isDeprecated()) {
+      javaType.addAnnotation(Annotation.builder().type(AnnotationType.DEPRECATED).build());
+    }
     getJavaTypeRegistry().registerJavaType(javaType, type.getInstanceType());
 
     // keep the current java type to be able to create an extension type later.

@@ -20,6 +20,7 @@ package jsinterop.generator.visitor;
 import static com.google.common.base.Predicates.not;
 import static jsinterop.generator.helper.GeneratorUtils.toCamelUpperCase;
 import static jsinterop.generator.model.AccessModifier.DEFAULT;
+import static jsinterop.generator.model.AnnotationType.DEPRECATED;
 import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
 import static jsinterop.generator.model.AnnotationType.JS_PROPERTY;
 import static jsinterop.generator.model.AnnotationType.JS_TYPE;
@@ -190,6 +191,10 @@ public class FieldsConverter extends AbstractModelVisitor {
     Annotation.Builder jsPropertyAnnotation = Annotation.builder().type(JS_PROPERTY);
     if (!useBeanConvention || !fieldNameIsLowerCamelCase) {
       jsPropertyAnnotation.nameAttribute(fieldName);
+    }
+
+    if (field.getAnnotation(DEPRECATED) != null) {
+      accessor.addAnnotation(Annotation.builder().type(DEPRECATED).build());
     }
     accessor.addAnnotation(jsPropertyAnnotation.build());
 
