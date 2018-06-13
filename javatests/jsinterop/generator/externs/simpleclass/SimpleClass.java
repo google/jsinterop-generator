@@ -1,5 +1,7 @@
 package jsinterop.generator.externs.simpleclass;
 
+import java.lang.Object;
+import java.lang.String;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
