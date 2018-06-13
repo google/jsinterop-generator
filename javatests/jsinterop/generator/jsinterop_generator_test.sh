@@ -31,7 +31,8 @@ format_java_code() {
 
 # allows us to comment some part of java code when a feature is not implemented.
 strip_java_comments() {
-  find "$1" -type f -name '*.java' -print -exec sed -i '/\/\/.*$/d' '{}' \;
+  # BSD version of sed requires a backup suffix when -i option is used.
+  find "$1" -type f -name '*.java' -print -exec sed -i.bak '/\/\/.*$/d' '{}' \;
 }
 
 list_java_files() {
