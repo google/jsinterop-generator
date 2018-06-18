@@ -162,7 +162,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
     @Override
     public TypeReference caseNamedType(NamedType type) {
       // Reference to undefined types are wrapped in a NamedType with a reference to UnknownType.
-      checkState(!type.isUnknownType(), "Type %s is unknown", type.getReferenceName());
+      checkState(!type.isNoResolvedType(), "Type %s is unknown", type.getReferenceName());
 
       return visit(type.getReferencedType());
     }
