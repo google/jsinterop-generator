@@ -30,6 +30,9 @@ public class GeneratorOptions {
   public native String getPackagePrefix();
 
   @JsProperty
+  public native String getGlobalScopeClassName();
+
+  @JsProperty
   public native boolean isDebugEnabled();
 
   @JsProperty(name = "useBeanConvention")

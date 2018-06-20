@@ -22,4 +22,5 @@ jsinterop_generator_test(
         "SimpleModule.java",
         "Global.java",
     ],
+    global_scope_class_name = "Global",
 )

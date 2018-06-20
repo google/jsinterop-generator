@@ -43,6 +43,12 @@ public class Runner {
   )
   String extensionTypePrefix = null;
 
+  @Option(
+      name = "--global_scope_class_name",
+      usage = "Value used for java class representing the global scope.",
+      required = true)
+  String globalScopeClassName = null;
+
   @Option(name = "--debug_mode", usage = "Enable debug mode")
   boolean debugEnabled = false;
 
@@ -98,6 +104,7 @@ public class Runner {
             .outputDependencyFile(outputDependencyPath)
             .packagePrefix(packagePrefix)
             .extensionTypePrefix(extensionTypePrefix)
+            .globalScopeClassName(globalScopeClassName)
             .debugEnabled(debugEnabled)
             .beanConventionUsed(beanConvention)
             .dependencyMappingFiles(dependencyMappingFilePaths)

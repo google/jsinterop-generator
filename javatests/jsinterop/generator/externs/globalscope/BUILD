@@ -19,4 +19,5 @@ jsinterop_generator_test(
         "Global.java",
         "Global__Constants.java",
     ],
+    global_scope_class_name = "Global",
 )

@@ -42,15 +42,18 @@ public class TypeCollector extends AbstractClosureVisitor {
 
   private final String packagePrefix;
   private final String extensionTypePrefix;
+  private final String globalScopeClassName;
 
   public TypeCollector(
       GenerationContext ctx,
       String packagePrefix,
-      String extensionTypePrefix) {
+      String extensionTypePrefix,
+      String globalScopeClassName) {
     super(ctx);
 
     this.packagePrefix = packagePrefix;
     this.extensionTypePrefix = extensionTypePrefix;
+    this.globalScopeClassName = globalScopeClassName;
   }
 
   @Override
@@ -78,15 +81,19 @@ public class TypeCollector extends AbstractClosureVisitor {
 
   @Override
   protected boolean visitTopScope(TypedScope scope) {
-    Type globalJavaType = createGlobalJavaType(packagePrefix);
+    Type globalJavaType = createGlobalJavaType(packagePrefix, globalScopeClassName);
 
     if (!getContext().getExternDependencyFiles().isEmpty()) {
       // We don't add the global type to the dependency mapping file so we cannot use that
       // information to decide if there is already a global scope defined in the dependencies.
       // It's simply safe to assume that if there are dependencies, a global scope is already
-      // defined. If the current sources define function/variable on the global scope, a specific
+      // defined. The goal of the current type is to collect global scope members defined by
+      // dependencies and will never be emitted.
+      // If the current sources define function/variable on the global scope, a specific
       // extension type will be created for the global scope.
       globalJavaType.setExtern(true);
+      // Change the name in order to not conflict with the real type that can be created later.
+      globalJavaType.setName("__Global_Dependencies");
     }
 
     getJavaTypeRegistry().registerJavaGlobalType(globalJavaType, scope.getTypeOfThis());
@@ -208,7 +215,8 @@ public class TypeCollector extends AbstractClosureVisitor {
 
   private void createApiExtensionType(Type typeToExtend) {
     Type extensionType =
-        ModelHelper.createApiExtensionType(typeToExtend, packagePrefix, extensionTypePrefix);
+        ModelHelper.createApiExtensionType(
+            typeToExtend, packagePrefix, extensionTypePrefix, globalScopeClassName);
 
     getJavaTypeRegistry().registerExtensionType(typeToExtend, extensionType);
     getContext().getJavaProgram().addType(extensionType);

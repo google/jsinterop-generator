@@ -20,6 +20,7 @@ jsinterop_generator_test(
         "SimpleClass.java",
         "SimpleInterface.java",
         "MyLibThirdPartyClass.java",
+        "MyLibGlobal__Constants.java",
     ],
     extension_type_prefix = "MyLib",
     deps = [

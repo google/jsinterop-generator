@@ -137,7 +137,11 @@ class ClosureJsInteropGenerator {
 
     TypedScope topScope = compiler.getTopScope();
 
-    new TypeCollector(ctx, options.getPackagePrefix(), options.getExtensionTypePrefix())
+    new TypeCollector(
+            ctx,
+            options.getPackagePrefix(),
+            options.getExtensionTypePrefix(),
+            options.getGlobalScopeClassName())
         .accept(topScope);
 
     new AnonymousTypeCollector(ctx).accept(topScope);

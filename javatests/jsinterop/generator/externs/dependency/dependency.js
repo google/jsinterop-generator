@@ -57,3 +57,6 @@ ThirdPartyClass.prototype.extraMethod = function(foo, bar) {};
  * @return {string}
  */
 function foo() {}
+
+/** @const {number} */
+var globalConstant;

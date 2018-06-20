@@ -20,5 +20,6 @@ jsinterop_generator_test(
         "Foo.java",
         "Global.java",
     ],
+    global_scope_class_name = "Global",
     name_mapping_files = ["renaming.txt"],
 )

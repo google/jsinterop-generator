@@ -96,6 +96,7 @@ def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
       "--output_dependency_file=%s" % types_mapping_file.path,
       "--package_prefix=%s" % ctx.attr.package_prefix,
       "--extension_type_prefix=%s" % ctx.attr.extension_type_prefix,
+      "--global_scope_class_name=%s" % ctx.attr.global_scope_class_name,
       ]
   arguments += ["--dependency=%s" % f.path for f in deps_srcs]
   arguments += ["--dependency_mapping_file=%s" % f.path for f in dep_types_mapping_files]
@@ -197,6 +198,7 @@ _jsinterop_generator = rule(
         "deps": attr.label_list(allow_files = True),
         "package_prefix": attr.string(),
         "extension_type_prefix": attr.string(),
+        "global_scope_class_name": attr.string(),
         "name_mapping_files": attr.label_list(allow_files = True),
         "integer_entities_files": attr.label_list(allow_files = True),
         "wildcard_types_files": attr.label_list(allow_files = True),
@@ -248,6 +250,7 @@ def jsinterop_generator(
     exports = [],
     deps = [],
     extension_type_prefix = None,
+    global_scope_class_name = None,
     name_mapping_files = [],
     integer_entities_files = [],
     wildcard_types_files = [],
@@ -297,6 +300,9 @@ def jsinterop_generator(
     if not extension_type_prefix:
       extension_type_prefix = name[0].upper() + name[1:]
 
+    if not global_scope_class_name:
+      global_scope_class_name = "%sGlobal" % extension_type_prefix
+
     gwt_module_name = extension_type_prefix
 
     _jsinterop_generator(
@@ -305,6 +311,7 @@ def jsinterop_generator(
         deps = deps_js_interop_generator,
         package_prefix = package_prefix,
         extension_type_prefix = extension_type_prefix,
+        global_scope_class_name = global_scope_class_name,
         name_mapping_files = name_mapping_files,
         integer_entities_files = integer_entities_files,
         wildcard_types_files = wildcard_types_files,

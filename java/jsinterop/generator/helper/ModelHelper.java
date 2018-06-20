@@ -53,8 +53,6 @@ import jsinterop.generator.model.TypeReference;
 
 /** Helper methods around our java model. */
 public class ModelHelper {
-
-  private static final String GLOBAL_SCOPE_CLASS_NAME = "Global";
   private static final String GLOBAL_NAMESPACE = "<global>";
 
   public static Type createJavaType(
@@ -114,9 +112,12 @@ public class ModelHelper {
   }
 
   public static Type createApiExtensionType(
-      Type typeToExtend, String packagePrefix, String extensionTypePrefix) {
+      Type typeToExtend,
+      String packagePrefix,
+      String extensionTypePrefix,
+      String globalScopeClassName) {
     if (isGlobalType(typeToExtend)) {
-      return createGlobalJavaType(packagePrefix, extensionTypePrefix + typeToExtend.getName());
+      return createGlobalJavaType(packagePrefix, globalScopeClassName);
     }
 
     Type extendingType = new Type(typeToExtend.getKind());
@@ -161,11 +162,7 @@ public class ModelHelper {
     return extendingType;
   }
 
-  public static Type createGlobalJavaType(String packagePrefix) {
-    return createGlobalJavaType(packagePrefix, GLOBAL_SCOPE_CLASS_NAME);
-  }
-
-  private static Type createGlobalJavaType(String packagePrefix, String globalScopeClassName) {
+  public static Type createGlobalJavaType(String packagePrefix, String globalScopeClassName) {
     Type type = new Type(NAMESPACE);
     type.setName(globalScopeClassName);
     type.setPackageName(packagePrefix);

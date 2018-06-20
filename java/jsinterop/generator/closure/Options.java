@@ -50,6 +50,8 @@ public abstract class Options {
     abstract Builder wildcardTypesFiles(List<String> wildcardTypesFiles);
 
     abstract Options build();
+
+    abstract Builder globalScopeClassName(String globalScopeClassName);
   }
 
   public abstract String getOutputJarFile();
@@ -58,6 +60,8 @@ public abstract class Options {
 
   @Nullable
   public abstract String getPackagePrefix();
+
+  public abstract String getGlobalScopeClassName();
 
   public abstract String getExtensionTypePrefix();
 

@@ -24,4 +24,5 @@ jsinterop_generator_test(
         "InnerStructuralType.java",
         "ClassInModule.java",
     ],
+    global_scope_class_name = "Global",
 )

@@ -21,6 +21,9 @@ const flags = require("commander");
 
 flags.option('--output <file>', 'Output file path')
     .option('--package_prefix <str>', 'Java package prefix')
+    .option(
+        '--global_scope_class_name <str>',
+        'Name of the java class representing the global scope')
     .option('--debug', 'Enable debug mode')
     .option('--with_typescript_lib', 'Generate types from lib.d.ts')
     .option(
@@ -50,6 +53,7 @@ flags.option('--output <file>', 'Output file path')
 const config = {
   'output': flags.output,
   'packagePrefix': flags.package_prefix,
+  'globalScopeClassName': flags.global_scope_class_name,
   'debugEnabled': flags.debug,
   'withTypescriptLib': flags.with_typescript_lib,
   'useBeanConvention': flags.bean_convention,
