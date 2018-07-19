@@ -262,6 +262,7 @@ def jsinterop_generator(
         visibility = None,
         testonly = None,
         j2cl_test_externs_list = [],
+        ):
     if not srcs and not exports:
         fail("Empty rule. Nothing to generate or import.")
 
