@@ -41,13 +41,6 @@ maven_jar(
     artifact = "com.google.errorprone:error_prone_annotations:2.0.19",
 )
 
-new_http_archive(
-  name="com_google_closure_compiler",
-  url="https://github.com/google/closure-compiler/archive/v20170409.tar.gz",
-  build_file="jscomp.BUILD",
-  strip_prefix="closure-compiler-20170409"
-)
-
 http_archive(
     name = "com_google_jsinterop_base",
     url = "https://github.com/google/jsinterop-base/archive/master.zip",

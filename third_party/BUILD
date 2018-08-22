@@ -82,13 +82,6 @@ alias(
     visibility = ["//visibility:public"],
 )
 
-# Tests dependencies
-alias(
-    name = "common_externs",
-    actual = "@com_google_closure_compiler//:common_externs",
-    visibility = ["//javatests:__subpackages__"],
-)
-
 java_library(
     name = "jsinterop-base",
     exports = ["@com_google_jsinterop_base//java/jsinterop/base:base"],

@@ -30,6 +30,7 @@ Examples:
 """
 
 load("//third_party:j2cl_library.bzl", "j2cl_library")
+load("//third_party:js_library.bzl", "js_library")
 load("//third_party:utils.bzl", "absolute_label", "get_java_package")
 
 _is_bazel = not hasattr(native, "genmpm")
@@ -259,10 +260,9 @@ def jsinterop_generator(
         generate_gwt_library = True,
         conversion_mode = "closure",
         generate_j2cl_build_test = None,
+        j2cl_js_deps = None,
         visibility = None,
-        testonly = None,
-        j2cl_test_externs_list = [],
-        ):
+        testonly = None):
     if not srcs and not exports:
         fail("Empty rule. Nothing to generate or import.")
 
@@ -292,7 +292,14 @@ def jsinterop_generator(
             package_prefix = get_java_package(native.package_name())
 
         if conversion_mode == "closure":
-            j2cl_test_externs_list = j2cl_test_externs_list + srcs + exports_srcs + deps_srcs
+            if j2cl_js_deps == None:
+                externs_lib_name = "%s-externs" % name
+                js_library(
+                    name = externs_lib_name,
+                    srcs = srcs,
+                )
+                j2cl_js_deps = [":%s" % externs_lib_name]
+
 
         else:
             fail("Unknown conversion mode")
@@ -365,7 +372,7 @@ def jsinterop_generator(
             exports = exports_j2cl,
             testonly = testonly,
             visibility = visibility,
-            _test_externs_list = j2cl_test_externs_list,
+            _js_deps = j2cl_js_deps or [],
         )
 
     if generate_gwt_library:
