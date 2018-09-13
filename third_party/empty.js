@@ -1,1 +1,0 @@
-// Used to fake a dependency to typescript compiler
