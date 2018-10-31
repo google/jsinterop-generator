@@ -31,7 +31,6 @@ Examples:
 
 load("//third_party:j2cl_library.bzl", "j2cl_library")
 load("//third_party:js_library.bzl", "js_library")
-load("//third_party:utils.bzl", "absolute_label", "get_java_package")
 
 _is_bazel = not hasattr(native, "genmpm")
 
@@ -272,12 +271,12 @@ def jsinterop_generator(
     if not generate_j2cl_library and not generate_gwt_library:
         fail("either generate_j2cl_library or generate_gwt_library should be set to True")
 
-    exports_java = [absolute_label(export) for export in exports]
+    exports_java = [_absolute_label(export) for export in exports]
     exports_j2cl = ["%s-j2cl" % export for export in exports_java]
     exports_srcs = ["%s__deps_srcs_internal" % export for export in exports_java]
     exports_js_interop_generator = [JS_INTEROP_RULE_NAME_PATTERN % export for export in exports_java]
 
-    deps_java = [absolute_label(dep) for dep in deps]
+    deps_java = [_absolute_label(dep) for dep in deps]
 
     # deps_j2cl are computed later
     deps_srcs = ["%s__deps_srcs_internal" % dep for dep in deps_java]
@@ -289,7 +288,7 @@ def jsinterop_generator(
         generator_srcs = srcs[:]
 
         if not package_prefix:
-            package_prefix = get_java_package(native.package_name())
+            package_prefix = _get_java_package(native.package_name())
 
         if conversion_mode == "closure":
             if j2cl_js_deps == None:
@@ -394,3 +393,49 @@ def jsinterop_generator(
             java_library_args["constraints"] = ["gwt", "public"]
 
         native.java_library(**java_library_args)
+
+def _absolute_label(label):
+    """Expand a label to be of the full form //package:foo.
+
+    Args:
+      label: string in relative or absolute form.
+
+    Returns:
+      Absolute form of the label as a string.
+    """
+    if label.startswith("//"):
+        label = label[2:]  # drop the leading //
+        colon_split = label.split(":")
+        if len(colon_split) == 1:  # no ":" in label
+            pkg = label
+            _, _, target = label.rpartition("/")
+        else:
+            pkg, target = colon_split  # fails if len(colon_split) != 2
+    else:
+        colon_split = label.split(":")
+        if len(colon_split) == 1:  # no ":" in label
+            pkg, target = native.package_name(), label
+        else:
+            pkg2, target = colon_split  # fails if len(colon_split) != 2
+            pkg = native.package_name() + ("/" + pkg2 if pkg2 else "")
+
+    return "//%s:%s" % (pkg, target)
+
+def _get_java_package(path):
+    """Extract the java package from path"""
+
+    segments = path.split("/")
+
+    # Find different root start indecies based on potential java roots
+    java_root_start_indecies = [_find(segments, root) for root in ["java", "javatests"]]
+
+    # Choose the root that starts earliest
+    start_index = min(java_root_start_indecies)
+
+    if start_index == len(segments):
+        fail("Cannot find java root: " + path)
+
+    return ".".join(segments[start_index + 1:])
+
+def _find(segments, s):
+    return segments.index(s) if s in segments else len(segments)
