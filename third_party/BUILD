@@ -72,13 +72,13 @@ java_binary(
 
 alias(
     name = "jar",
-    actual = "@local_jdk//:jar",
+    actual = "@bazel_tools//tools/jdk:jar",
     visibility = ["//visibility:public"],
 )
 
 alias(
     name = "jdk",
-    actual = "@local_jdk//:jdk-default",
+    actual = "@bazel_tools//tools/jdk:current_java_runtime",
     visibility = ["//visibility:public"],
 )
 
