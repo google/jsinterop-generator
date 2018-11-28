@@ -1,7 +1,6 @@
-"""Dummy implementation of js_library rule.
-
-This will be removed in favor of the real implementation when j2cl is opensourced.
+"""Bazel implementation of js_library rule.
 """
 
-def js_library(**kwargs):
-  pass
+load("@io_bazel_rules_closure//closure:defs.bzl", _closure_js_library = "closure_js_library")
+
+js_library = _closure_js_library

@@ -10,13 +10,13 @@ licenses(["notice"])
 java_plugin(
     name = "auto_annotation_plugin",
     processor_class = "com.google.auto.value.processor.AutoAnnotationProcessor",
-    deps = ["@auto_value//jar"],
+    deps = ["@com_google_auto_value"],
 )
 
 java_plugin(
     name = "auto_value_plugin",
     processor_class = "com.google.auto.value.processor.AutoValueProcessor",
-    deps = ["@auto_value//jar"],
+    deps = ["@com_google_auto_value"],
 )
 
 java_library(
@@ -25,43 +25,42 @@ java_library(
         ":auto_annotation_plugin",
         ":auto_value_plugin",
     ],
-    exports = ["@auto_value//jar"],
+    exports = ["@com_google_auto_value"],
 )
 
 java_library(
     name = "jscomp",
-    exports = ["@jscomp//jar"],
+    exports = ["@com_google_javascript_closure_compiler"],
 )
 
 java_library(
     name = "args4j",
-    exports = ["@args4j//jar"],
+    exports = ["@args4j"],
 )
 
 java_library(
     name = "jsr305_annotations",
-    exports = ["@jsr305//jar"],
+    exports = ["@com_google_code_findbugs_jsr305"],
 )
 
 java_library(
     name = "guava",
-    exports = ["@guava//jar"],
+    exports = ["@com_google_guava"],
 )
 
-java_library(
+alias(
     name = "gwt-jsinterop-annotations",
-    exports = ["@jsinterop_annotations//jar"],
+    actual = "@com_google_j2cl//:jsinterop-annotations",
+)
+
+alias(
+    name = "gwt-jsinterop-annotations-j2cl",
+    actual = "@com_google_j2cl//:jsinterop-annotations-j2cl",
 )
 
 # Dependencies used in the jsinterop_generator skylark rules.
 # These dependencies need to be publicly visible in order to allow any other repo to use the
 # jsinterop generator rule.
-filegroup(
-    name = "typescript_compiler_js",
-    # This part is not opensourced yet.
-    srcs = ["empty.js"],
-    visibility = ["//visibility:public"],
-)
 
 java_binary(
     name = "google_java_format",
@@ -82,8 +81,14 @@ alias(
     visibility = ["//visibility:public"],
 )
 
-java_library(
+alias(
     name = "jsinterop-base",
-    exports = ["@com_google_jsinterop_base//java/jsinterop/base:base"],
+    actual = "@com_google_jsinterop_base//:jsinterop-base",
+    visibility = ["//javatests:__subpackages__"],
+)
+
+alias(
+    name = "jsinterop-base-j2cl",
+    actual = "@com_google_jsinterop_base//:jsinterop-base-j2cl",
     visibility = ["//javatests:__subpackages__"],
 )

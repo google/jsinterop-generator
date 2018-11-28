@@ -29,7 +29,7 @@ Examples:
     )
 """
 
-load("//third_party:j2cl_library.bzl", "j2cl_library")
+load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
 load("//third_party:js_library.bzl", "js_library")
 
 _is_bazel = not hasattr(native, "genmpm")

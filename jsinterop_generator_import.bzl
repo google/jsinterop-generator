@@ -5,7 +5,7 @@ jsinterop_generator_import() target to be directly depended upon from jsinterop_
 targets.
 """
 
-load("//third_party:j2cl_library.bzl", "j2cl_library")
+load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
 load(":jsinterop_generator.bzl", "JS_INTEROP_RULE_NAME_PATTERN", "JsInteropGeneratorInfo")
 
 _is_bazel = not hasattr(native, "genmpm")
