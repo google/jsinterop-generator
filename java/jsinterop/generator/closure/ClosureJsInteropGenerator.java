@@ -71,10 +71,8 @@ class ClosureJsInteropGenerator {
     dependencyFileWriter.accept(javaProgram);
 
     try {
-      Files.write(
-          dependencyFileWriter.getDependencyFileContent(),
-          new File(options.getOutputDependencyFile()),
-          UTF_8);
+      Files.asCharSink(new File(options.getOutputDependencyFile()), UTF_8)
+          .write(dependencyFileWriter.getDependencyFileContent());
     } catch (IOException e) {
       throw new RuntimeException("Unable to create dependency file", e);
     }
