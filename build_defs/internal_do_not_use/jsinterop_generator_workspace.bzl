@@ -1,11 +1,9 @@
 """Macro to use for loading the jsinterop generator repository"""
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
-load("@com_google_j2cl//build_defs:rules.bzl", "setup_j2cl_workspace")
 
 def setup_jsinterop_generator_workspace():
     """Load all dependencies needed for jsinterop generator."""
-    setup_j2cl_workspace()
 
     http_jar(
         name = "com_google_google_java_format",
