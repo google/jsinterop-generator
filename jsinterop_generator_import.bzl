@@ -69,8 +69,8 @@ def jsinterop_generator_import(
         srcs = srcs,
         visibility = visibility,
         deps = [
-            "//third_party/java/gwt:gwt-jsinterop-annotations-j2cl",
-            "//third_party/java/jsinterop:jsinterop-base-j2cl",
+            "//third_party:gwt-jsinterop-annotations-j2cl",
+            "//third_party:jsinterop-base-j2cl",
         ],
     )
 
