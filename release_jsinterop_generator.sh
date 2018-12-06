@@ -28,6 +28,7 @@ merge_jars() {
 }
 
 deploy_target='@com_google_jsinterop_base//:deploy'
+license_header="--no-license"
 group_id="com.google.jsinterop"
 maven_artifact="closure-generator"
 
@@ -66,7 +67,8 @@ pom_template=${bazel_root}/maven/pom-closure-generator.xml
 runcmd="$(mktemp /tmp/bazel-run.XXXXXX)"
 bazel run --script_path="$runcmd"  ${deploy_target} -- ${maven_artifact} \
     ${tmp_artifact_dir}/generator.jar \
-    ${tmp_artifact_dir}/generator-src.jar --no-license \
+    ${tmp_artifact_dir}/generator-src.jar \
+    ${license_header} \
     ${pom_template} \
     ${lib_version} \
     ${group_id}
