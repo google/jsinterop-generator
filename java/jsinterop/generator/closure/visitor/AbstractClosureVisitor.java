@@ -489,10 +489,19 @@ abstract class AbstractClosureVisitor {
   }
 
   protected boolean isApiExtension(StaticTypedSlot member) {
-    return getCurrentJavaType().isExtern()
-        && !getContext()
-            .getExternDependencyFiles()
-            .contains(member.getDeclaration().getSourceFile());
+    if (!getCurrentJavaType().isExtern()) {
+      return false;
+    }
+
+    checkState(
+        member.getDeclaration() != null,
+        "No declaration found for member [%s]. Please fix the extern file. A class must implement "
+            + "all methods from its super interfaces.",
+        member);
+
+    return !getContext()
+        .getExternDependencyFiles()
+        .contains(member.getDeclaration().getSourceFile());
   }
 
   /**
