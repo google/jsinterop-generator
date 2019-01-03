@@ -41,7 +41,6 @@ JsInteropGeneratorInfo = provider()
 def _get_generator_files(targets):
     transitive_srcs = depset()
     transitive_types_mappings = depset()
-    transitive_names_mappings = depset()
     gwt_module_names = []
 
     for target in targets:
@@ -49,13 +48,11 @@ def _get_generator_files(targets):
 
         transitive_srcs += target_provider.transitive_sources
         transitive_types_mappings += target_provider.transitive_types_mappings
-        transitive_names_mappings += target_provider.transitive_names_mappings
         gwt_module_names += target_provider.gwt_module_names
 
     return struct(
         sources = transitive_srcs,
         types_mappings = transitive_types_mappings,
-        names_mappings = transitive_names_mappings,
         gwt_module_names = gwt_module_names,
     )
 
@@ -73,7 +70,6 @@ def _jsinterop_generator_export_impl(ctx):
         JsInteropGeneratorInfo(
             transitive_sources = jsinterop_files.sources,
             transitive_types_mappings = jsinterop_files.types_mappings,
-            transitive_names_mappings = jsinterop_files.names_mappings,
             gwt_module_names = jsinterop_files.gwt_module_names,
         ),
     ]
@@ -89,7 +85,7 @@ _jsinterop_generator_export = rule(
 def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
     deps_srcs = deps_files.sources.to_list()
     dep_types_mapping_files = deps_files.types_mappings.to_list()
-    names_mapping_files = deps_files.names_mappings.to_list() + ctx.files.name_mapping_files
+    names_mapping_files = ctx.files.name_mapping_files
 
     arguments = [
         "--output=%s" % ctx.outputs._generated_jar.path,
@@ -180,7 +176,6 @@ def _jsinterop_generator_impl(ctx):
         JsInteropGeneratorInfo(
             transitive_sources = deps_files.sources + srcs,
             transitive_types_mappings = deps_files.types_mappings + [types_mapping_file],
-            transitive_names_mappings = deps_files.names_mappings + ctx.files.name_mapping_files,
             gwt_module_names = [gwt_module_name],
         ),
     ]

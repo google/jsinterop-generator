@@ -24,6 +24,7 @@ function ThirdPartyClass(foo) {}
 
 /**
  * Test global scope extension
+ * @param {function(number)}  callback
  * @return {string}
  */
-function thirdparty() {}
+function thirdparty(callback) {}

@@ -1,0 +1,1 @@
+jsinterop.generator.externs.dependency.thirdparty.ThirdpartyGlobal.ThirdpartyCallbackFn.onInvoke.p0=foo
