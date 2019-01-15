@@ -5,9 +5,21 @@
  */
 
 /**
- * @constructor
- * @param {...*} args
+ * @interface
  * @template T
+ *
+ * @suppress {duplicate}
+ */
+function Iterable(args) {}
+
+/**
+ * @constructor
+ * @template T
+ * @implements {Iterable<T>}
+ *
+ * @param {...*} args
+ * @return {!Array<T>}
+ *
  * @suppress {duplicate}
  */
 function Array(args) {}
