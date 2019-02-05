@@ -46,12 +46,11 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
           Splitter.on(' ')
               .omitEmptyStrings()
               .split(
-                  "abstract continue new switch assert default goto package synchronized "
-                      + "boolean do if private this break double implements protected throw "
-                      + "byte else import public throws case enum instanceof return transient"
-                      + " catch extends int short try char final interface static void class "
-                      + "finally long strictfp volatile const float native super while null "
-                      + "true false"));
+                  "abstract continue for new switch assert default goto package synchronized "
+                      + "boolean do if private this break double implements protected throw byte "
+                      + "else import public throws case enum instanceof return transient catch "
+                      + "extends int short try char final interface static void class finally long "
+                      + "strictfp volatile const float native super while null true false"));
 
   // TODO(b/67912344): add a logic driven by config file that remanes any entity.
   private static final ImmutableSet<String> TYPES_TO_PREFIX =
