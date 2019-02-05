@@ -1,5 +1,4 @@
-JsInterop Generator
-===================
+# JsInterop Generator &middot; [![Build Status](https://secure.travis-ci.org/google/jsinterop-generator.png?branch=master)](http://travis-ci.org/google/jsinterop-generator)
 
 The jsinterop generator is a java program that takes closure extern files as input and generates
 Java classes annotated with [JsInterop annotations](https://goo.gl/agme3T).
