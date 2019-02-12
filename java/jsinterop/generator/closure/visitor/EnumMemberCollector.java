@@ -40,29 +40,32 @@ import jsinterop.generator.model.TypeReference;
  * Convert closure Enum members to static final java fields and add an instance method getValue()
  * that returns the value of the enum member at runtime.
  *
+ * <p>ex:</p>
+ *
  * <pre>
- * ex:
  *   /**
- *    * @enum {number}
- *    *\/
+ *    * &#64;enum {number}
+ *    *&#x2F;
  *   TriState = {
  *    TRUE: 1,
  *    FALSE: -1,
  *    MAYBE: 0
  *   };
+ * </pre>
  *
- * is converted to:
+ * <p>is converted to:</p>
  *
- *  @JsType(isNative = true)
+ * <pre>
+ *  &#64;JsType(isNative = true)
  *  public final class TriState {
- *    @JsOverlay
+ *    &#64;JsOverlay
  *    public static final TriState TRUE = TriState__Constants.TRUE;
- *    @JsOverlay
+ *    &#64;JsOverlay
  *    public static final TriState FALSE = TriState__Constants.FALSE;
- *    @JsOverlay
+ *    &#64;JsOverlay
  *    public static final TriState MAYBE = TriState__Constants.MAYBE;
  *
- *    @JsOverlay
+ *    &#64;JsOverlay
  *    public double getValue() {
  *      return Js.uncheckCast(this);
  *    }

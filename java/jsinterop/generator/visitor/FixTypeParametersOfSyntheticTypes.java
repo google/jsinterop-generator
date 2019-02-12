@@ -41,25 +41,27 @@ import jsinterop.generator.model.UnionTypeReference;
 /**
  * Synthetic type can refer to generics from parent scope:
  *
+ * <p>ex (with typescript): class</p>
+ *
  * <pre>
- * ex (with typescript): class
- *   Foo<T> {
- *     foo(callback: (result: T) => void): void;
+ *   Foo&lt;T&gt; {
+ *     foo(callback: (result: T) =&gt; void): void;
  *   }
  * </pre>
  *
  * <p>If generics from the parent scope are used in the definition of the synthetic type, we have to
  * retrofit the generic definition on the java type used to abstract the synthetic type.
  *
+ * <p>Generated java code:</p>
+ *
  * <pre>
- * Generated java code:
- *   public class Foo<T> {
- *     @JsFunction
- *     interface FooCallback<T> {
+ *   public class Foo&lt;T&gt; {
+ *     &#64;JsFunction
+ *     interface FooCallback&lt;T&gt; {
  *       void onInvoke(T result);
  *     }
  *
- *     public native void foo(FooCallback<T> callback);
+ *     public native void foo(FooCallback&lt;T&gt; callback);
  *   }
  * </pre>
  */

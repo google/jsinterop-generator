@@ -16,7 +16,7 @@
  */
 package jsinterop.generator.model;
 
-/** Basic implementation of {@see Statement} interface */
+/** Basic implementation of {@link Statement} interface */
 public abstract class AbstractStatement implements Statement {
   private String leadingComment;
 

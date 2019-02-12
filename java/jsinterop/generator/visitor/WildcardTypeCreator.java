@@ -50,20 +50,21 @@ import jsinterop.generator.model.WildcardTypeReference;
  * represents a T consumer, we use {@code <? super T>} If it represents both or if we cannot
  * determine if it's a producer or consumer we use {@code <T>}.
  *
- * <pre>E.g.
- *  <code>
- *    @JsFunction
- *    interface FooCallback<T,V> {
+ * <p>E.g.</p>
+ *
+ * <pre>
+ *    &#64;JsFunction
+ *    interface FooCallback&lt;T,V&gt; {
  *      V onInvoke(T param);
  *    }
- *  </code>
+ * </pre>
  *
- *  The reference to this interface can use bounded wildcard type as following:
- *  <code>
- *    interface Bar<T, V> {
- *      void foo(FooCallback<? super T, ? extends V> callback);
+ * <p>The reference to this interface can use bounded wildcard type as following:</p>
+ *
+ * <pre>
+ *    interface Bar&lt;T, V&gt; {
+ *      void foo(FooCallback&lt;? super T, ? extends V&gt; callback);
  *    }
- *  </code>
  * </pre>
  *
  * <p>We only apply this logic on methods parameters and fields. We never create wildcard types as
@@ -74,30 +75,28 @@ import jsinterop.generator.model.WildcardTypeReference;
  * configuration file. The configuration file contains a list of key/value where the key is the
  * fully qualify name of the entity and the value is the kind of wildcard type to use.
  *
- * <pre>Ex:
- *   <code>
+ * <p>Ex:</p>
+ *
+ * <pre>
  *     package bar;
  *
  *     class Foo {
- *       public void method(Bar<T,V> bar);
+ *       public void method(Bar&lt;T,V&gt; bar);
  *     }
- *   </code>
  * </pre>
  *
- * For configuring wildcard type for T and V, the config file can contain following entries:
+ * <p>For configuring wildcard type for T and V, the config file can contain following entries:</p>
  *
  * <pre>
  *   bar.Foo.method.bar#0=SUPER
  *   bar.Foo.method.bar#1=EXTENDS
  * </pre>
  *
- * The resulting code will be: <code>
- *   public void method(Bar<? super T, ? extends V> bar);
- * </code>
+ * The resulting code will be: {@code public void method(Bar<? super T, ? extends V> bar);}
  *
  * <p>NONE can be used as value to remove a wildcard type added by the automatic mechanism.
  *
- * <p>Note that we don't support type variable in nested type parameter like List<List<T>>
+ * <p>Note that we don't support type variable in nested type parameter like {@code List<List<T>>}.
  */
 public class WildcardTypeCreator extends AbstractModelVisitor {
   private enum WildcardType {

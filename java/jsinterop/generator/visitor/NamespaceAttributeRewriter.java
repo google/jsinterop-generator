@@ -28,15 +28,10 @@ import jsinterop.generator.model.Type;
  * defined under a namespace, we need to put the namespace in the name attribute of the JsInterop
  * annotation in order to force J2Cl not to emit a goog.require for the type.
  *
- * <pre>
- *   Ex:
- *   Instead of emitting:
- *      @JsType(isNative = true, name = "Foo", namespace = "Bar")
- *   emit:
- *      @JsType(isNative = true, name = "Bar.Foo", namespace = JsPackage.GLOBAL)
- * </pre>
+ * <p>For example, instead of emitting: {@code @JsType(isNative = true, name = "Foo", namespace = "Bar")}
+ * emit {@code @JsType(isNative = true, name = "Bar.Foo", namespace = JsPackage.GLOBAL)}</p>
  *
- * <p>This visitor is in charge to remove the clutz namespace if present.
+ * <p>This visitor is in charge to remove the clutz namespace if present.</p>
  */
 public class NamespaceAttributeRewriter extends AbstractModelVisitor {
 

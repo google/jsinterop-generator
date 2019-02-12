@@ -39,9 +39,9 @@ import jsinterop.generator.model.TypeReference;
  * existing native method that accepts {@code JsConstructorFn} so the API becomes Java friendly.
  *
  * <pre>
- *   public native void consumeConstructor(JsConstructorFn<Foo> ctor);
- *   @JsOverlay
- *   public final void consumeConstructor(Class<Foo> clazz) {
+ *   public native void consumeConstructor(JsConstructorFn&lt;Foo&gt; ctor);
+ *   &#64;JsOverlay
+ *   public final void consumeConstructor(Class&lt;Foo&gt; clazz) {
  *     return consumeConstructor(Js.asConstructorFn(clazz));
  *   }
  * </pre>
