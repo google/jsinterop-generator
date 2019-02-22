@@ -111,7 +111,7 @@ def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
     inputs = srcs + deps_srcs + dep_types_mapping_files + names_mapping_files
     inputs += ctx.files.integer_entities_files + ctx.files.wildcard_types_files
 
-    ctx.action(
+    ctx.actions.run(
         inputs = inputs,
         outputs = [ctx.outputs._generated_jar, types_mapping_file],
         executable = ctx.executable._closure_generator,
@@ -164,7 +164,7 @@ def _jsinterop_generator_impl(ctx):
         ctx.executable._jar,
     ] + ctx.files._jdk
 
-    ctx.action(
+    ctx.actions.run(
         inputs = inputs,
         outputs = [ctx.outputs._formatted_jar],
         executable = ctx.executable._format_jar_script,
