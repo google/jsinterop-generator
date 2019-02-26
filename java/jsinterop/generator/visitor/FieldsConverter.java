@@ -118,7 +118,7 @@ public class FieldsConverter extends AbstractModelVisitor {
   }
 
   /**
-   * We convert native static fields by defining an extra native JsType that will contain private
+   * We convert native static fields on interfaces by defining an extra native JsType that will contain private
    * static fields that target the javascript constant symbols. Then we reexpose those fields on the
    * original type by using JsOverlay static final field.
    */
@@ -129,6 +129,12 @@ public class FieldsConverter extends AbstractModelVisitor {
       Preconditions.checkState(
           originalType.getFields().stream().noneMatch(f -> f.isStatic() && !f.isNativeReadOnly()),
           "Non constant static fields are not supported on interface");
+    } else if (originalType.isClass() || originalType.isNamespace()) {
+      // This avoids reexposing fields on namespace and/or class types. If we do re-expose the
+      // fields we end up with a <clinit> method that assigns the fields from their __Constants
+      // class to the local class. This is unnecessary and forces invoking code to invoke the <clinit>
+      // before accessing the fields.
+      return;
     }
 
     Type constantWrapper = new Type(EntityKind.CLASS);
