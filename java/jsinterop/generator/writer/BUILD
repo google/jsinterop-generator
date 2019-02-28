@@ -14,7 +14,6 @@ java_library(
     deps = [
         "//java/jsinterop/generator/helper",
         "//java/jsinterop/generator/model",
-        "//java/jsinterop/generator/option",
         "//third_party:guava",
     ],
 )
