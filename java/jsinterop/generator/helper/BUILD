@@ -12,6 +12,7 @@ java_library(
     name = "helper",
     srcs = glob(["*.java"]),
     deps = [
+        "//java/com/google/common/collect:collect-gwt",
         "//java/jsinterop/generator/model",
         "//third_party:guava",
     ],

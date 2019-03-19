@@ -12,6 +12,7 @@ java_library(
     name = "model",
     srcs = glob(["*.java"]),
     deps = [
+        "//java/com/google/common/collect:collect-gwt",
         "//third_party:auto_value",
         "//third_party:guava",
         "//third_party:jsr305_annotations",
