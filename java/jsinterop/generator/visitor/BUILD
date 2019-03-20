@@ -12,7 +12,6 @@ java_library(
     name = "visitor",
     srcs = glob(["*.java"]),
     deps = [
-        "//java/com/google/common/collect:collect-gwt",
         "//java/jsinterop/generator/helper",
         "//java/jsinterop/generator/model",
         "//third_party:guava",
