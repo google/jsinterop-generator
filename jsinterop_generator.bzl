@@ -1,12 +1,12 @@
 """jsinterop_generator build rule.
 
-Takes closure extern files and generates java file annotated with JsInterop annotation for the types
+Takes closure extern files and generates java files annotated with JsInterop annotations for the types
 defined in the extern files.
 
-This rule produces by default a java_library with the same name usable with gwt.  This default
-behavior can be disabled by setting the parameter generate_gwt_library to False.
+By default, this rule produces a java_library with the same name usable with gwt. This behavior
+can be disabled by setting the parameter generate_gwt_library to False.
 
-This rule produces by default a j2cl_library with the same name suffixed by '-j2cl'. This default
+By default, this rule produces a j2cl_library with the same name suffixed by '-j2cl'. This
 behavior can be disabled by setting the parameter generate_j2cl_library to False.
 
 
