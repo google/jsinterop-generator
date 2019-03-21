@@ -19,36 +19,25 @@ package jsinterop.generator.visitor;
 
 import static com.google.common.base.Predicates.not;
 import static jsinterop.generator.helper.GeneratorUtils.toCamelUpperCase;
-import static jsinterop.generator.model.AccessModifier.DEFAULT;
 import static jsinterop.generator.model.AnnotationType.DEPRECATED;
-import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
 import static jsinterop.generator.model.AnnotationType.JS_PROPERTY;
 import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN;
 import static jsinterop.generator.model.PredefinedTypeReference.VOID;
 
-import com.google.common.base.Preconditions;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import jsinterop.generator.model.Annotation;
-import jsinterop.generator.model.EntityKind;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 
 /**
- * Correct fields defined on classes and interfaces.
- *
- * <p>Converts static constant fields of classes and interfaces by creating static final JsOverlay
- * fields. Those fields values are initialized by referring to non-final static field that expose
- * the native fields.
- *
- * <p>Converts non-static fields defined on an interface to a pair of getter and setter. If the
- * field is read-only, only the getter is generated. As non static interface fields are converted to
+ * Converts non-static fields defined on an interface to a pair of getter and setter. If the field
+ * is read-only, only the getter is generated. As non static interface fields are converted to
  * methods, this visitor take care of adding method implementations on a class that implements the
  * interface.
  */
@@ -57,16 +46,9 @@ public class FieldsConverter extends AbstractModelVisitor {
   // When we visit a class, we ensure that implemented interfaces are visited first. Keep a track
   // of visited interface in order to avoid visiting them several times.
   private final Set<Type> alreadyVisitedType = new HashSet<>();
-  private Program program;
 
   public FieldsConverter(boolean useBeanConvention) {
     this.useBeanConvention = useBeanConvention;
-  }
-
-  @Override
-  public boolean visit(Program program) {
-    this.program = program;
-    return true;
   }
 
   @Override
@@ -79,7 +61,6 @@ public class FieldsConverter extends AbstractModelVisitor {
       return true;
     }
 
-    processFinalStaticFields(type);
 
     if (type.isInterface()) {
       // convert non static fields of interface to pair of getter/setter.
@@ -115,53 +96,6 @@ public class FieldsConverter extends AbstractModelVisitor {
     }
 
     return true;
-  }
-
-  /**
-   * We convert native static fields by defining an extra native JsType that will contain private
-   * static fields that target the javascript constant symbols. Then we reexpose those fields on the
-   * original type by using JsOverlay static final field.
-   */
-  private void processFinalStaticFields(Type originalType) {
-    if (originalType.isInterface()) {
-      // We don't support non constant static fields on interface because interface cannot have
-      // static native method.
-      Preconditions.checkState(
-          originalType.getFields().stream().noneMatch(f -> f.isStatic() && !f.isNativeReadOnly()),
-          "Non constant static fields are not supported on interface");
-    }
-
-    Type constantWrapper = new Type(EntityKind.CLASS);
-    constantWrapper.setAccessModifier(DEFAULT);
-    constantWrapper.setPackageName(originalType.getPackageName());
-    constantWrapper.setName(originalType.getName() + "__Constants");
-    constantWrapper.setExtern(originalType.isExtern());
-
-    Annotation jsTypeAnnotation = originalType.getAnnotation(JS_TYPE);
-    if (jsTypeAnnotation.getNameAttribute() == null) {
-      jsTypeAnnotation = jsTypeAnnotation.withNameAttribute(originalType.getName());
-    }
-    constantWrapper.addAnnotation(jsTypeAnnotation);
-
-    originalType
-        .getFields()
-        .stream()
-        .filter(f -> f.isStatic() && f.isNativeReadOnly())
-        .forEach(
-            f -> {
-              Field copy = Field.from(f);
-              copy.setAccessModifier(DEFAULT);
-              constantWrapper.addField(copy);
-
-              f.removeAnnotation(JS_PROPERTY);
-              f.addAnnotation(Annotation.builder().type(JS_OVERLAY).build());
-              f.setFinal(true);
-              f.setInitialValue(constantWrapper.getName() + "." + f.getName());
-            });
-
-    if (!constantWrapper.getFields().isEmpty()) {
-      program.addType(constantWrapper);
-    }
   }
 
   private Method createAccessorMethod(Field field, boolean setter, boolean useBeanConvention) {

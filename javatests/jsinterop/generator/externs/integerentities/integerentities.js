@@ -35,6 +35,11 @@ Foo.prototype.bar;
 Foo.baz;
 
 /**
+ * @const {number}
+ */
+Foo.INT_CONSTANT;
+
+/**
  * @param {number|string} unionParam
  */
 Foo.prototype.union = function(unionParam) {};

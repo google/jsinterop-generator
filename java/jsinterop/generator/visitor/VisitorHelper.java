@@ -43,6 +43,8 @@ public final class VisitorHelper {
 
     new IntegerEntitiesConverter(integerEntities).accept(program);
 
+    new ConstantRewriter().accept(program);
+
     new UnionTypeMethodParameterHandler().accept(program);
 
     UnionTypeHelperTypeCreator unionTypeHelperTypeCreator = new UnionTypeHelperTypeCreator();

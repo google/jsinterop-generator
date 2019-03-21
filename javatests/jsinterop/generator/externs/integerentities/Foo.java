@@ -41,6 +41,7 @@ public class Foo {
     }
   }
 
+  @JsOverlay public static final int INT_CONSTANT = Foo__Constants.INT_CONSTANT;
   public static int baz;
   public int bar;
 

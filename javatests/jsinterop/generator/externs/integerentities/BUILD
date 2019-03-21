@@ -17,6 +17,7 @@ jsinterop_generator_test(
     srcs = ["integerentities.js"],
     expected_output = [
         "Foo.java",
+        "Foo__Constants.java",
         "Global.java",
     ],
     global_scope_class_name = "Global",
