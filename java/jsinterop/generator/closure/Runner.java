@@ -123,6 +123,10 @@ public class Runner {
     Runner runner = new Runner();
     CmdLineParser parser = new CmdLineParser(runner);
     parser.parseArgument(args);
-    runner.run();
+    try {
+      runner.run();
+    } catch (GeneratorFailedException ignored) {
+      System.exit(1);
+    }
   }
 }

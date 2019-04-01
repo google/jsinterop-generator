@@ -121,6 +121,9 @@ class ClosureJsInteropGenerator {
             .build();
 
     compiler.compile(new ArrayList<>(), allSources, createCompilerOptions());
+    if (compiler.getErrorCount() > 0) {
+      throw new GeneratorFailedException();
+    }
 
     GenerationContext ctx =
         GenerationContext.builder()
