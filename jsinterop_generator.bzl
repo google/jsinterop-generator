@@ -115,7 +115,7 @@ def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
         inputs = inputs,
         outputs = [ctx.outputs._generated_jar, types_mapping_file],
         executable = ctx.executable._closure_generator,
-        progress_message = "Generating jsinterop classes from extern closure files",
+        progress_message = "Generating JsInterop classes from externs",
         arguments = arguments,
     )
 
