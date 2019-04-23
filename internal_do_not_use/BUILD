@@ -27,4 +27,3 @@ sh_binary(
     name = "format_srcjar",
     srcs = ["format_srcjar.sh"],
 )
-
