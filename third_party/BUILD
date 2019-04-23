@@ -65,8 +65,8 @@ alias(
 java_binary(
     name = "google_java_format",
     main_class = "com.google.googlejavaformat.java.Main",
-    runtime_deps = ["@com_google_google_java_format//jar"],
     visibility = ["//visibility:public"],
+    runtime_deps = ["@com_google_google_java_format//jar"],
 )
 
 alias(
