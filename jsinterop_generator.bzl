@@ -272,6 +272,7 @@ def jsinterop_generator(
     exports_js_interop_generator = [JS_INTEROP_RULE_NAME_PATTERN % export for export in exports_java]
 
     deps_java = [_absolute_label(dep) for dep in deps]
+    deps_j2cl = ["%s-j2cl" % dep for dep in deps_java]
 
     # deps_j2cl are computed later
     deps_srcs = ["%s__deps_srcs_internal" % dep for dep in deps_java]
@@ -329,8 +330,24 @@ def jsinterop_generator(
         gwt_xml_file = ":%s.gwt.xml" % gwt_module_name
 
         deps_java += [
-            "//third_party:gwt-jsinterop-annotations",
-            "//third_party:jsinterop-base",
+            Label(
+                "//third_party:gwt-jsinterop-annotations",
+                relative_to_caller_repository = False,
+            ),
+            Label(
+                "//third_party:jsinterop-base",
+                relative_to_caller_repository = False,
+            ),
+        ]
+        deps_j2cl += [
+            Label(
+                "//third_party:gwt-jsinterop-annotations-j2cl",
+                relative_to_caller_repository = False,
+            ),
+            Label(
+                "//third_party:jsinterop-base-j2cl",
+                relative_to_caller_repository = False,
+            ),
         ]
 
     else:
@@ -354,8 +371,6 @@ def jsinterop_generator(
         # Passing an empty array to java_library fails when we define an exports attribute
         deps_java = None
         deps_j2cl = None
-    else:
-        deps_j2cl = ["%s-j2cl" % dep for dep in deps_java]
 
     if generate_j2cl_library:
         j2cl_library(
