@@ -94,10 +94,34 @@ Bar.prototype.barMethod5 = function(fooCallback) {};
 Bar.prototype.barMethod6 = function(fooCallback) {};
 
 /**
+ * @interface
+ * @template U,T,V
+ * @extends {Bar<U,T,V>}
+ */
+function BarChild() {}
+
+/**
+ * @param {U} u
+ * @param {V} v
+ * @return {T}
+ * @this {Bar<U,T,V>|string}
+ * @modifies {this}
+ * @template U,T,V
+ */
+BarChild.prototype.methodWithThis = function(u, v) {};
+
+/**
  * @constructor
  * @template T
  */
 function AnonymousTypes() {}
+
+/**
+ * @param {function(this:T, string):?} callback
+ * @return {undefined}
+ * @template T
+ */
+AnonymousTypes.prototype.functionTypeRedefiningThis = function(callback) {};
 
 /**
  * @template T
@@ -158,14 +182,22 @@ ExtendInterfaceWithGeneric.prototype.bar = function(param) {};
  */
 function SimpleClass() {}
 
-// The class has a static and instance methods with same name. The logic 
-// collecting type parameters is based on method name. We check here that the 
+// The class has a static and instance methods with same name. The logic
+// collecting type parameters is based on method name. We check here that the
 // TypeParameter V is collected for both methods and not only the first one.
 /**
  * @template V
  * @return {V}
  */
 SimpleClass.prototype.foo = function() {};
+
+/**
+ * @param {THIS} param
+ * @return {THIS}
+ * @this {THIS}
+ * @template THIS
+ */
+SimpleClass.prototype.chainableMethodWithThis = function(param) {};
 
 /**
  * @template V

@@ -51,6 +51,11 @@ public class AnonymousTypes<T> {
   }
 
   @JsFunction
+  public interface FunctionTypeRedefiningThisCallbackFn {
+    Object onInvoke(String p0);
+  }
+
+  @JsFunction
   public interface FunctionTypeWithGenericInParameterFooCallbackFn<T> {
     boolean onInvoke(T p0);
   }
@@ -106,6 +111,9 @@ public class AnonymousTypes<T> {
   public static native <T> void bar(AnonymousTypes.BarFooType<T> foo);
 
   public native <V, U> void foo(AnonymousTypes.FooFooType<V, U, T> foo);
+
+  public native void functionTypeRedefiningThis(
+      AnonymousTypes.FunctionTypeRedefiningThisCallbackFn callback);
 
   public native void functionTypeWithGenericInParameter(
       AnonymousTypes.FunctionTypeWithGenericInParameterFooCallbackFn<? super T> fooCallback);

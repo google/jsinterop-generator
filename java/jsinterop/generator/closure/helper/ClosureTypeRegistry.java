@@ -42,9 +42,10 @@ import com.google.javascript.rhino.jstype.ProxyObjectType;
 import com.google.javascript.rhino.jstype.TemplateType;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
-import com.google.javascript.rhino.jstype.Visitor;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import jsinterop.generator.helper.AbstractTypeRegistry;
 import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.JavaTypeReference;
@@ -58,6 +59,8 @@ import jsinterop.generator.model.WildcardTypeReference;
 
 /** Implementation of {@link AbstractTypeRegistry} specific to closure. */
 public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
+
+  private final Map<TemplateType, JSType> jsTypeByThisTemplateType = new HashMap<>();
 
   public ClosureTypeRegistry() {
     // JsCompiler considers two different RecordType with the same structure as equivalent in terms
@@ -86,17 +89,25 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
   }
 
   public TypeReference createTypeReference(JSType jsType, ReferenceContext referenceContext) {
-    return new TypeReferenceCreator(referenceContext).visit(jsType);
+    return new TypeReferenceCreator(referenceContext).resolveTypeReference(jsType);
   }
 
-  private class TypeReferenceCreator implements Visitor<TypeReference> {
+  /**
+   * Create a mapping between a template variable used as receiver type of a method (with @this
+   * annotation) and the type defining the method.
+   */
+  public void registerThisTemplateType(TemplateType thisTemplateType, JSType jsType) {
+    jsTypeByThisTemplateType.put(thisTemplateType, jsType);
+  }
+
+  private class TypeReferenceCreator extends AbstractNoOpVisitor<TypeReference> {
     private final ReferenceContext referenceContext;
 
     TypeReferenceCreator(ReferenceContext referenceContext) {
       this.referenceContext = referenceContext;
     }
 
-    private TypeReference visit(JSType type) {
+    private TypeReference resolveTypeReference(JSType type) {
       if (type.isVoidType() || type.isNullType()) {
         return type.visit(this);
       }
@@ -105,6 +116,10 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
       // respectively Null and Undefined. We don't use this information (yet), so we remove Null
       // or Undefined before to visit the type.
       return type.restrictByNotNullOrUndefined().visit(this);
+    }
+
+    private List<TypeReference> resolveTypeReferences(List<? extends JSType> types) {
+      return types.stream().map(this::resolveTypeReference).collect(toList());
     }
 
     @Override
@@ -139,7 +154,8 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
         return new ParametrizedTypeReference(
             PredefinedTypeReference.JS_CONSTRUCTOR_FN,
             ImmutableList.of(
-                WildcardTypeReference.createWildcardUpperBound(visit(type.getTypeOfThis()))));
+                WildcardTypeReference.createWildcardUpperBound(
+                    resolveTypeReference(type.getTypeOfThis()))));
       }
       return new JavaTypeReference(checkNotNull(getJavaType(type)));
     }
@@ -155,16 +171,11 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
     }
 
     @Override
-    public TypeReference caseNullType() {
-      return null;
-    }
-
-    @Override
     public TypeReference caseNamedType(NamedType type) {
       // Reference to undefined types are wrapped in a NamedType with a reference to UnknownType.
       checkState(!type.isNoResolvedType(), "Type %s is unknown", type.getReferenceName());
 
-      return visit(type.getReferencedType());
+      return resolveTypeReference(type.getReferencedType());
     }
 
     @Override
@@ -196,7 +207,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
     @Override
     public TypeReference caseUnionType(UnionType type) {
       return new UnionTypeReference(
-          type.getAlternates().stream().map(this::visit).collect(toList()));
+          type.getAlternates().stream().map(this::resolveTypeReference).collect(toList()));
     }
 
     @Override
@@ -207,35 +218,65 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
           arrayType =
               new TypeReferenceCreator(
                       referenceContext == IN_HERITAGE_CLAUSE ? IN_TYPE_ARGUMENTS : REGULAR)
-                  .visit(type.getTemplateTypes().get(0));
+                  .resolveTypeReference(type.getTemplateTypes().get(0));
         }
         if (referenceContext == IN_HERITAGE_CLAUSE) {
           // In java you cannot extends classic array. In this case create a parametrized reference
           // to JsArray class.
           return new ParametrizedTypeReference(
-              visit(type.getReferencedType()), newArrayList(arrayType));
+              resolveTypeReference(type.getReferencedType()), newArrayList(arrayType));
         } else {
           // Convert array type to classic java array where it's valid.
           return new ArrayTypeReference(arrayType);
         }
       }
 
-      TypeReference templatizedType = visit(type.getReferencedType());
-
-      TypeReferenceCreator typeArgumentsReferenceCreator =
-          new TypeReferenceCreator(IN_TYPE_ARGUMENTS);
-      List<TypeReference> templates =
-          type.getTemplateTypes()
-              .stream()
-              .map(typeArgumentsReferenceCreator::visit)
-              .collect(toList());
-
-      return new ParametrizedTypeReference(templatizedType, templates);
+      return createParametrizedTypeReference(type.getReferencedType(), type.getTemplateTypes());
     }
 
     @Override
     public TypeReference caseTemplateType(TemplateType templateType) {
+      if (jsTypeByThisTemplateType.containsKey(templateType)) {
+        // The templateType is used in @this annotations in order to allow method chaining.
+        // Replace it by the type where the method is defined.
+        return createMethodDefiningTypeReferenceFrom(templateType);
+      }
+
       return new TypeVariableReference(templateType.getReferenceName(), null);
+    }
+
+    private TypeReference createMethodDefiningTypeReferenceFrom(TemplateType templateType) {
+      JSType jsType = jsTypeByThisTemplateType.get(templateType);
+      checkNotNull(jsType, "%s is not used a method receiver.", templateType);
+
+      TypeReference typeReference = resolveTypeReference(jsType);
+      List<TemplateType> templateKeys =
+          (jsType instanceof ObjectType ? ((ObjectType) jsType).getConstructor() : jsType)
+              .getTemplateTypeMap()
+              .getTemplateKeys();
+      // Create a ParametrizedTypeReference if the replacing type has template type. The JSType
+      // stored in the map is never a TemplatizedType because it's the type definition not a type
+      // reference.
+      if (templateKeys.isEmpty()) {
+        return typeReference;
+      } else if (jsType.isArrayType()) {
+        // JsCompiler uses its own built-in definition of Array Type using two type parameters:
+        // Array<IObject#Value, T>
+        checkState(templateKeys.size() == 2);
+        return new ArrayTypeReference(resolveTypeReference(templateKeys.get(1)));
+      } else {
+        return createParametrizedTypeReference(jsType, templateKeys);
+      }
+    }
+
+    private ParametrizedTypeReference createParametrizedTypeReference(
+        JSType referencedType, List<? extends JSType> templatesTypes) {
+      TypeReference templatizedType = resolveTypeReference(referencedType);
+
+      List<TypeReference> templates =
+          new TypeReferenceCreator(IN_TYPE_ARGUMENTS).resolveTypeReferences(templatesTypes);
+
+      return new ParametrizedTypeReference(templatizedType, templates);
     }
   }
 }

@@ -4,10 +4,6 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public class SimpleClass {
-  public static native <V> V foo(SimpleClass obj);
-
-  public native SimpleClass chainableMethodWithThis(SimpleClass param);
-
-  public native <V> V foo();
+public interface BarChild<U, T, V> extends Bar<U, T, V> {
+  T methodWithThis(U u, V v);
 }

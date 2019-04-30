@@ -37,6 +37,7 @@ import jsinterop.generator.closure.visitor.AnonymousTypeCollector;
 import jsinterop.generator.closure.visitor.EnumMemberCollector;
 import jsinterop.generator.closure.visitor.InheritanceVisitor;
 import jsinterop.generator.closure.visitor.MemberCollector;
+import jsinterop.generator.closure.visitor.ThisTemplateTypeVisitor;
 import jsinterop.generator.closure.visitor.TypeCollector;
 import jsinterop.generator.closure.visitor.TypeParameterCollector;
 import jsinterop.generator.helper.GeneratorUtils;
@@ -143,6 +144,8 @@ class ClosureJsInteropGenerator {
         .accept(topScope);
 
     new AnonymousTypeCollector(ctx).accept(topScope);
+
+    new ThisTemplateTypeVisitor(ctx).accept(topScope);
 
     new MemberCollector(ctx).accept(topScope);
 

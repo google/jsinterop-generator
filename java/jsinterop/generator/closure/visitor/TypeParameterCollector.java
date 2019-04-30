@@ -20,12 +20,19 @@ import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.I
 import static jsinterop.generator.helper.GeneratorUtils.extractName;
 import static jsinterop.generator.model.AnnotationType.JS_METHOD;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.TemplateType;
+import com.google.javascript.rhino.jstype.TemplatizedType;
+import com.google.javascript.rhino.jstype.UnionType;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import jsinterop.generator.closure.helper.AbstractNoOpVisitor;
 import jsinterop.generator.closure.helper.GenerationContext;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.JavaTypeReference;
@@ -69,11 +76,11 @@ public class TypeParameterCollector extends AbstractClosureVisitor {
 
   @Override
   protected boolean visitMethod(FunctionType method, boolean isStatic) {
-    List<TypeReference> generics = convertTypeParametersDefinition(method);
+    List<TypeReference> methodTemplateTypes = convertTypeParametersDefinition(method);
 
-    if (!generics.isEmpty()) {
+    if (!methodTemplateTypes.isEmpty()) {
       Method m = getJavaMethod(extractName(method.getDisplayName()), isStatic);
-      m.getTypeParameters().addAll(generics);
+      m.getTypeParameters().addAll(methodTemplateTypes);
     }
     return true;
   }
@@ -110,11 +117,84 @@ public class TypeParameterCollector extends AbstractClosureVisitor {
     return method.getName();
   }
 
-  protected List<TypeReference> convertTypeParametersDefinition(JSType type) {
-    return type.getTemplateTypeMap()
-        .getTemplateKeys()
-        .stream()
+  private List<TypeReference> convertTypeParametersDefinition(FunctionType type) {
+    // List of templates appearing in the type declared by the @this annotation.
+    //
+    // It seems to be a convention that when using the @this annotation to change the type, the
+    // template variables used have the same names (and meanings) as the ones in the enclosing
+    // class definition. The @this annotation is used in Closure to allow the method to be
+    // called on an instance of a class that is not necessarily related to the class where
+    // the method is declared. Since in Java there is no way to redefine the type of the receiver
+    // we take the heuristic to revert to the type of the enclosing class, assuming the template
+    // variables of the same name have the same meaning.
+    //
+    //
+    // ex:
+    // /**
+    //  * @constructor
+    //  * @template T
+    //  */
+    // function Array(var_args) {}
+    //
+    //
+    // // Allow calling Array.pop on IArrayLike<T> instances not just Array<T>.
+    // /**
+    //  * @return {T}
+    //  * @this {IArrayLike<T>}
+    //  * @modifies {this}
+    //  * @template T
+    //  */
+    // Array.prototype.pop = function() {};
+    //
+    //
+    // Note that this is just an heuristic and is not necessarily safe. Developers could use
+    // template variable names that do not match the ones used in the enclosing class.
+    // In such case the extern definition would need to be fixed for the generator to produce
+    // reasonable code.
+    Set<String> thisTemplateTypeValue =
+        TemplateTypeCollector.getTemplateTypes(type.getTypeOfThis());
+
+    return type.getTemplateTypeMap().getTemplateKeys().stream()
+        .filter(t -> !thisTemplateTypeValue.contains(t.getReferenceName()))
         .map(t -> getJavaTypeRegistry().createTypeReference(t, IN_TYPE_ARGUMENTS))
         .collect(Collectors.toList());
+  }
+
+  /** Collects Template Types defined in any JsType. */
+  private static class TemplateTypeCollector extends AbstractNoOpVisitor<Void> {
+
+    private static Set<String> getTemplateTypes(JSType type) {
+      TemplateTypeCollector templateTypeFinder = new TemplateTypeCollector();
+      type.visit(templateTypeFinder);
+      return templateTypeFinder.getTemplateTypeValues();
+    }
+
+    private ImmutableSet.Builder<String> templateTypes = ImmutableSet.builder();
+
+    Set<String> getTemplateTypeValues() {
+      return templateTypes.build();
+    }
+
+    @Override
+    public Void caseTemplatizedType(TemplatizedType type) {
+      type.getTemplateTypeMap().getTemplateKeys().stream()
+          .map(k -> type.getTemplateTypeMap().getResolvedTemplateType(k))
+          .filter(Objects::nonNull)
+          .forEach(t -> t.visit(this));
+      return null;
+    }
+
+    @Override
+    public Void caseTemplateType(TemplateType templateType) {
+      templateTypes.add(templateType.getReferenceName());
+      return null;
+    }
+
+    @Override
+    public Void caseUnionType(UnionType type) {
+      type.getAlternates().forEach(t -> t.visit(this));
+
+      return null;
+    }
   }
 }
