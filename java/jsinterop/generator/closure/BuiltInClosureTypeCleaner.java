@@ -17,16 +17,12 @@ package jsinterop.generator.closure;
 
 import static com.google.common.base.Preconditions.checkState;
 import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE_OBJECT;
-import static jsinterop.generator.model.PredefinedTypeReference.JS_ARRAY_LIKE;
 import static jsinterop.generator.model.PredefinedTypeReference.JS_PROPERTY_MAP;
 import static jsinterop.generator.model.PredefinedTypeReference.STRING;
 
-import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import jsinterop.generator.model.DelegableTypeReference;
-import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.Type;
@@ -35,24 +31,26 @@ import jsinterop.generator.model.UnionTypeReference;
 import jsinterop.generator.visitor.AbstractModelVisitor;
 
 /**
- * Replace references to IObject and IArrayLike types with respectively references to
- * jsinterop.base.JsPropertyMap and jsinterop.base.JsArrayLike
+ * Do some cleaning tasks around built-in closure types:
+ *
+ * <ul>
+ *   <li>Removes the extra type parameter from Array and Object type definitions
+ *   <li>Removes the extra type parameter from JsPropertyMap references. JsPropertyMap is the Java
+ *       abstraction in JsInterop-base for IObject. IObject defines two templates (representing the
+ *       type for the keys and the type for the values) but the first one can only be number or
+ *       string and is abstracted away in the JsPropertyMap.
+ *   <li>Replaces references to Object that are parameterized by references to JsPropertyMap.
+ * </ul>
  */
-public class IObjectIArrayLikeCleaner extends AbstractModelVisitor {
+public class BuiltInClosureTypeCleaner extends AbstractModelVisitor {
   private static final String OBJECT = "Object";
-  private static final String IOBJECT = "IObject";
-  private static final String IARRAY_LIKE = "IArrayLike";
-
   private static final String IOBJECT_KEY_NAME = "IObject#KEY1";
   private static final String IOBJECT_VALUE_NAME = "IObject#VALUE";
 
   @Override
   public boolean visit(Type type) {
     String nativeFqn = type.getNativeFqn();
-    if (IOBJECT.equals(nativeFqn) || IARRAY_LIKE.equals(nativeFqn)) {
-      type.setExtern(true);
-      return false;
-    } else if ("Array".equals(nativeFqn)) {
+    if ("Array".equals(nativeFqn)) {
       // For some obscure reason, JsCompiler uses its own built-in definition of Array Type. This
       // definition defines two type parameters: the first one is the IObject value name and
       // the second one is the value type : Array<IObject#Value, T>
@@ -85,52 +83,30 @@ public class IObjectIArrayLikeCleaner extends AbstractModelVisitor {
 
   @Override
   public TypeReference endVisit(TypeReference typeReference) {
-    String underlyingJsdas = getJsDocAnnotationStringOfUnderlyingType(typeReference);
+    if (!(typeReference instanceof ParametrizedTypeReference)) {
+      return typeReference;
+    }
 
-    if (IOBJECT.equals(underlyingJsdas) && typeReference instanceof ParametrizedTypeReference) {
-      ParametrizedTypeReference iObjectTypeReference = (ParametrizedTypeReference) typeReference;
-      validateIObjectOrParametrizedObjectReference(iObjectTypeReference, false);
-      // JsPropertyMap defines only one type parameter that is the type of the value and considers
-      // that keys are string.
-      // IObject is defined with two type parameters, the first defining the type of the key,
-      // the second the type of the value.
-      // We've validated that the type of the key is compatible with String, so we can remove the
-      // first type parameter to convert the reference to IObjectLike with reference to
-      // JsPropertyMap.
-      return createJsPropertyMapRef(iObjectTypeReference.getActualTypeArguments().get(1));
+    ParametrizedTypeReference parametrizedTypeReference = (ParametrizedTypeReference) typeReference;
+    TypeReference mainTypeReference = parametrizedTypeReference.getMainType();
 
-    } else if (OBJECT.equals(underlyingJsdas)
-        && typeReference instanceof ParametrizedTypeReference) {
-      ParametrizedTypeReference objectTypeReference = (ParametrizedTypeReference) typeReference;
-      // Even if Object is not defined with a template, Closure allows developers to templatized it
-      // to act as a Map or IObject. When it's the case, replace it by JsPropertyMap.
-      validateIObjectOrParametrizedObjectReference(objectTypeReference, true);
+    // Fixup the parameterization for references to Object and IObject which are abstracted in
+    // Java as JsProperty maps. The conversion removes the first type parameter which is
+    // implicit in JsPropertyMap.
+    if (isJsPropertyMapReference(mainTypeReference) || isObjectTypeReference(mainTypeReference)) {
+      validateIObjectOrParametrizedObjectReference(parametrizedTypeReference);
 
-      return createJsPropertyMapRef(objectTypeReference.getActualTypeArguments().get(1));
-    } else if (typeReference instanceof JavaTypeReference && IARRAY_LIKE.equals(underlyingJsdas)) {
-      return JS_ARRAY_LIKE;
+      return new ParametrizedTypeReference(
+          JS_PROPERTY_MAP, parametrizedTypeReference.getActualTypeArguments().subList(1, 2));
     }
 
     return typeReference;
   }
 
-  private static String getJsDocAnnotationStringOfUnderlyingType(TypeReference typeReference) {
-    if (typeReference instanceof DelegableTypeReference) {
-      return ((DelegableTypeReference) typeReference).getDelegate().getJsDocAnnotationString();
-    }
-
-    return typeReference.getJsDocAnnotationString();
-  }
-
-  private static TypeReference createJsPropertyMapRef(TypeReference valueType) {
-    return new ParametrizedTypeReference(JS_PROPERTY_MAP, ImmutableList.of(valueType));
-  }
-
   /** Check that an IObject reference uses a String or an UnionType of String and number as key. */
   private static void validateIObjectOrParametrizedObjectReference(
-      ParametrizedTypeReference typeReference, boolean isObject) {
-    String typeName = isObject ? "Object" : "IObject";
-
+      ParametrizedTypeReference typeReference) {
+    String typeName = typeReference.getMainType().getTypeName();
     List<TypeReference> actualTypeArguments = typeReference.getActualTypeArguments();
 
     checkState(
@@ -141,7 +117,7 @@ public class IObjectIArrayLikeCleaner extends AbstractModelVisitor {
     TypeReference keyType = actualTypeArguments.get(0);
 
     if (STRING.getJavaTypeFqn().equals(keyType.getJavaTypeFqn())
-        || (isObject
+        || (isObjectTypeReference(typeReference.getMainType())
             // Closure allows Object to be parametrized with one type parameter(value).
             // In this case, the key is hardcoded to Object
             && PredefinedTypeReference.OBJECT.getJavaTypeFqn().equals(keyType.getJavaTypeFqn()))) {
@@ -150,6 +126,14 @@ public class IObjectIArrayLikeCleaner extends AbstractModelVisitor {
 
     checkKeyType(keyType instanceof UnionTypeReference, keyType, typeName);
     checkKeyType(isDoubleAndString(((UnionTypeReference) keyType).getTypes()), keyType, typeName);
+  }
+
+  private static boolean isObjectTypeReference(TypeReference reference) {
+    return OBJECT.equals(reference.getJsDocAnnotationString());
+  }
+
+  private static boolean isJsPropertyMapReference(TypeReference reference) {
+    return JS_PROPERTY_MAP.equals(reference);
   }
 
   private static boolean isDoubleAndString(List<TypeReference> typesReferences) {

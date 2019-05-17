@@ -80,7 +80,7 @@ class ClosureJsInteropGenerator {
   }
 
   private void finalizeProgram(Program javaProgram) {
-    new IObjectIArrayLikeCleaner().accept(javaProgram);
+    new BuiltInClosureTypeCleaner().accept(javaProgram);
 
     VisitorHelper.finalizeJavaProgram(
         javaProgram,

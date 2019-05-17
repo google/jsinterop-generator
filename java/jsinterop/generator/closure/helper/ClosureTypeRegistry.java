@@ -162,6 +162,12 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseObjectType(ObjectType type) {
+      String typeFqn = type.getNormalizedReferenceName();
+
+      if (PredefinedTypeReference.isPredefinedType(typeFqn)) {
+        return PredefinedTypeReference.getPredefinedType(typeFqn);
+      }
+
       return new JavaTypeReference(checkNotNull(getJavaType(type)));
     }
 
@@ -206,8 +212,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseUnionType(UnionType type) {
-      return new UnionTypeReference(
-          type.getAlternates().stream().map(this::resolveTypeReference).collect(toList()));
+      return new UnionTypeReference(resolveTypeReferences(type.getAlternates()));
     }
 
     @Override

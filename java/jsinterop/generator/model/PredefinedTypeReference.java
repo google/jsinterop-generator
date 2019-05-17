@@ -17,65 +17,90 @@
 
 package jsinterop.generator.model;
 
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static jsinterop.generator.model.LiteralExpression.FALSE;
 import static jsinterop.generator.model.LiteralExpression.NULL;
 import static jsinterop.generator.model.LiteralExpression.ZERO;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+
 /** A list of known Java types used during the generation. */
 public enum PredefinedTypeReference implements TypeReference {
-  VOID("void", "void", null, "V"),
-  VOID_OBJECT("Void", "void", "java.lang.Void", "Ljava/lang/Void"),
-  BOOLEAN("boolean", "boolean", null, "Z", FALSE),
-  BOOLEAN_OBJECT("Boolean", "boolean", "java.lang.Boolean", "Ljava/lang/Boolean"),
-  INT("int", "number", null, "I", ZERO),
-  LONG("long", "number", null, "J", ZERO),
-  DOUBLE("double", "number", null, "D", ZERO),
-  DOUBLE_OBJECT("Double", "number", "java.lang.Double", "Ljava/lang/Double"),
-  OBJECT("Object", "*", "java.lang.Object", "Ljava/lang/Object"),
-  STRING("String", "string", "java.lang.String", "Ljava/lang/String"),
-  CLASS("Class", null, "java.lang.Class", "Ljava/lang/Class"),
-  DEPRECATED("Deprecated", "deprecated", "java.lang.Deprecated", "Ljava/lang/Deprecated"),
-  JS_TYPE("JsType", null, "jsinterop.annotations.JsType", "Ljsinterop/annotations/JsType"),
-  JS_PROPERTY(
-      "JsProperty", null, "jsinterop.annotations.JsProperty", "Ljsinterop/annotations/JsProperty"),
-  JS_METHOD("JsMethod", null, "jsinterop.annotations.JsMethod", "Ljsinterop/annotations/JsMethod"),
-  JS_PACKAGE(
-      "JsPackage", null, "jsinterop.annotations.JsPackage", "Ljsinterop/annotations/JsPackage"),
-  JS_FUNCTION(
-      "JsFunction", null, "jsinterop.annotations.JsFunction", "Ljsinterop/annotations/JsFunction"),
-  JS_OVERLAY(
-      "JsOverlay", null, "jsinterop.annotations.JsOverlay", "Ljsinterop/annotations/JsOverlay"),
-  JS_ARRAY_LIKE(
-      "JsArrayLike", "IArrayLike", "jsinterop.base.JsArrayLike", "Ljsinterop/base/JsArrayLike"),
-  JS_PROPERTY_MAP(
-      "JsPropertyMap", "IObject", "jsinterop.base.JsPropertyMap", "Ljsinterop/base/JsPropertyMap"),
-  JS("Js", null, "jsinterop.base.Js", "Ljsinterop/base/Js"),
-  ANY("Any", null, "jsinterop.base.Any", "Ljsinterop/base/Any"),
-  JS_CONSTRUCTOR_FN(
-      "JsConstructorFn", null, "jsinterop.base.JsConstructorFn", "Ljsinterop/base/JsConstructorFn");
+  VOID("void", "void", "V", NULL),
+  VOID_OBJECT("java.lang.Void", "void"),
+  BOOLEAN("boolean", "boolean", "Z", FALSE),
+  BOOLEAN_OBJECT("java.lang.Boolean", "boolean"),
+  INT("int", "number", "I", ZERO),
+  LONG("long", "number", "J", ZERO),
+  DOUBLE("double", "number", "D", ZERO),
+  DOUBLE_OBJECT("java.lang.Double", "number"),
+  OBJECT("java.lang.Object", "*"),
+  STRING("java.lang.String", "string"),
+  CLASS("java.lang.Class", null),
+  DEPRECATED("java.lang.Deprecated", "deprecated"),
+  JS_TYPE("jsinterop.annotations.JsType", null),
+  JS_PROPERTY("jsinterop.annotations.JsProperty", null),
+  JS_METHOD("jsinterop.annotations.JsMethod", null),
+  JS_PACKAGE("jsinterop.annotations.JsPackage", null),
+  JS_FUNCTION("jsinterop.annotations.JsFunction", null),
+  JS_OVERLAY("jsinterop.annotations.JsOverlay", null),
+  JS_ARRAY_LIKE("jsinterop.base.JsArrayLike", "IArrayLike"),
+  JS_PROPERTY_MAP("jsinterop.base.JsPropertyMap", "IObject"),
+  JS("jsinterop.base.Js", null),
+  ANY("jsinterop.base.Any", null),
+  JS_CONSTRUCTOR_FN("jsinterop.base.JsConstructorFn", null);
+
+  private static final Map<String, PredefinedTypeReference> nativePredefinedTypesByNativeFqn =
+      Arrays.stream(values())
+          .filter(t -> t.nativeFqn != null && !t.isPrimitive())
+          .collect(toImmutableMap(t -> t.nativeFqn, Function.identity()));
+
+  /**
+   * Returns true if the native type is associated with a {@link PredefinedTypeReference}, false
+   * otherwise.
+   */
+  public static boolean isPredefinedType(String nativeFqn) {
+    return getPredefinedType(nativeFqn) != null;
+  }
+
+  /**
+   * Return the possible {@link PredefinedTypeReference} associated with a native type. This method
+   * may return null.
+   */
+  public static PredefinedTypeReference getPredefinedType(String nativeFqn) {
+    return nativePredefinedTypesByNativeFqn.get(nativeFqn);
+  }
 
   private final String typeName;
   private final String nativeFqn;
   private final String typeSignature;
   private final String typeImport;
   private final LiteralExpression defaultValue;
+  private final boolean isPrimitive;
 
+  /** Constructor defining a PredefinedTypeReference to a primitive type */
   PredefinedTypeReference(
-      String typeName, String nativeFqn, String typeImport, String typeSignature) {
-    this(typeName, nativeFqn, typeImport, typeSignature, NULL);
-  }
-
-  PredefinedTypeReference(
-      String typeName,
-      String nativeFqn,
-      String typeImport,
-      String typeSignature,
-      LiteralExpression defaultValue) {
+      String typeName, String nativeFqn, String typeSignature, LiteralExpression defaultValue) {
     this.typeName = typeName;
     this.nativeFqn = nativeFqn;
-    this.typeImport = typeImport;
+    this.typeImport = null;
     this.typeSignature = typeSignature;
     this.defaultValue = defaultValue;
+    this.isPrimitive = true;
+  }
+
+  /** Constructor defining a PredefinedTypeReference to a object type */
+  PredefinedTypeReference(String javaFqn, String nativeFqn) {
+    this.nativeFqn = nativeFqn;
+    this.typeImport = javaFqn;
+    checkState(javaFqn.lastIndexOf(".") > 0);
+    this.typeName = javaFqn.substring(javaFqn.lastIndexOf(".") + 1);
+    this.typeSignature = "L" + javaFqn.replace('.', '/');
+    this.defaultValue = NULL;
+    this.isPrimitive = false;
   }
 
   @Override
@@ -122,5 +147,9 @@ public enum PredefinedTypeReference implements TypeReference {
   public TypeReference doVisit(ModelVisitor visitor) {
     visitor.visit(this);
     return visitor.endVisit(this);
+  }
+
+  private boolean isPrimitive() {
+    return isPrimitive;
   }
 }

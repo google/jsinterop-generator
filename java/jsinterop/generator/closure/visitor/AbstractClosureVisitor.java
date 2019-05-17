@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import jsinterop.generator.closure.helper.ClosureTypeRegistry;
 import jsinterop.generator.closure.helper.GenerationContext;
+import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.Type;
 
 abstract class AbstractClosureVisitor {
@@ -207,6 +208,12 @@ abstract class AbstractClosureVisitor {
   }
 
   private void acceptClassOrInterface(FunctionType type) {
+    if (PredefinedTypeReference.isPredefinedType(type.getNormalizedReferenceName())) {
+      // Don't traverse types that map to existing Java abstractions (e.g. JsPropertyMap from
+      // JsInterop-base).
+      return;
+    }
+
     pushCurrentJavaType(type.getInstanceType());
 
     if (visitClassOrInterface(type)) {
@@ -214,9 +221,9 @@ abstract class AbstractClosureVisitor {
         acceptConstructor(type);
       }
 
-      // static side
+      // Static properties.
       acceptProperties(type, true);
-      //instance side
+      // Instance properties.
       acceptProperties(type.getPrototype(), false);
     }
 
