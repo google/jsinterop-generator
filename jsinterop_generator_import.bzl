@@ -85,8 +85,3 @@ def jsinterop_generator_import(
             ),
         ],
     )
-
-    native.filegroup(
-        name = "%s__deps_srcs_internal" % name,
-        srcs = externs_srcs,
-    )

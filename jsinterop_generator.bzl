@@ -268,14 +268,10 @@ def jsinterop_generator(
 
     exports_java = [_absolute_label(export) for export in exports]
     exports_j2cl = ["%s-j2cl" % export for export in exports_java]
-    exports_srcs = ["%s__deps_srcs_internal" % export for export in exports_java]
     exports_js_interop_generator = [JS_INTEROP_RULE_NAME_PATTERN % export for export in exports_java]
 
     deps_java = [_absolute_label(dep) for dep in deps]
     deps_j2cl = ["%s-j2cl" % dep for dep in deps_java]
-
-    # deps_j2cl are computed later
-    deps_srcs = ["%s__deps_srcs_internal" % dep for dep in deps_java]
     deps_js_interop_generator = [JS_INTEROP_RULE_NAME_PATTERN % dep for dep in deps_java]
 
     jsinterop_generator_rule_name = JS_INTEROP_RULE_NAME_PATTERN % name
@@ -359,13 +355,6 @@ def jsinterop_generator(
 
         generated_jars = None
         gwt_xml_file = None
-
-    # create filegroup with that collect transitive source files so that we can
-    # depend on later.
-    native.filegroup(
-        name = "%s__deps_srcs_internal" % name,
-        srcs = exports_srcs + deps_srcs + srcs,
-    )
 
     if not deps_java:
         # Passing an empty array to java_library fails when we define an exports attribute
