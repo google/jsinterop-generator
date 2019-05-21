@@ -28,8 +28,6 @@ import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN_OBJECT;
 import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE;
 import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE_OBJECT;
 import static jsinterop.generator.model.PredefinedTypeReference.INT;
-import static jsinterop.generator.model.PredefinedTypeReference.JS_ARRAY_LIKE;
-import static jsinterop.generator.model.PredefinedTypeReference.JS_PROPERTY_MAP;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
 import com.google.common.collect.ImmutableList;
@@ -58,7 +56,6 @@ import jsinterop.generator.model.Statement;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeQualifier;
 import jsinterop.generator.model.TypeReference;
-import jsinterop.generator.model.TypeVariableReference;
 import jsinterop.generator.model.UnionTypeReference;
 
 /**
@@ -198,10 +195,8 @@ public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
     unionTypeReference.getTypes().forEach(t -> helperType.addMethod(createAsMethod(t)));
 
     // create all isXXX methods
-    unionTypeReference
-        .getTypes()
-        .stream()
-        .filter(UnionTypeHelperTypeCreator::instanceOfAllowedType)
+    unionTypeReference.getTypes().stream()
+        .filter(TypeReference::isInstanceofAllowed)
         .forEach(t -> helperType.addMethod(createInstanceOfMethod(t)));
 
     typeHelperByUnionTypeReference.put(unionTypeReference, helperType);
@@ -280,38 +275,6 @@ public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
     return castMethod;
   }
 
-  /**
-   * Returns true if the type reference is a reference to a type that can be legally used in
-   * instanceof clause
-   */
-  private static boolean instanceOfAllowedType(TypeReference typeReference) {
-    if (typeReference instanceof TypeVariableReference) {
-      return false;
-    }
-
-    if (typeReference instanceof ParametrizedTypeReference) {
-      return instanceOfAllowedType(((ParametrizedTypeReference) typeReference).getMainType());
-    }
-
-    if (typeReference instanceof JavaTypeReference) {
-      return !isNativeInterface(((JavaTypeReference) typeReference).getJavaType());
-    }
-
-    if (typeReference == JS_PROPERTY_MAP || typeReference == JS_ARRAY_LIKE) {
-      // TODO(b/35804724): we can not generate an instanceof statement against JsPropertyMap and
-      // JsArrayLike because they are native jstype interface. Remove that when both type implement
-      // $isinstance method.
-      return false;
-    }
-
-    return true;
-  }
-
-  private static boolean isNativeInterface(Type type) {
-    return type.hasAnnotation(JS_TYPE)
-        && type.getAnnotation(JS_TYPE).getIsNativeAttribute()
-        && type.isInterface();
-  }
 
   /**
    * Create a default static method that allow to cast any object to the helper type:

@@ -17,6 +17,7 @@
 
 package jsinterop.generator.model;
 
+
 /** Model a reference to a Java type created from a typescript type. */
 public class JavaTypeReference extends AbstractTypeReference {
   private Type javaType;
@@ -72,5 +73,10 @@ public class JavaTypeReference extends AbstractTypeReference {
 
   public void setComment(String comment) {
     this.comment = comment;
+  }
+
+  @Override
+  public boolean isInstanceofAllowed() {
+    return !javaType.isNativeInterface();
   }
 }

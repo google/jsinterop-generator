@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.newHashSet;
+import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 import static jsinterop.generator.model.EntityKind.CLASS;
 import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 import static jsinterop.generator.model.EntityKind.INTERFACE;
@@ -345,6 +346,10 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
   public void removeFromParent() {
     checkState(getEnclosingType() != null, "Type is not an inner type.");
     getEnclosingType().removeInnerType(this);
+  }
+
+  public boolean isNativeInterface() {
+    return hasAnnotation(JS_TYPE) && getAnnotation(JS_TYPE).getIsNativeAttribute() && isInterface();
   }
 
   @Override

@@ -91,6 +91,14 @@ public interface TypeReference extends Visitable<TypeReference> {
 
   Expression getDefaultValue();
 
+  /**
+   * Returns true if the type reference is a reference to a type that can be legally used in
+   * instanceof clause
+   */
+  default boolean isInstanceofAllowed() {
+    return true;
+  }
+
   @Override
   default TypeReference doVisit(ModelVisitor visitor) {
     visitor.visit(this);

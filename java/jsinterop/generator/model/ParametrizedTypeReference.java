@@ -106,6 +106,11 @@ public class ParametrizedTypeReference extends AbstractTypeReference
   }
 
   @Override
+  public boolean isInstanceofAllowed() {
+    return mainType.isInstanceofAllowed();
+  }
+
+  @Override
   public String toString() {
     return getMainType().getTypeName() + "<" + Joiner.on(", ").join(getActualTypeArguments()) + ">";
   }

@@ -78,6 +78,11 @@ public class TypeVariableReference extends AbstractTypeReference {
   }
 
   @Override
+  public boolean isInstanceofAllowed() {
+    return false;
+  }
+
+  @Override
   public TypeReference doVisit(ModelVisitor visitor) {
     if (visitor.visit(this)) {
       setUpperBound(visitor.accept(upperBound));

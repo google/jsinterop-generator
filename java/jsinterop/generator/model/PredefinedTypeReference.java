@@ -47,11 +47,28 @@ public enum PredefinedTypeReference implements TypeReference {
   JS_PACKAGE("jsinterop.annotations.JsPackage", null),
   JS_FUNCTION("jsinterop.annotations.JsFunction", null),
   JS_OVERLAY("jsinterop.annotations.JsOverlay", null),
-  JS_ARRAY_LIKE("jsinterop.base.JsArrayLike", "IArrayLike"),
-  JS_PROPERTY_MAP("jsinterop.base.JsPropertyMap", "IObject"),
+  JS_ARRAY_LIKE("jsinterop.base.JsArrayLike", "IArrayLike") {
+    @Override
+    public boolean isInstanceofAllowed() {
+      return false;
+    }
+  },
+  JS_PROPERTY_MAP("jsinterop.base.JsPropertyMap", "IObject") {
+    @Override
+    public boolean isInstanceofAllowed() {
+      return false;
+    }
+  },
   JS("jsinterop.base.Js", null),
   ANY("jsinterop.base.Any", null),
-  JS_CONSTRUCTOR_FN("jsinterop.base.JsConstructorFn", null);
+  JS_CONSTRUCTOR_FN("jsinterop.base.JsConstructorFn", null),
+  ITHENABLE("elemental2.promise.IThenable", "IThenable") {
+    @Override
+    public boolean isInstanceofAllowed() {
+      return false;
+    }
+  },
+  PROMISE("elemental2.promise.Promise", "Promise");
 
   private static final Map<String, PredefinedTypeReference> nativePredefinedTypesByNativeFqn =
       Arrays.stream(values())
