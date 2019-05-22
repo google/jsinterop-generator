@@ -39,9 +39,9 @@ public class InheritanceVisitor extends AbstractClosureVisitor {
     Type javaType = getCurrentJavaType();
 
     if (type.isInterface() && type.getExtendedInterfacesCount() > 0) {
-      javaType.getInheritedTypes().addAll(createTypeReferences(type.getExtendedInterfaces()));
+      javaType.getExtendedTypes().addAll(createTypeReferences(type.getExtendedInterfaces()));
     } else if (type.isConstructor()) {
-      getSuperType(type).ifPresent(t -> javaType.getInheritedTypes().add(createTypeReference(t)));
+      getSuperType(type).ifPresent(t -> javaType.getExtendedTypes().add(createTypeReference(t)));
       javaType
           .getImplementedTypes()
           .addAll(createTypeReferences(type.getOwnImplementedInterfaces()));

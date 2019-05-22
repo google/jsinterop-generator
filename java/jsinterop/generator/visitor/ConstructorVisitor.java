@@ -39,7 +39,7 @@ import jsinterop.generator.model.TypeReference;
 public class ConstructorVisitor extends AbstractModelVisitor {
   @Override
   public boolean visit(Type type) {
-    if (type.isInterface() || type.getInheritedTypes().isEmpty()) {
+    if (type.isInterface() || type.getExtendedTypes().isEmpty()) {
       return true;
     }
 
@@ -106,7 +106,7 @@ public class ConstructorVisitor extends AbstractModelVisitor {
   }
 
   private static Type getSuperType(Type type) {
-    TypeReference superTypeReference = type.getInheritedTypes().iterator().next();
-    return getTypeOfInheritedTypeReference(superTypeReference);
+    TypeReference superTypeReference = type.getExtendedTypes().iterator().next();
+    return superTypeReference.getTypeDeclaration();
   }
 }

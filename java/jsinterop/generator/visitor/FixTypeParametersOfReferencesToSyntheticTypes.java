@@ -20,7 +20,6 @@ package jsinterop.generator.visitor;
 import static com.google.common.base.Preconditions.checkState;
 
 import jsinterop.generator.model.Expression;
-import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.MethodInvocation;
 import jsinterop.generator.model.ParametrizedTypeReference;
@@ -115,11 +114,10 @@ public class FixTypeParametersOfReferencesToSyntheticTypes extends AbstractModel
    * type. False otherwise.
    */
   private static Type getSyntheticType(TypeReference typeReference) {
-    if (typeReference instanceof JavaTypeReference) {
-      Type javaType = ((JavaTypeReference) typeReference).getJavaType();
-      if (javaType.isSynthetic()) {
-        return javaType;
-      }
+    Type typeDeclaration = typeReference.getTypeDeclaration();
+
+    if (typeDeclaration != null && typeDeclaration.isSynthetic()) {
+      return typeDeclaration;
     }
 
     return null;

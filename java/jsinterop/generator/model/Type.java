@@ -29,6 +29,7 @@ import static jsinterop.generator.model.EntityKind.NAMESPACE;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -67,8 +68,8 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
       clonedType.addInnerType(Type.from(innerType));
     }
 
-    for (TypeReference typeReference : type.getInheritedTypes()) {
-      clonedType.addInheritedType(typeReference);
+    for (TypeReference typeReference : type.getExtendedTypes()) {
+      clonedType.addExtendedType(typeReference);
     }
 
     for (TypeReference typeReference : type.getImplementedTypes()) {
@@ -83,7 +84,7 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
   }
 
   private String packageName;
-  private Set<TypeReference> inheritedTypes = new LinkedHashSet<>();
+  private Set<TypeReference> extendedTypes = new LinkedHashSet<>();
   private Set<TypeReference> implementedTypes = new LinkedHashSet<>();
   private Set<TypeReference> typeParameters = new LinkedHashSet<>();
   private List<Field> fields = new ArrayList<>();
@@ -107,12 +108,20 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     setKind(classOrInterfaceOrNamespace);
   }
 
-  public Set<TypeReference> getInheritedTypes() {
-    return inheritedTypes;
+  public Set<TypeReference> getExtendedTypes() {
+    return extendedTypes;
   }
 
-  public void setInheritedTypes(Collection<TypeReference> inheritedTypes) {
-    this.inheritedTypes = new LinkedHashSet<>(inheritedTypes);
+  public TypeReference getSuperClass() {
+    if (isInterface() || getExtendedTypes().isEmpty()) {
+      return null;
+    }
+
+    return Iterables.getOnlyElement(getExtendedTypes());
+  }
+
+  public void setExtendedTypes(Collection<TypeReference> extendedTypes) {
+    this.extendedTypes = new LinkedHashSet<>(extendedTypes);
   }
 
   public void setImplementedTypes(Collection<TypeReference> implementedTypes) {
@@ -218,8 +227,8 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     typeParameters.add(typeReference);
   }
 
-  public void addInheritedType(TypeReference typeReference) {
-    inheritedTypes.add(typeReference);
+  public void addExtendedType(TypeReference typeReference) {
+    extendedTypes.add(typeReference);
   }
 
   public void addImplementedType(TypeReference typeReference) {
@@ -268,7 +277,7 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
   @Override
   public Type doVisit(ModelVisitor visitor) {
     if (visitor.visit(this)) {
-      setInheritedTypes(visitor.accept(inheritedTypes));
+      setExtendedTypes(visitor.accept(extendedTypes));
       setImplementedTypes(visitor.accept(implementedTypes));
 
       visitor.accept(innerTypes);

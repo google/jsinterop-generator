@@ -104,4 +104,9 @@ public interface TypeReference extends Visitable<TypeReference> {
     visitor.visit(this);
     return visitor.endVisit(this);
   }
+
+  default Type getTypeDeclaration() {
+    // by default, a type reference doesn't have access to the type declaration
+    return null;
+  }
 }

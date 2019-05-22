@@ -70,11 +70,11 @@ public class TypeWriter {
         .emit(type.getName())
         .emitGenerics(type.getTypeParameters(), true);
 
-    if (!type.getInheritedTypes().isEmpty()) {
+    if (!type.getExtendedTypes().isEmpty()) {
       writer
           .emit(" extends ")
           .emitTypeReferences(
-              type.getInheritedTypes().stream().sorted(TYPE_REFERENCE_ORDERING).collect(toList()));
+              type.getExtendedTypes().stream().sorted(TYPE_REFERENCE_ORDERING).collect(toList()));
     }
 
     if (!type.getImplementedTypes().isEmpty()) {

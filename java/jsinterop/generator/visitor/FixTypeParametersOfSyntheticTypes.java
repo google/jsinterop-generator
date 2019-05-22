@@ -29,7 +29,6 @@ import java.util.stream.Stream;
 import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.DelegableTypeReference;
 import jsinterop.generator.model.Field;
-import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Method.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
@@ -105,9 +104,7 @@ public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
     // with typescript a literal could contain an index signature and the corresponding java type
     // will automatically extends JsArray. Collect generics that are used in an index signature and
     // so present in the heritage clause.
-    javaType
-        .getInheritedTypes()
-        .stream()
+    javaType.getExtendedTypes().stream()
         .filter(t -> t instanceof ParametrizedTypeReference)
         .flatMap(FixTypeParametersOfSyntheticTypes::extractTypeParameter)
         .forEach(undefinedTypeParameters::add);
@@ -203,8 +200,7 @@ public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
       return isReferenceTo(((DelegableTypeReference) typeReference).getDelegate(), type);
     }
 
-    return typeReference instanceof JavaTypeReference
-        && type.equals(((JavaTypeReference) typeReference).getJavaType());
+    return type.equals(typeReference.getTypeDeclaration());
   }
 
   private static Stream<TypeVariableReference> extractTypeParameter(TypeReference typeReference) {

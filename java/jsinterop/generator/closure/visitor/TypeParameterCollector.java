@@ -63,11 +63,11 @@ public class TypeParameterCollector extends AbstractClosureVisitor {
       extensionType.getTypeParameters().addAll(generics);
       // parametrize the extension clause
       TypeReference currentExtensionReference =
-          Iterables.getOnlyElement(extensionType.getInheritedTypes());
+          Iterables.getOnlyElement(extensionType.getExtendedTypes());
       checkState(currentExtensionReference instanceof JavaTypeReference);
-      extensionType.getInheritedTypes().clear();
+      extensionType.getExtendedTypes().clear();
       extensionType
-          .getInheritedTypes()
+          .getExtendedTypes()
           .add(new ParametrizedTypeReference(currentExtensionReference, generics));
     }
 

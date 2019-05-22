@@ -129,7 +129,7 @@ public class ModelHelper {
     extendingType.setNativeFqn(typeToExtend.getNativeFqn());
     extendingType.setNativeNamespace(typeToExtend.getNativeNamespace());
 
-    extendingType.addInheritedType(new JavaTypeReference(typeToExtend));
+    extendingType.addExtendedType(new JavaTypeReference(typeToExtend));
 
     String nativeTypeName = typeToExtend.getAnnotation(JS_TYPE).getNameAttribute();
     if (nativeTypeName == null) {

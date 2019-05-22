@@ -205,7 +205,7 @@ public class DuplicatedTypesUnifier extends AbstractModelVisitor {
 
   @SuppressWarnings("ReferenceEquality")
   private void visitJavaTypeReference(JavaTypeReference typeReference) {
-    Type syntheticType = typeReference.getJavaType();
+    Type syntheticType = typeReference.getTypeDeclaration();
 
     if (!syntheticType.isSynthetic()) {
       // typeReference is not a reference to an synthetic type.
@@ -239,7 +239,7 @@ public class DuplicatedTypesUnifier extends AbstractModelVisitor {
           @Override
           public boolean visit(TypeReference typeReference) {
             if (typeReference instanceof JavaTypeReference) {
-              Type javaType = ((JavaTypeReference) typeReference).getJavaType();
+              Type javaType = typeReference.getTypeDeclaration();
               if (javaType.isSynthetic()
                   && !mainType.equals(javaType)
                   && mainType.getEnclosingType().equals(javaType.getEnclosingType())) {

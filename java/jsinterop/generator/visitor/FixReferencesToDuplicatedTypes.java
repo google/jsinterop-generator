@@ -48,10 +48,10 @@ public class FixReferencesToDuplicatedTypes extends AbstractModelVisitor {
   public boolean visit(TypeReference typeReference) {
     if (typeReference instanceof JavaTypeReference) {
       JavaTypeReference javaTypeReference = (JavaTypeReference) typeReference;
-      Type syntheticType = javaTypeReference.getJavaType();
+      Type syntheticType = javaTypeReference.getTypeDeclaration();
 
       if (typesToReplace.containsKey(syntheticType)) {
-        javaTypeReference.setJavaType(typesToReplace.get(syntheticType));
+        javaTypeReference.setTypeDeclaration(typesToReplace.get(syntheticType));
       }
     }
     return true;

@@ -24,19 +24,17 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.AnnotationType;
-import jsinterop.generator.model.DelegableTypeReference;
 import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.Expression;
 import jsinterop.generator.model.Field;
-import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Method.Parameter;
 import jsinterop.generator.model.ModelVisitor;
-import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Statement;
 import jsinterop.generator.model.Type;
@@ -118,22 +116,6 @@ public abstract class AbstractModelVisitor implements ModelVisitor {
     return newVisitables;
   }
 
-  /** Return the type related to a TypeReference involved in an heritage clause. */
-  protected static Type getTypeOfInheritedTypeReference(TypeReference typeReference) {
-    if (typeReference instanceof JavaTypeReference) {
-      return ((JavaTypeReference) typeReference).getJavaType();
-    } else if (typeReference instanceof DelegableTypeReference) {
-      return getTypeOfInheritedTypeReference(
-          ((DelegableTypeReference) typeReference).getDelegate());
-    } else if (typeReference instanceof PredefinedTypeReference) {
-      // PredefinedTypeReference references java types/primitives that are not generated so doesn't
-      // inherit anything from our perspective.
-      return null;
-    } else {
-      throw new IllegalStateException("Illegal TypeReference for heritage clause");
-    }
-  }
-
   protected void addAnnotationNameAttributeIfNotEmpty(
       Entity entity, String originalName, AnnotationType annotationType, boolean createAnnotation) {
     Annotation annotation = entity.getAnnotation(annotationType);
@@ -153,12 +135,11 @@ public abstract class AbstractModelVisitor implements ModelVisitor {
 
   protected static List<Type> getParentInterfaces(Type type, boolean transitive) {
     Set<TypeReference> parentInterfaceReferences =
-        type.isInterface() ? type.getInheritedTypes() : type.getImplementedTypes();
+        type.isInterface() ? type.getExtendedTypes() : type.getImplementedTypes();
 
-    return parentInterfaceReferences
-        .stream()
-        .map(AbstractModelVisitor::getTypeOfInheritedTypeReference)
-        .filter(t -> t != null)
+    return parentInterfaceReferences.stream()
+        .map(TypeReference::getTypeDeclaration)
+        .filter(Objects::nonNull)
         .flatMap(
             t -> {
               List<Type> types = Lists.newArrayList(t);

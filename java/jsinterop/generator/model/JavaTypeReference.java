@@ -20,22 +20,21 @@ package jsinterop.generator.model;
 
 /** Model a reference to a Java type created from a typescript type. */
 public class JavaTypeReference extends AbstractTypeReference {
-  private Type javaType;
+  private Type typeDeclaration;
   public String comment;
 
-  public JavaTypeReference(Type javaType) {
-
-    this.javaType = javaType;
+  public JavaTypeReference(Type typeDeclaration) {
+    this.typeDeclaration = typeDeclaration;
   }
 
   @Override
   public String getTypeName() {
-    return javaType.getName();
+    return typeDeclaration.getName();
   }
 
   @Override
   public String getImport() {
-    return javaType.getJavaFqn();
+    return typeDeclaration.getJavaFqn();
   }
 
   @Override
@@ -45,30 +44,31 @@ public class JavaTypeReference extends AbstractTypeReference {
 
   @Override
   public String getJsDocAnnotationString() {
-    return javaType.getNativeFqn();
+    return typeDeclaration.getNativeFqn();
   }
 
   @Override
   public String getJavaTypeFqn() {
-    return javaType.getJavaFqn();
+    return typeDeclaration.getJavaFqn();
   }
 
   @Override
   public String getJavaRelativeQualifiedTypeName() {
-    return javaType.getJavaRelativeQualifiedTypeName();
+    return typeDeclaration.getJavaRelativeQualifiedTypeName();
   }
 
   @Override
   public String getJniSignature() {
-    return "L" + javaType.getJavaFqn().replace(".", "/") + ";";
+    return "L" + typeDeclaration.getJavaFqn().replace('.', '/') + ";";
   }
 
-  public Type getJavaType() {
-    return javaType;
+  @Override
+  public Type getTypeDeclaration() {
+    return typeDeclaration;
   }
 
-  public void setJavaType(Type javaType) {
-    this.javaType = javaType;
+  public void setTypeDeclaration(Type typeDeclaration) {
+    this.typeDeclaration = typeDeclaration;
   }
 
   public void setComment(String comment) {
@@ -77,6 +77,6 @@ public class JavaTypeReference extends AbstractTypeReference {
 
   @Override
   public boolean isInstanceofAllowed() {
-    return !javaType.isNativeInterface();
+    return !typeDeclaration.isNativeInterface();
   }
 }

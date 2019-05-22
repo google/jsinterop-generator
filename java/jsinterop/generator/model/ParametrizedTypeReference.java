@@ -91,6 +91,11 @@ public class ParametrizedTypeReference extends AbstractTypeReference
   }
 
   @Override
+  public Type getTypeDeclaration() {
+    return mainType.getTypeDeclaration();
+  }
+
+  @Override
   public TypeReference getDelegate() {
     return mainType;
   }

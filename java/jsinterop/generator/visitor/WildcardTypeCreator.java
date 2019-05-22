@@ -203,7 +203,7 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
       return typeReference;
     }
 
-    Type jsFunctionType = getMainType(typeReference);
+    Type jsFunctionType = getMainTypeDeclaration(typeReference);
     Method jsFunctionMethod = getCallbackMethod(jsFunctionType);
     List<TypeReference> methodParameterTypes =
         jsFunctionMethod
@@ -247,7 +247,7 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
   }
 
   private boolean isGenericJsFunctionTypeReference(ParametrizedTypeReference typeReference) {
-    Type mainType = getMainType(typeReference);
+    Type mainType = getMainTypeDeclaration(typeReference);
 
     return mainType != null && mainType.hasAnnotation(JS_FUNCTION);
   }
@@ -274,7 +274,7 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
       return false;
     }
 
-    Type mainType = getMainType(unionTypeHelperReference);
+    Type mainType = getMainTypeDeclaration((ParametrizedTypeReference) unionTypeHelperReference);
 
     if (!unionTypeHelperTypes.contains(mainType)) {
       return false;
@@ -300,14 +300,8 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
         .get();
   }
 
-  private Type getMainType(TypeReference typeReference) {
-    TypeReference mainType = ((ParametrizedTypeReference) typeReference).getMainType();
-
-    if (mainType instanceof JavaTypeReference) {
-      return ((JavaTypeReference) mainType).getJavaType();
-    }
-
-    return null;
+  private Type getMainTypeDeclaration(ParametrizedTypeReference typeReference) {
+    return typeReference.getMainType().getTypeDeclaration();
   }
 
   private static class TypeReferenceCounter extends AbstractModelVisitor {

@@ -236,8 +236,7 @@ public class CodeWriter {
 
   private TypeReference getTopLevelParentTypeReference(TypeReference typeReference) {
     if (typeReference instanceof JavaTypeReference) {
-      return new JavaTypeReference(
-          ((JavaTypeReference) typeReference).getJavaType().getTopLevelParentType());
+      return new JavaTypeReference(typeReference.getTypeDeclaration().getTopLevelParentType());
     }
 
     // the notion of ToplevelParentType doesn't exist for the other typeReference kind.
