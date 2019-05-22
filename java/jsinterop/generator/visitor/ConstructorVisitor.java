@@ -29,45 +29,51 @@ import jsinterop.generator.model.ExpressionStatement;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Method.Parameter;
 import jsinterop.generator.model.MethodInvocation;
+import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
+import jsinterop.generator.model.TypeVariableReference;
 
 /**
  * Ensure that if the parent class doesn't have an available empty constructor, each constructors of
  * the child class implements a fake call to one constructor of the parent class.
  */
 public class ConstructorVisitor extends AbstractModelVisitor {
+
   @Override
   public boolean visit(Type type) {
     if (type.isInterface() || type.getExtendedTypes().isEmpty()) {
       return true;
     }
 
-    Type superType = getSuperType(type);
+    TypeReference superTypeReference = type.getSuperClass();
+    Type superTypeDeclaration = superTypeReference.getTypeDeclaration();
 
-    if (superType == null) {
-      // not a generated type.
+    if (superTypeDeclaration == null) {
+      // Not a generated type. We assume that a default constructor is available.
       return true;
     }
 
-    Set<Method> superClassConstructors = new HashSet<>(superType.getConstructors());
+    Set<Method> superClassConstructors = new HashSet<>(superTypeDeclaration.getConstructors());
 
     if (hasDefaultConstructor(superClassConstructors)) {
       return true;
     }
 
-    // Make a call to one of the parent class constructor.
+    // Call the super class constructor (the first that is declared), so that the code compiles.
+    // The class is a native JsType so the code will have no effect.
     ExpressionStatement superConstructorCall =
-        new ExpressionStatement(createSuperMethodInvocation(superType));
-    superConstructorCall.setLeadingComment("This call is only here for java compilation purpose.");
+        new ExpressionStatement(createSuperMethodInvocation(superTypeReference));
+    superConstructorCall.setLeadingComment(
+        "This super call is here only for the code to compile; it is never executed.");
 
-    // If no constructor exist on the type, add an empty constructor
     if (type.getConstructors().isEmpty()) {
+      // If there are no constructors in the type, add a default constructor
       Method emptyConstructor = Method.newConstructor();
       emptyConstructor.setBody(superConstructorCall);
       type.addConstructor(emptyConstructor);
     } else {
-      // Ensure that all constructor call correctly a super constructor.
+      // Ensure all constructors call a super constructor with the right parameters.
       for (Method constructor : type.getConstructors()) {
         constructor.setBody(superConstructorCall);
       }
@@ -76,18 +82,52 @@ public class ConstructorVisitor extends AbstractModelVisitor {
     return true;
   }
 
-  private static MethodInvocation createSuperMethodInvocation(Type type) {
+  private static MethodInvocation createSuperMethodInvocation(TypeReference superTypeReference) {
+    Type superTypeDeclaration = superTypeReference.getTypeDeclaration();
     checkState(
-        !type.getConstructors().isEmpty(), "Super type should have at least one constructor");
+        !superTypeDeclaration.getConstructors().isEmpty(),
+        "Super type should have at least one constructor");
 
-    Method constructor = type.getConstructors().get(0);
+    Method constructor = superTypeDeclaration.getConstructors().get(0);
 
-    List<TypeReference> parametersType =
-        constructor.getParameters().stream().map(Parameter::getType).collect(toList());
-    List<Expression> parametersValues =
-        parametersType.stream().map(TypeReference::getDefaultValue).collect(toList());
+    List<TypeReference> parameterTypes =
+        constructor.getParameters().stream()
+            .map(Parameter::getType)
+            .map(t -> resolveTypeVariableFromSuperType(t, superTypeReference))
+            .collect(toList());
+    List<Expression> parameterValues =
+        parameterTypes.stream().map(TypeReference::getDefaultValue).collect(toList());
 
-    return new MethodInvocation(null, "super", parametersType, parametersValues);
+    return new MethodInvocation(null, "super", parameterTypes, parameterValues);
+  }
+
+  private static TypeReference resolveTypeVariableFromSuperType(
+      TypeReference typeReference, TypeReference superTypeReference) {
+    if (!(typeReference instanceof TypeVariableReference)) {
+      return typeReference;
+    }
+
+    Type superTypeDeclaration = superTypeReference.getTypeDeclaration();
+
+    // typeReference is a reference to a type of a parameter of the super constructor. If it's a
+    // type variable reference, the super type must be parametrized.
+    checkState(superTypeReference instanceof ParametrizedTypeReference);
+    ParametrizedTypeReference parametrizedSuperTypeReference =
+        (ParametrizedTypeReference) superTypeReference;
+    checkState(
+        superTypeDeclaration.getTypeParameters().size()
+            == parametrizedSuperTypeReference.getActualTypeArguments().size());
+
+    int index = 0;
+    for (TypeReference typeParameter : superTypeDeclaration.getTypeParameters()) {
+      if (typeParameter.equals(typeReference)) {
+        return parametrizedSuperTypeReference.getActualTypeArguments().get(index);
+      }
+      index++;
+    }
+
+    throw new RuntimeException(
+        "Type variable " + typeReference + " not resolved on " + superTypeReference);
   }
 
   private static boolean hasDefaultConstructor(Set<Method> classConstructors) {
@@ -103,10 +143,5 @@ public class ConstructorVisitor extends AbstractModelVisitor {
     }
 
     return false;
-  }
-
-  private static Type getSuperType(Type type) {
-    TypeReference superTypeReference = type.getExtendedTypes().iterator().next();
-    return superTypeReference.getTypeDeclaration();
   }
 }

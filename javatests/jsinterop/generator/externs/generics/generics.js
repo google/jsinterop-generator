@@ -179,8 +179,10 @@ ExtendInterfaceWithGeneric.prototype.bar = function(param) {};
 
 /**
  * @constructor
+ * @template T
+ * @param {T} value
  */
-function SimpleClass() {}
+function SimpleClass(value) {}
 
 // The class has a static and instance methods with same name. The logic
 // collecting type parameters is based on method name. We check here that the
@@ -205,3 +207,9 @@ SimpleClass.prototype.chainableMethodWithThis = function(param) {};
  * @return {V}
  */
 SimpleClass.foo = function(obj) {};
+
+/**
+ * @constructor
+ * @extends {SimpleClass<string>}
+ */
+function SimpleClassChild() {}

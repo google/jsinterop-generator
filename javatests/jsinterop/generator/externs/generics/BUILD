@@ -21,6 +21,7 @@ jsinterop_generator_test(
         "AnonymousTypes.java",
         "ExtendInterfaceWithGeneric.java",
         "SimpleClass.java",
+        "SimpleClassChild.java",
         "BarChild.java",
     ],
 )
