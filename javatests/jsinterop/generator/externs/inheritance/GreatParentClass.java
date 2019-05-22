@@ -9,7 +9,7 @@ public class GreatParentClass extends JsArray<Double> {
 
   public GreatParentClass(String s, boolean b, double n) {
     // This call is only there for java compilation purpose.
-    super((Object) null);
+    super((Double) null);
   }
 
   public native double greatParentClassMethod();
