@@ -289,7 +289,7 @@ def jsinterop_generator(
                     name = externs_lib_name,
                     srcs = srcs,
                 )
-                j2cl_js_deps = [":%s" % externs_lib_name]
+                deps_j2cl += [":%s" % externs_lib_name]
 
 
         else:
@@ -370,7 +370,6 @@ def jsinterop_generator(
             exports = exports_j2cl,
             testonly = testonly,
             visibility = visibility,
-            _js_deps = j2cl_js_deps or [],
         )
 
     if generate_gwt_library:
