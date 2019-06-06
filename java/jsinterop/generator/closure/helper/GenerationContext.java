@@ -24,6 +24,7 @@ import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.rhino.StaticSourceFile;
 import java.util.Collection;
 import java.util.Map;
+import jsinterop.generator.helper.Problems;
 import jsinterop.generator.model.Program;
 
 /** Keep contextual information on the current generation. */
@@ -46,6 +47,8 @@ public abstract class GenerationContext {
 
     public abstract Builder nameMapping(Map<String, String> nameMapping);
 
+    public abstract Builder problems(Problems problems);
+
     public abstract GenerationContext build();
   }
 
@@ -60,6 +63,8 @@ public abstract class GenerationContext {
   public abstract ClosureTypeRegistry getTypeRegistry();
 
   public abstract ImmutableMap<String, String> getNameMapping();
+
+  public abstract Problems getProblems();
 
   public static Builder builder() {
     return new AutoValue_GenerationContext.Builder();

@@ -19,6 +19,7 @@ package jsinterop.generator.visitor;
 
 import java.util.List;
 import java.util.Map;
+import jsinterop.generator.helper.Problems;
 import jsinterop.generator.model.Program;
 
 /** Helper class that runs all java model visitors. */
@@ -28,7 +29,8 @@ public final class VisitorHelper {
       Program program,
       boolean useBeanConvention,
       List<String> integerEntities,
-      Map<String, String> wildcardTypes) {
+      Map<String, String> wildcardTypes,
+      Problems problems) {
     new EmptyNamespaceFilter().accept(program);
 
     new DictionaryTypeVisitor().accept(program);
@@ -41,7 +43,7 @@ public final class VisitorHelper {
 
     new ValidJavaIdentifierVisitor().accept(program);
 
-    new IntegerEntitiesConverter(integerEntities).accept(program);
+    new IntegerEntitiesConverter(integerEntities, problems).accept(program);
 
     new ConstantRewriter().accept(program);
 

@@ -106,6 +106,7 @@ def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
     if ctx.attr.use_bean_convention:
         arguments += ["--bean_convention"]
 
+
     arguments += ["%s" % f.path for f in srcs]
 
     inputs = srcs + deps_srcs + dep_types_mapping_files + names_mapping_files

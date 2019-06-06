@@ -36,7 +36,6 @@ import com.google.javascript.rhino.jstype.StaticTypedSlot;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import jsinterop.generator.closure.helper.ClosureTypeRegistry;
 import jsinterop.generator.closure.helper.GenerationContext;
@@ -44,8 +43,6 @@ import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.Type;
 
 abstract class AbstractClosureVisitor {
-  private static final Logger logger = Logger.getLogger(AbstractClosureVisitor.class.getName());
-
   private final GenerationContext context;
   private final Set<String> externFileNamesSet;
   private final Deque<Type> currentJavaTypeDeque = new ArrayDeque<>();
@@ -416,37 +413,35 @@ abstract class AbstractClosureVisitor {
   protected ParameterNameInfo getParameterInfo(
       FunctionType functionType, int parameterIndex, String parentFqn) {
 
-    String originalName;
-    boolean generatedName = false;
-
-    if (functionType.getSource() == null) {
-      // if functionType doesn't have source, it means it's a anonymous function type defined in
-      // jsdoc.
-      // ex: /** @type {function(Event):boolean} */ var eventCallback;
-      // Parameter for anonymous FunctionType doesn't have name.
-      originalName = "p" + parameterIndex;
-      generatedName = true;
-    } else {
-      originalName =
+    if (functionType.getSource() != null) {
+      String originalName =
           NodeUtil.getFunctionParameters(functionType.getSource())
               .getChildAtIndex(parameterIndex)
               .getString();
+      return getParameterInfo(parentFqn, originalName, false);
     }
 
-    String parameterFqn = parentFqn + "." + originalName;
+    // functionType doesn't have source, it's a anonymous function type.
+    // e.g.: /** @type {function(Event):boolean} */ var eventCallback;
+    // Parameters for anonymous FunctionType don't have names.
+    return getParameterInfo(parentFqn, "p" + parameterIndex, true);
+  }
 
+  private ParameterNameInfo getParameterInfo(
+      String parentFqn, String parameterName, boolean warnMissingName) {
+    String parameterFqn = parentFqn + "." + parameterName;
     if (context.getNameMapping().containsKey(parameterFqn)) {
       return new ParameterNameInfo(context.getNameMapping().get(parameterFqn), parameterFqn);
     }
-
-    if (generatedName) {
-      logger.warning(
-          "We generated a default name for parameter "
-              + parameterFqn
-              + ". You can override the name by passing a name mapping file to the generator");
+    if (warnMissingName) {
+      context
+          .getProblems()
+          .reportInfo(
+              "No name provided for parameter '%s'. Name can be specified in a name mapping file.",
+              parameterFqn);
     }
 
-    return new ParameterNameInfo(originalName, parameterFqn);
+    return new ParameterNameInfo(parameterName, parameterFqn);
   }
 
   private boolean isDefinedInExternFiles(TypedVar symbol) {

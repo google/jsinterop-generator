@@ -15,7 +15,6 @@
  */
 package jsinterop.generator.closure.visitor;
 
-import static com.google.common.base.Preconditions.checkState;
 import static jsinterop.generator.helper.GeneratorUtils.extractName;
 
 import com.google.common.collect.Sets;
@@ -29,7 +28,7 @@ import com.google.javascript.rhino.jstype.RecordType;
 import com.google.javascript.rhino.jstype.StaticTypedSlot;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import jsinterop.generator.closure.helper.GenerationContext;
@@ -52,15 +51,19 @@ public class MemberCollector extends AbstractClosureVisitor {
 
   public MemberCollector(GenerationContext ctx) {
     super(ctx);
-    parameterNameMapping = new HashMap<>(getContext().getNameMapping());
+    // use of LinkedHashMap for always reporting unused entities in the same order
+    parameterNameMapping = new LinkedHashMap<>(getContext().getNameMapping());
   }
 
   @Override
   public void accept(TypedScope scope) {
     super.accept(scope);
 
-    checkState(
-        parameterNameMapping.isEmpty(), "Unused parameter name mapping: %s", parameterNameMapping);
+    if (!parameterNameMapping.isEmpty()) {
+      getContext()
+          .getProblems()
+          .reportWarning("Unused parameter name mapping: %s", parameterNameMapping);
+    }
   }
 
   @Override

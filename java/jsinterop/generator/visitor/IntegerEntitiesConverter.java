@@ -16,14 +16,14 @@
  */
 package jsinterop.generator.visitor;
 
-import static com.google.common.base.Preconditions.checkState;
 import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE;
 import static jsinterop.generator.model.PredefinedTypeReference.INT;
 
 import com.google.common.collect.ImmutableSet;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import jsinterop.generator.helper.Problems;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Program;
@@ -33,12 +33,15 @@ import jsinterop.generator.model.TypeReference;
 public class IntegerEntitiesConverter extends AbstractModelVisitor {
   private final Set<String> integerEntities;
   private final Set<String> unusedIntegerEntities;
+  private final Problems problems;
 
   private String currentFqn;
 
-  public IntegerEntitiesConverter(List<String> integerEntities) {
+  public IntegerEntitiesConverter(List<String> integerEntities, Problems problems) {
     this.integerEntities = ImmutableSet.copyOf(integerEntities);
-    this.unusedIntegerEntities = new HashSet<>(integerEntities);
+    // use of LinkedHashSet for always reporting unused entities in the same order
+    this.unusedIntegerEntities = new LinkedHashSet<>(integerEntities);
+    this.problems = problems;
   }
 
   @Override
@@ -48,8 +51,9 @@ public class IntegerEntitiesConverter extends AbstractModelVisitor {
 
   @Override
   public void endVisit(Program program) {
-    checkState(
-        unusedIntegerEntities.isEmpty(), "These fqn were not found: %s", unusedIntegerEntities);
+    if (!unusedIntegerEntities.isEmpty()) {
+      problems.reportWarning("Unused integer entities: %s", unusedIntegerEntities);
+    }
   }
 
   @Override

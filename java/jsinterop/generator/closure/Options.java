@@ -52,6 +52,8 @@ public abstract class Options {
     abstract Options build();
 
     abstract Builder globalScopeClassName(String globalScopeClassName);
+
+    abstract Builder strict(boolean strict);
   }
 
   public abstract String getOutputJarFile();
@@ -68,6 +70,8 @@ public abstract class Options {
   public abstract boolean isDebugEnabled();
 
   public abstract boolean isBeanConventionUsed();
+
+  public abstract boolean isStrict();
 
   /**
    * Returns list of the generated dependency files that contains the mapping between the native fqn

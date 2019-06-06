@@ -52,6 +52,9 @@ public class Runner {
   @Option(name = "--debug_mode", usage = "Enable debug mode")
   boolean debugEnabled = false;
 
+  @Option(name = "--strict", usage = "Enabling strict mode: treats warning message as errors")
+  boolean strict = false;
+
   @Option(
     name = "--bean_convention",
     usage = "Use java bean convention for generated getters and setters"
@@ -106,6 +109,7 @@ public class Runner {
             .extensionTypePrefix(extensionTypePrefix)
             .globalScopeClassName(globalScopeClassName)
             .debugEnabled(debugEnabled)
+            .strict(strict)
             .beanConventionUsed(beanConvention)
             .dependencyMappingFiles(dependencyMappingFilePaths)
             .nameMappingFiles(nameMappingFilePaths)

@@ -41,6 +41,7 @@ import jsinterop.generator.closure.visitor.ThisTemplateTypeVisitor;
 import jsinterop.generator.closure.visitor.TypeCollector;
 import jsinterop.generator.closure.visitor.TypeParameterCollector;
 import jsinterop.generator.helper.GeneratorUtils;
+import jsinterop.generator.helper.Problems;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.visitor.DependencyFileWriter;
@@ -51,16 +52,23 @@ import jsinterop.generator.writer.TypeWriter;
 class ClosureJsInteropGenerator {
   private final Options options;
   private final Compiler compiler;
+  private final Problems problems;
 
   public ClosureJsInteropGenerator(Options options) {
     this.options = options;
     this.compiler = new Compiler();
+    this.problems = new Problems(options.isStrict());
   }
 
   public void convert() {
     Program javaProgram = generateJavaProgram();
 
     finalizeProgram(javaProgram);
+
+    problems.report();
+    if (problems.hasErrors()) {
+      System.exit(1);
+    }
 
     generateJarFile(javaProgram);
 
@@ -86,7 +94,8 @@ class ClosureJsInteropGenerator {
         javaProgram,
         options.isBeanConventionUsed(),
         readListFiles(options.getIntegerEntitiesFiles()),
-        readKeyValueFiles(options.getWildcardTypesFiles()));
+        readKeyValueFiles(options.getWildcardTypesFiles()),
+        problems);
   }
 
   private void generateJarFile(Program javaProgram) {
@@ -132,6 +141,7 @@ class ClosureJsInteropGenerator {
             .javaProgram(new Program(readKeyValueFiles(options.getDependencyMappingFiles())))
             .typeRegistry(new ClosureTypeRegistry())
             .nameMapping(readKeyValueFiles(options.getNameMappingFiles()))
+            .problems(problems)
             .build();
 
     TypedScope topScope = compiler.getTopScope();
