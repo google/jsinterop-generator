@@ -3,12 +3,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
-  </parent>
-
   <groupId>__GROUP_ID__</groupId>
   <artifactId>__ARTIFICAT_ID__</artifactId>
   <version>__VERSION__</version>
@@ -16,6 +10,34 @@
 
   <name>JsInterop Closure Generator</name>
   <description>JsInterop generator for closure extern files</description>
+  <url>https://www.gwtproject.org</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:https://github.com/google/jsinterop-generator.git</connection>
+    <developerConnection>scm:git:git@github.com:google/jsinterop-generator.git</developerConnection>
+    <url>https://github.com/google/jsinterop-generator</url>
+  </scm>
+
+  <issueManagement>
+    <url>https://github.com/google/jsinterop-generator/issues</url>
+    <system>GitHub Issues</system>
+  </issueManagement>
+
+  <developers>
+    <developer>
+      <name>J2CL Team</name>
+      <organization>Google</organization>
+      <organizationUrl>http://www.google.com</organizationUrl>
+    </developer>
+  </developers>
 
   <dependencies>
     <dependency>
