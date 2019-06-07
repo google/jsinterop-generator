@@ -4,9 +4,10 @@
 #
 #
 
-package(default_visibility = ["//visibility:public"])
-
-# Apache2
-licenses(["notice"])
+package(
+    default_visibility = ["//visibility:public"],
+    # Apache2
+    licenses = ["notice"],
+)
 
 exports_files(["LICENSE"])

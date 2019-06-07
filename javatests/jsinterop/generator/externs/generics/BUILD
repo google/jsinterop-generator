@@ -1,10 +1,11 @@
 # Description:
 #   Tests conversion of generics
 
-package(default_visibility = ["//:__subpackages__"])
-
-# Apache2
-licenses(["notice"])
+package(
+    default_visibility = ["//:__subpackages__"],
+    # Apache2
+    licenses = ["notice"],
+)
 
 load(
     "//javatests/jsinterop/generator:jsinterop_generator_test.bzl",

@@ -1,12 +1,13 @@
 # Description:
 #  Generates JsTypes classes from closure extern files
 
-package(default_visibility = [
-    "//third_party/java/jsinterop:__subpackages__",
-])
-
-# Apache2
-licenses(["notice"])
+package(
+    default_visibility = [
+        "//third_party/java/jsinterop:__subpackages__",
+    ],
+    # Apache2
+    licenses = ["notice"],
+)
 
 java_library(
     name = "closure",

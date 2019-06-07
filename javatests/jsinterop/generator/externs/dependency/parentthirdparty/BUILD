@@ -2,10 +2,11 @@
 #   Tests dependency mechanism
 #
 
-package(default_visibility = ["//:__subpackages__"])
-
-# Apache2
-licenses(["notice"])
+package(
+    default_visibility = ["//:__subpackages__"],
+    # Apache2
+    licenses = ["notice"],
+)
 
 load(
     "//:jsinterop_generator.bzl",
