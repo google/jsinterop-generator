@@ -38,14 +38,21 @@ JS_INTEROP_RULE_NAME_PATTERN = "%s__internal_src_generated"
 
 JsInteropGeneratorInfo = provider()
 
-def _get_generator_files(deps):
-    transitive_srcs = [dep[JsInteropGeneratorInfo].transitive_sources for dep in deps]
-    transitive_types_mappings = [dep[JsInteropGeneratorInfo].transitive_types_mappings for dep in deps]
-    gwt_module_names = [dep[JsInteropGeneratorInfo].gwt_module_names for dep in deps]
+def _get_generator_files(targets):
+    transitive_srcs = depset()
+    transitive_types_mappings = depset()
+    gwt_module_names = []
+
+    for target in targets:
+        target_provider = target[JsInteropGeneratorInfo]
+
+        transitive_srcs += target_provider.transitive_sources
+        transitive_types_mappings += target_provider.transitive_types_mappings
+        gwt_module_names += target_provider.gwt_module_names
 
     return struct(
-        sources = depset(transitive = transitive_srcs),
-        types_mappings = depset(transitive = transitive_types_mappings),
+        sources = transitive_srcs,
+        types_mappings = transitive_types_mappings,
         gwt_module_names = gwt_module_names,
     )
 
@@ -168,8 +175,8 @@ def _jsinterop_generator_impl(ctx):
 
     return [
         JsInteropGeneratorInfo(
-            transitive_sources = depset(srcs, transitive = [deps_files.sources]),
-            transitive_types_mappings = depset([types_mapping_file], transitive = [deps_files.types_mappings]),
+            transitive_sources = deps_files.sources + srcs,
+            transitive_types_mappings = deps_files.types_mappings + [types_mapping_file],
             gwt_module_names = [gwt_module_name],
         ),
     ]
