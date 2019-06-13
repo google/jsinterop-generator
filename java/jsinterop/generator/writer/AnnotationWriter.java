@@ -33,9 +33,8 @@ public class AnnotationWriter {
 
     String parameters = "";
 
-    // We don;t use a generic way to handle attributes because the annotations we used
-    // has 3 attributes max. If it's no longer the case in the future, please refactor
-    // this part.
+    // We don't use a generic way to handle attributes because the JsInterop annotations have at
+    // most three attributes. Refactor if more attributes are added.
     if (annotationType.hasIsNativeAttribute() && annotation.getIsNativeAttribute()) {
       parameters += "isNative = true";
     }
