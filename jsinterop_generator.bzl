@@ -27,10 +27,11 @@ Examples:
        name = "foo-j2cl",
        # contains generated sources
     )
+
 """
 
 load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
-load("//third_party:js_library.bzl", "js_library")
+load("@bazel_tools//tools/build_defs/js:rules.bzl", "js_library")
 
 _is_bazel = not hasattr(native, "genmpm")
 
@@ -282,6 +283,7 @@ def jsinterop_generator(
                 js_library(
                     name = externs_lib_name,
                     srcs = srcs,
+                    check_level = "OFF",
                 )
                 deps_j2cl += [":%s" % externs_lib_name]
 
