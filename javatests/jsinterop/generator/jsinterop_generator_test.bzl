@@ -14,7 +14,7 @@ jsinterop_generator_test(
 """
 
 load("//:jsinterop_generator.bzl", "jsinterop_generator")
-load("@bazel_tools//tools/build_defs/js:rules.bzl", "js_library")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 
 def jsinterop_generator_test(
         name,
@@ -35,10 +35,9 @@ def jsinterop_generator_test(
     j2cl_js_deps = None
     if j2cl_test_externs_list:
         externs_lib_name = "%s-externs" % name
-        js_library(
+        closure_js_library(
             name = externs_lib_name,
             srcs = j2cl_test_externs_list,
-            check_level = "OFF",
         )
         j2cl_js_deps = [":%s" % externs_lib_name]
 

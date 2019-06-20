@@ -31,7 +31,7 @@ Examples:
 """
 
 load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
-load("@bazel_tools//tools/build_defs/js:rules.bzl", "js_library")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 
 _is_bazel = not hasattr(native, "genmpm")
 
@@ -280,10 +280,9 @@ def jsinterop_generator(
         if conversion_mode == "closure":
             if j2cl_js_deps == None:
                 externs_lib_name = "%s-externs" % name
-                js_library(
+                closure_js_library(
                     name = externs_lib_name,
                     srcs = srcs,
-                    check_level = "OFF",
                 )
                 deps_j2cl += [":%s" % externs_lib_name]
 
