@@ -11,17 +11,17 @@ import jsinterop.base.JsPropertyMap;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class AnonymousTypes<T> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface BarFooType<T> {
+  public interface BarFooType<Z> {
     @JsOverlay
     static AnonymousTypes.BarFooType create() {
       return Js.uncheckedCast(JsPropertyMap.of());
     }
 
     @JsProperty
-    T getBar();
+    Z getBar();
 
     @JsProperty
-    void setBar(T bar);
+    void setBar(Z bar);
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
@@ -108,14 +108,14 @@ public class AnonymousTypes<T> {
     }
   }
 
-  public static native <T> void bar(AnonymousTypes.BarFooType<T> foo);
+  public static native <Z> void bar(InterfaceWithGeneric<AnonymousTypes.BarFooType<Z>> foo);
 
   public native <V, U> void foo(AnonymousTypes.FooFooType<V, U, T> foo);
 
   public native void functionTypeRedefiningThis(
       AnonymousTypes.FunctionTypeRedefiningThisCallbackFn callback);
 
-  public native void functionTypeWithGenericInParameter(
+  public native <T> void functionTypeWithGenericInParameter(
       AnonymousTypes.FunctionTypeWithGenericInParameterFooCallbackFn<? super T> fooCallback);
 
   public native void functionTypeWithGenericInReturnType(

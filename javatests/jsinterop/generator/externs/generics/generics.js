@@ -124,8 +124,8 @@ function AnonymousTypes() {}
 AnonymousTypes.prototype.functionTypeRedefiningThis = function(callback) {};
 
 /**
- * @template T
- * @param {{bar: T}} foo
+ * @template Z
+ * @param {InterfaceWithGeneric<{bar: Z}>} foo
  * @return {undefined}
  */
 AnonymousTypes.bar = function(foo) {};
@@ -139,6 +139,7 @@ AnonymousTypes.prototype.typeLiteral = function(foo) {};
 /**
  * @param {function(T):boolean} fooCallback
  * @return {undefined}
+ * @template T
  */
 AnonymousTypes.prototype.functionTypeWithGenericInParameter = function(
     fooCallback) {};

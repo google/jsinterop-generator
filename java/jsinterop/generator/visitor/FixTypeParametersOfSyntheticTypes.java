@@ -40,9 +40,10 @@ import jsinterop.generator.model.UnionTypeReference;
 /**
  * Synthetic type can refer to generics from parent scope:
  *
+ * <p>TypeScript example:
+ *
  * <pre>
- * ex (with typescript): class
- *   Foo<T> {
+ *  class Foo<T> {
  *     foo(callback: (result: T) => void): void;
  *   }
  * </pre>
@@ -50,8 +51,9 @@ import jsinterop.generator.model.UnionTypeReference;
  * <p>If generics from the parent scope are used in the definition of the synthetic type, we have to
  * retrofit the generic definition on the java type used to abstract the synthetic type.
  *
+ * <p>Generated java code:
+ *
  * <pre>
- * Generated java code:
  *   public class Foo<T> {
  *     @JsFunction
  *     interface FooCallback<T> {
@@ -80,9 +82,7 @@ public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
     for (Method method : javaType.getMethods()) {
       Set<TypeReference> definedTypeParameters = new HashSet<>(method.getTypeParameters());
 
-      method
-          .getParameters()
-          .stream()
+      method.getParameters().stream()
           .map(Parameter::getType)
           .flatMap(FixTypeParametersOfSyntheticTypes::extractTypeParameter)
           .filter(t -> isUndefinedTypeParameter(t, definedTypeParameters))
@@ -94,9 +94,7 @@ public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
     }
 
     // collect all generics used as type of a field
-    javaType
-        .getFields()
-        .stream()
+    javaType.getFields().stream()
         .map(Field::getType)
         .flatMap(FixTypeParametersOfSyntheticTypes::extractTypeParameter)
         .forEach(undefinedTypeParameters::add);
@@ -128,9 +126,7 @@ public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
 
     if (enclosingMethod != null && !enclosingMethod.getTypeParameters().isEmpty()) {
       sortedUndefinedTypeParameters.addAll(
-          enclosingMethod
-              .getTypeParameters()
-              .stream()
+          enclosingMethod.getTypeParameters().stream()
               .filter(undefinedTypeParameters::contains)
               .collect(toList()));
 
@@ -140,10 +136,7 @@ public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
     // The remaining type parameters are coming from top level enclosing type.
     if (!undefinedTypeParameters.isEmpty()) {
       sortedUndefinedTypeParameters.addAll(
-          syntheticType
-              .getTopLevelParentType()
-              .getTypeParameters()
-              .stream()
+          syntheticType.getTopLevelParentType().getTypeParameters().stream()
               .filter(undefinedTypeParameters::contains)
               .collect(toList()));
 
@@ -196,6 +189,15 @@ public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
   }
 
   private static boolean isReferenceTo(TypeReference typeReference, Type type) {
+    if (typeReference instanceof ParametrizedTypeReference) {
+      boolean mainTypeReference =
+          isReferenceTo(((ParametrizedTypeReference) typeReference).getMainType(), type);
+      boolean typeArgumentsReference =
+          ((ParametrizedTypeReference) typeReference)
+              .getActualTypeArguments().stream().anyMatch(t -> isReferenceTo(t, type));
+      return mainTypeReference || typeArgumentsReference;
+    }
+
     if (typeReference instanceof DelegableTypeReference) {
       return isReferenceTo(((DelegableTypeReference) typeReference).getDelegate(), type);
     }
@@ -212,9 +214,8 @@ public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
     }
     if (typeReference instanceof ParametrizedTypeReference) {
       return ((ParametrizedTypeReference) typeReference)
-          .getActualTypeArguments()
-          .stream()
-          .flatMap(FixTypeParametersOfSyntheticTypes::extractTypeParameter);
+          .getActualTypeArguments().stream()
+              .flatMap(FixTypeParametersOfSyntheticTypes::extractTypeParameter);
     }
 
     if (typeReference instanceof ArrayTypeReference) {
