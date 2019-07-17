@@ -75,7 +75,6 @@ _jsinterop_generator_export = rule(
     implementation = _jsinterop_generator_export_impl,
 )
 
-
 def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
     deps_srcs = deps_files.sources.to_list()
     dep_types_mapping_files = deps_files.types_mappings.to_list()
@@ -99,7 +98,6 @@ def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
 
     if ctx.attr.use_bean_convention:
         arguments += ["--bean_convention"]
-
 
     arguments += ["%s" % f.path for f in srcs]
 
@@ -285,7 +283,6 @@ def jsinterop_generator(
                     srcs = srcs,
                 )
                 deps_j2cl += [":%s" % externs_lib_name]
-
 
         else:
             fail("Unknown conversion mode")
