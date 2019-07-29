@@ -16,6 +16,7 @@
  */
 package jsinterop.generator.model;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static jsinterop.generator.model.EntityKind.FIELD;
 
 import java.util.Objects;
@@ -119,5 +120,10 @@ public class Field extends Entity implements Visitable<Field> {
 
   public void removeFromParent() {
     getEnclosingType().removeField(this);
+  }
+
+  @Override
+  public String getConfigurationIdentifier() {
+    return checkNotNull(getEnclosingType()).getJavaFqn() + "." + getName();
   }
 }

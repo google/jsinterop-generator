@@ -18,7 +18,7 @@
 package jsinterop.generator.model;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.transform;
 import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 import static jsinterop.generator.model.EntityKind.METHOD;
@@ -75,9 +75,8 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
       this.type = type;
     }
 
-    public String getJavaFqn() {
-      checkState(getEnclosingMethod() != null);
-      return getEnclosingMethod().getJavaFqn() + "." + getName();
+    public String getPath() {
+      return checkNotNull(getEnclosingMethod()).getConfigurationIdentifier() + "." + getName();
     }
 
     @Override
@@ -264,5 +263,11 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
   @Override
   public String toString() {
     return getName() + "(" + Joiner.on(", ").join(getParameters()) + ")";
+  }
+
+  @Override
+  public String getConfigurationIdentifier() {
+    String id = getKind() == CONSTRUCTOR ? "constructor" : getName();
+    return checkNotNull(getEnclosingType()).getJavaFqn() + "." + id;
   }
 }

@@ -1,3 +1,4 @@
+jsinterop.generator.externs.integerentities.Foo.constructor.foo
 jsinterop.generator.externs.integerentities.Foo.foo
 jsinterop.generator.externs.integerentities.Foo.union.unionParam
 jsinterop.generator.externs.integerentities.Foo.foo.integerParam

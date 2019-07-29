@@ -131,13 +131,8 @@ public abstract class Entity implements HasName {
     this.accessModifier = accessModifier;
   }
 
-  public String getJavaFqn() {
-    if (getEnclosingType() != null) {
-      return getEnclosingType().getJavaFqn() + "." + getName();
-    }
-
-    return getName();
-  }
+  /** Returns the identifier used in configuration files to refer to this entity. */
+  public abstract String getConfigurationIdentifier();
 
   public Type getEnclosingType() {
     return enclosingType;

@@ -259,7 +259,6 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     this.nativeFqn = nativeFqn;
   }
 
-  @Override
   public String getJavaFqn() {
     String packageName = getPackageName();
 
@@ -268,6 +267,11 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     }
 
     return packageName + "." + getName();
+  }
+
+  @Override
+  public String getConfigurationIdentifier() {
+    return getJavaFqn();
   }
 
   public String getJavaRelativeQualifiedTypeName() {

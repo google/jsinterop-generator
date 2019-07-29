@@ -119,38 +119,43 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
   }
 
   private final Set<Type> unionTypeHelperTypes;
-  private final Map<String, WildcardType> wildcardsByFqn;
+  private final Map<String, WildcardType> wildcardsByConfigurationIndentifier;
 
   public WildcardTypeCreator(Set<Type> unionTypeHelperTypes, Map<String, String> wildcardsByFqn) {
     this.unionTypeHelperTypes = unionTypeHelperTypes;
-    this.wildcardsByFqn = new HashMap<>(Maps.transformValues(wildcardsByFqn, WildcardType::from));
+    this.wildcardsByConfigurationIndentifier =
+        new HashMap<>(Maps.transformValues(wildcardsByFqn, WildcardType::from));
   }
 
   @Override
   public void endVisit(Program program) {
-    checkState(wildcardsByFqn.isEmpty(), "Unused wildCard directives: %s", wildcardsByFqn);
+    checkState(
+        wildcardsByConfigurationIndentifier.isEmpty(),
+        "Unused wildCard directives: %s",
+        wildcardsByConfigurationIndentifier);
   }
 
   @Override
   public boolean visit(Field field) {
-    field.setType(maybeCreateWildcardType(field.getJavaFqn(), field.getType()));
+    field.setType(maybeCreateWildcardType(field.getConfigurationIdentifier(), field.getType()));
     return false;
   }
 
   @Override
   public boolean visit(Method method) {
     for (Parameter parameter : method.getParameters()) {
-      parameter.setType(maybeCreateWildcardType(parameter.getJavaFqn(), parameter.getType()));
+      parameter.setType(maybeCreateWildcardType(parameter.getPath(), parameter.getType()));
     }
     return false;
   }
 
-  private TypeReference maybeCreateWildcardType(String fqn, TypeReference typeReference) {
+  private TypeReference maybeCreateWildcardType(
+      String entityIdentifier, TypeReference typeReference) {
     if (!(typeReference instanceof ParametrizedTypeReference)) {
       checkState(
-          !wildcardsByFqn.containsKey(fqn),
+          !wildcardsByConfigurationIndentifier.containsKey(entityIdentifier),
           "%s doesn't represent a parametrized type reference",
-          fqn);
+          entityIdentifier);
       return typeReference;
     }
     ParametrizedTypeReference parametrizedTypeReference = (ParametrizedTypeReference) typeReference;
@@ -161,7 +166,7 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
         maybeCreateWildcardForJsFunctionReference(parametrizedTypeReference);
 
     // Apply user configuration for wildcard.
-    return applyWildcardFromUserConfiguration(resultTypeReference, fqn);
+    return applyWildcardFromUserConfiguration(resultTypeReference, entityIdentifier);
   }
 
   private ParametrizedTypeReference applyWildcardFromUserConfiguration(
@@ -194,7 +199,7 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
   }
 
   private WildcardType lookupWildcardType(String fqn, int typeArgumentIndex) {
-    return wildcardsByFqn.remove(fqn + "#" + typeArgumentIndex);
+    return wildcardsByConfigurationIndentifier.remove(fqn + "#" + typeArgumentIndex);
   }
 
   private ParametrizedTypeReference maybeCreateWildcardForJsFunctionReference(

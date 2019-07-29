@@ -45,6 +45,8 @@ public class Foo {
   public static int baz;
   public int bar;
 
+  public Foo(int foo) {}
+
   public native int foo(int integerParam, double doubleParam, Foo.FooCallbackFn callback);
 
   public native void methodWithOptionalParameter(int param1, double optional);

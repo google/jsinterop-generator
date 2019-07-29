@@ -4,9 +4,10 @@
  */
 
 /**
+ * @param {number} foo
  * @constructor
  */
-function Foo() {}
+function Foo(foo) {}
 
 /**
  * @param {number} integerParam

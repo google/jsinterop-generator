@@ -35,7 +35,7 @@ public class IntegerEntitiesConverter extends AbstractModelVisitor {
   private final Set<String> unusedIntegerEntities;
   private final Problems problems;
 
-  private String currentFqn;
+  private String currentConfigurationIdentifier;
 
   public IntegerEntitiesConverter(List<String> integerEntities, Problems problems) {
     this.integerEntities = ImmutableSet.copyOf(integerEntities);
@@ -58,30 +58,31 @@ public class IntegerEntitiesConverter extends AbstractModelVisitor {
 
   @Override
   public boolean visit(Field field) {
-    currentFqn = field.getJavaFqn();
+    currentConfigurationIdentifier = field.getConfigurationIdentifier();
     return true;
   }
 
   @Override
   public boolean visit(Method.Parameter parameter) {
-    currentFqn = parameter.getJavaFqn();
+    currentConfigurationIdentifier = parameter.getPath();
     return true;
   }
 
   @Override
   public boolean visit(Method method) {
-    currentFqn = method.getJavaFqn();
+    currentConfigurationIdentifier = method.getConfigurationIdentifier();
     return true;
   }
 
   private boolean mustBeConvertedToInt(TypeReference originalTypeReference) {
-    return integerEntities.contains(currentFqn) && DOUBLE.equals(originalTypeReference);
+    return integerEntities.contains(currentConfigurationIdentifier)
+        && DOUBLE.equals(originalTypeReference);
   }
 
   @Override
   public TypeReference endVisit(TypeReference typeReference) {
     if (mustBeConvertedToInt(typeReference)) {
-      unusedIntegerEntities.remove(currentFqn);
+      unusedIntegerEntities.remove(currentConfigurationIdentifier);
       return INT;
     }
 
