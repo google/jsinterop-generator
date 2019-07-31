@@ -8,6 +8,5 @@ package(
 )
 
 exports_files([
-    "es6_min.js",
     "jsinterop_generator_test.sh",
 ])
