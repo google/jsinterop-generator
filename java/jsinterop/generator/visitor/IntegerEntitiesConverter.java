@@ -64,7 +64,7 @@ public class IntegerEntitiesConverter extends AbstractModelVisitor {
 
   @Override
   public boolean visit(Method.Parameter parameter) {
-    currentConfigurationIdentifier = parameter.getPath();
+    currentConfigurationIdentifier = parameter.getConfigurationIdentifier();
     return true;
   }
 

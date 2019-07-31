@@ -144,7 +144,8 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
   @Override
   public boolean visit(Method method) {
     for (Parameter parameter : method.getParameters()) {
-      parameter.setType(maybeCreateWildcardType(parameter.getPath(), parameter.getType()));
+      parameter.setType(
+          maybeCreateWildcardType(parameter.getConfigurationIdentifier(), parameter.getType()));
     }
     return false;
   }

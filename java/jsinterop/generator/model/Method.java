@@ -75,7 +75,7 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
       this.type = type;
     }
 
-    public String getPath() {
+    public String getConfigurationIdentifier() {
       return checkNotNull(getEnclosingMethod()).getConfigurationIdentifier() + "." + getName();
     }
 
