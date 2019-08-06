@@ -18,9 +18,7 @@ jsinterop_generator_test(
     srcs = ["enums.js"],
     expected_output = [
         "Foo.java",
-        "Foo__Constants.java",
         "Bar.java",
-        "Bar__Constants.java",
         "Baz.java",
     ],
 )

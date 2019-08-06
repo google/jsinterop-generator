@@ -18,6 +18,7 @@ package jsinterop.generator.model;
 
 /** A list of annotations we use in our JsInterop code generation. */
 public enum AnnotationType {
+  JS_ENUM(PredefinedTypeReference.JS_ENUM, true, true, true),
   JS_TYPE(PredefinedTypeReference.JS_TYPE, true, true, true),
   JS_PROPERTY(PredefinedTypeReference.JS_PROPERTY, false, true, true),
   JS_METHOD(PredefinedTypeReference.JS_METHOD, false, true, true),

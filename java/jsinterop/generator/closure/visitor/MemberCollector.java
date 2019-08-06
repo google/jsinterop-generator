@@ -24,6 +24,7 @@ import com.google.javascript.rhino.JSDocInfo.Visibility;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.RecordType;
 import com.google.javascript.rhino.jstype.StaticTypedSlot;
 import java.util.ArrayDeque;
@@ -188,6 +189,17 @@ public class MemberCollector extends AbstractClosureVisitor {
         getJavaTypeRegistry().createTypeReference(jsParameter.getJSType()),
         jsParameter.isVarArgs(),
         jsParameter.isOptionalArg());
+  }
+
+  @Override
+  protected boolean visitEnumMember(Property enumMember) {
+    Field enumField = new Field();
+    enumField.setType(getJavaTypeRegistry().createTypeReference(enumMember.getType()));
+    enumField.setName(enumMember.getName());
+    enumField.setEnumConstant(true);
+
+    getCurrentJavaType().addField(enumField);
+    return true;
   }
 
   private static boolean isConstant(StaticTypedSlot jsField) {

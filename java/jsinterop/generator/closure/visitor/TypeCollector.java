@@ -18,8 +18,8 @@ package jsinterop.generator.closure.visitor;
 import static jsinterop.generator.helper.GeneratorUtils.extractName;
 import static jsinterop.generator.helper.GeneratorUtils.extractNamespace;
 import static jsinterop.generator.helper.ModelHelper.createGlobalJavaType;
-import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 import static jsinterop.generator.model.EntityKind.CLASS;
+import static jsinterop.generator.model.EntityKind.ENUM;
 import static jsinterop.generator.model.EntityKind.INTERFACE;
 import static jsinterop.generator.model.EntityKind.NAMESPACE;
 
@@ -128,20 +128,12 @@ public class TypeCollector extends AbstractClosureVisitor {
 
   @Override
   protected boolean visitEnumType(EnumType type) {
-    Type javaType = createJavaType(type.getDisplayName(), NAMESPACE, false);
-    // you cannot extends an enum
-    javaType.setFinal(true);
-
-    // The class containing the static fields can be mapped to the javascript Object. The static
-    // fields representing the enum members will define a JsProperty annotation with the right
-    // name and namespace.
-    Annotation jsType = javaType.removeAnnotation(JS_TYPE);
-    javaType.addAnnotation(jsType.withNameAttribute("Object").withNamespaceAttribute(""));
+    Type enumType = createJavaType(type.getDisplayName(), ENUM, false);
 
     // In closure, the type used for the enum and the type for the enum members are different.
     // In our model, it's the same java type. We need to register the java type two times.
-    getJavaTypeRegistry().registerJavaType(javaType, type);
-    getJavaTypeRegistry().registerJavaType(javaType, type.getElementsType());
+    getJavaTypeRegistry().registerJavaType(enumType, type);
+    getJavaTypeRegistry().registerJavaType(enumType, type.getElementsType());
 
     return false;
   }

@@ -21,11 +21,12 @@ import static jsinterop.generator.helper.GeneratorUtils.createJavaPackage;
 import static jsinterop.generator.helper.GeneratorUtils.extractName;
 import static jsinterop.generator.helper.GeneratorUtils.extractNamespace;
 import static jsinterop.generator.helper.GeneratorUtils.toCamelUpperCase;
-import static jsinterop.generator.model.Annotation.builder;
 import static jsinterop.generator.model.AnnotationType.DEPRECATED;
+import static jsinterop.generator.model.AnnotationType.JS_ENUM;
 import static jsinterop.generator.model.AnnotationType.JS_FUNCTION;
 import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
 import static jsinterop.generator.model.AnnotationType.JS_TYPE;
+import static jsinterop.generator.model.EntityKind.ENUM;
 import static jsinterop.generator.model.EntityKind.INTERFACE;
 import static jsinterop.generator.model.EntityKind.NAMESPACE;
 import static jsinterop.generator.model.PredefinedTypeReference.JS;
@@ -36,6 +37,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 import jsinterop.generator.model.Annotation;
+import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.EntityKind;
 import jsinterop.generator.model.Expression;
 import jsinterop.generator.model.ExpressionStatement;
@@ -95,7 +97,9 @@ public class ModelHelper {
     if (isJsFunction) {
       type.addAnnotation(Annotation.builder().type(JS_FUNCTION).build());
     } else {
-      Annotation.Builder annotationBuilder = builder().type(JS_TYPE).isNativeAttribute(true);
+      AnnotationType annotationType = entityKind == ENUM ? JS_ENUM : JS_TYPE;
+      Annotation.Builder annotationBuilder =
+          Annotation.builder().type(annotationType).isNativeAttribute(true);
 
       if (!javaPackageName.equals(namespace)) {
         annotationBuilder.namespaceAttribute(namespace);
@@ -168,7 +172,7 @@ public class ModelHelper {
     type.setPackageName(packagePrefix);
     type.setNativeNamespace(GLOBAL_NAMESPACE);
     type.addAnnotation(
-        builder()
+        Annotation.builder()
             .type(JS_TYPE)
             .isNativeAttribute(true)
             .namespaceAttribute("")

@@ -34,7 +34,6 @@ import java.util.Map;
 import jsinterop.generator.closure.helper.ClosureTypeRegistry;
 import jsinterop.generator.closure.helper.GenerationContext;
 import jsinterop.generator.closure.visitor.AnonymousTypeCollector;
-import jsinterop.generator.closure.visitor.EnumMemberCollector;
 import jsinterop.generator.closure.visitor.InheritanceVisitor;
 import jsinterop.generator.closure.visitor.MemberCollector;
 import jsinterop.generator.closure.visitor.ThisTemplateTypeVisitor;
@@ -158,8 +157,6 @@ class ClosureJsInteropGenerator {
     new ThisTemplateTypeVisitor(ctx).accept(topScope);
 
     new MemberCollector(ctx).accept(topScope);
-
-    new EnumMemberCollector(ctx).accept(topScope);
 
     new InheritanceVisitor(ctx).accept(topScope);
 

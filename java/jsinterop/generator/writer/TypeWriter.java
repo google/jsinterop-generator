@@ -21,8 +21,11 @@ import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
+import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
@@ -66,7 +69,9 @@ public class TypeWriter {
         .emit(" ")
         .emit(type.isStatic() && !type.isInterface() ? "static " : "")
         .emit(type.isFinal() && !type.isInterface() ? "final " : "")
-        .emit(type.isInterface() ? "interface " : "class ")
+        .emit(type.isClass() || type.isNamespace() ? "class " : "")
+        .emit(type.isInterface() ? "interface " : "")
+        .emit(type.isEnum() ? "enum " : "")
         .emit(type.getName())
         .emitGenerics(type.getTypeParameters(), true);
 
@@ -81,59 +86,65 @@ public class TypeWriter {
       writer
           .emit(" implements ")
           .emitTypeReferences(
-              type.getImplementedTypes()
-                  .stream()
+              type.getImplementedTypes().stream()
                   .sorted(TYPE_REFERENCE_ORDERING)
                   .collect(toList()));
     }
 
     writer.emit("{").emitNewLine();
 
+    if (type.isEnum()) {
+      // enum fields.
+      List<String> enumConstants =
+          type.getFields().stream()
+              .filter(Field::isEnumConstant)
+              .sorted(FIELD_ORDERING)
+              .map(Field::getName)
+              .collect(ImmutableList.toImmutableList());
+      writer.emit(Joiner.on(",").join(enumConstants)).emit(";").emitNewLine();
+    }
+
     // inner types
-    type.getInnerTypes()
-        .stream()
-        .sorted(TYPE_ORDERING)
-        .forEach(t -> emit(t, writer));
+    type.getInnerTypes().stream().sorted(TYPE_ORDERING).forEach(t -> emit(t, writer));
 
     // static fields first
-    type.getFields()
-        .stream()
+    type.getFields().stream()
         .filter(Field::isStatic)
         .sorted(FIELD_ORDERING)
         .distinct()
         .forEach(f -> FieldWriter.emit(f, writer, type));
 
     // static methods
-    type.getMethods()
-        .stream()
+    type.getMethods().stream()
         .filter(Method::isStatic)
         .sorted(METHOD_ORDERING)
         .distinct()
         .forEach(m -> MethodWriter.emit(m, writer, type));
 
     // non-static fields
-    type.getFields()
-        .stream()
-        .filter(Predicates.not(Field::isStatic))
+    type.getFields().stream()
+        .filter(isInstanceField())
         .sorted(FIELD_ORDERING)
         .distinct()
         .forEach(f -> FieldWriter.emit(f, writer, type));
 
     // constructors
-    type.getConstructors()
-        .stream()
+    type.getConstructors().stream()
         .sorted(METHOD_ORDERING)
         .distinct()
         .forEach(c -> MethodWriter.emitConstructor(c, writer, type));
 
     // non-static methods
-    type.getMethods()
-        .stream()
+    type.getMethods().stream()
         .filter(Predicates.not(Method::isStatic))
         .sorted(METHOD_ORDERING)
         .distinct()
         .forEach(m -> MethodWriter.emit(m, writer, type));
 
     writer.emit("}").emitNewLine();
+  }
+
+  static Predicate<? super Field> isInstanceField() {
+    return f -> !f.isEnumConstant() && !f.isStatic();
   }
 }

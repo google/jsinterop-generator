@@ -23,6 +23,7 @@ import static com.google.common.collect.Sets.newHashSet;
 import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 import static jsinterop.generator.model.EntityKind.CLASS;
 import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
+import static jsinterop.generator.model.EntityKind.ENUM;
 import static jsinterop.generator.model.EntityKind.INTERFACE;
 import static jsinterop.generator.model.EntityKind.METHOD;
 import static jsinterop.generator.model.EntityKind.NAMESPACE;
@@ -98,14 +99,15 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
   private String nativeNamespace;
   private String nativeFqn;
 
-  public Type(EntityKind classOrInterfaceOrNamespace) {
-    if (classOrInterfaceOrNamespace != CLASS
-        && classOrInterfaceOrNamespace != INTERFACE
-        && classOrInterfaceOrNamespace != NAMESPACE) {
+  public Type(EntityKind entityKind) {
+    if (entityKind != CLASS
+        && entityKind != INTERFACE
+        && entityKind != NAMESPACE
+        && entityKind != ENUM) {
       throw new IllegalStateException("Type can be only CLASS, INTERFACE, NAMESPACE entity");
     }
 
-    setKind(classOrInterfaceOrNamespace);
+    setKind(entityKind);
   }
 
   public Set<TypeReference> getExtendedTypes() {
@@ -181,6 +183,10 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
 
   public boolean isNamespace() {
     return getKind() == NAMESPACE;
+  }
+
+  public boolean isEnum() {
+    return getKind() == ENUM;
   }
 
   public void addField(Field field) {

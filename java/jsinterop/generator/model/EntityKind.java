@@ -20,6 +20,7 @@ public enum EntityKind {
   INTERFACE,
   CLASS,
   NAMESPACE,
+  ENUM,
   FIELD,
   METHOD,
   CONSTRUCTOR

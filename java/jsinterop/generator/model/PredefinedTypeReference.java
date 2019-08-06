@@ -41,6 +41,7 @@ public enum PredefinedTypeReference implements TypeReference {
   STRING("java.lang.String", "string"),
   CLASS("java.lang.Class", null),
   DEPRECATED("java.lang.Deprecated", "deprecated"),
+  JS_ENUM("jsinterop.annotations.JsEnum", null),
   JS_TYPE("jsinterop.annotations.JsType", null),
   JS_PROPERTY("jsinterop.annotations.JsProperty", null),
   JS_METHOD("jsinterop.annotations.JsMethod", null),

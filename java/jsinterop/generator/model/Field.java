@@ -24,8 +24,6 @@ import java.util.Objects;
 /** Models a Java field. */
 public class Field extends Entity implements Visitable<Field> {
 
-  private boolean nativeReadOnly;
-
   public static Field from(Field field) {
     Field clonedField = new Field();
 
@@ -48,9 +46,10 @@ public class Field extends Entity implements Visitable<Field> {
     return field;
   }
 
-
   private TypeReference type;
   private String initialValue;
+  private boolean nativeReadOnly;
+  private boolean enumConstant;
 
   public Field() {
     setKind(FIELD);
@@ -116,6 +115,14 @@ public class Field extends Entity implements Visitable<Field> {
 
   public boolean isNativeReadOnly() {
     return nativeReadOnly;
+  }
+
+  public void setEnumConstant(boolean isEnumConstant) {
+    this.enumConstant = isEnumConstant;
+  }
+
+  public boolean isEnumConstant() {
+    return enumConstant;
   }
 
   public void removeFromParent() {
