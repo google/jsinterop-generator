@@ -16,7 +16,11 @@
  */
 package jsinterop.generator.model;
 
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
+
 /** Basic implementation of {@see Statement} interface */
+@Visitable
 public abstract class AbstractStatement implements Statement {
   private String leadingComment;
 
@@ -29,5 +33,10 @@ public abstract class AbstractStatement implements Statement {
 
   public void setLeadingComment(String leadingComment) {
     this.leadingComment = leadingComment;
+  }
+
+  @Override
+  public Statement accept(Processor processor) {
+    return Visitor_AbstractStatement.visit(processor, this);
   }
 }

@@ -16,10 +16,14 @@
  */
 package jsinterop.generator.model;
 
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
+
 /** Represents an instanceof expression. */
+@Visitable
 public class InstanceOfExpression implements Expression {
-  private final Expression leftOperand;
-  private TypeReference rightOperand;
+  @Visitable Expression leftOperand;
+  @Visitable TypeReference rightOperand;
 
   public InstanceOfExpression(Expression leftOperand, TypeReference rightOperand) {
     this.leftOperand = leftOperand;
@@ -35,11 +39,7 @@ public class InstanceOfExpression implements Expression {
   }
 
   @Override
-  public Expression doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      visitor.accept(leftOperand);
-      rightOperand = visitor.accept(rightOperand);
-    }
-    return this;
+  public Expression accept(Processor processor) {
+    return Visitor_InstanceOfExpression.visit(processor, this);
   }
 }

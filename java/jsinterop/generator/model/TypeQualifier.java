@@ -16,9 +16,13 @@
  */
 package jsinterop.generator.model;
 
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
+
 /** Represents an expression to a type qualifier. */
+@Visitable
 public class TypeQualifier implements Expression {
-  private TypeReference type;
+  @Visitable TypeReference type;
 
   public TypeQualifier(TypeReference type) {
     this.type = type;
@@ -29,10 +33,7 @@ public class TypeQualifier implements Expression {
   }
 
   @Override
-  public Expression doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      type = visitor.accept(type);
-    }
-    return this;
+  public Expression accept(Processor processor) {
+    return Visitor_TypeQualifier.visit(processor, this);
   }
 }

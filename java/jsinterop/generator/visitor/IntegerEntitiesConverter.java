@@ -24,8 +24,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import jsinterop.generator.helper.Problems;
-import jsinterop.generator.model.Field;
-import jsinterop.generator.model.Method;
+import jsinterop.generator.model.AbstractRewriter;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.TypeReference;
 
@@ -35,9 +34,7 @@ public class IntegerEntitiesConverter extends AbstractModelVisitor {
   private final Set<String> unusedIntegerEntities;
   private final Problems problems;
 
-  private String currentConfigurationIdentifier;
-
-  public IntegerEntitiesConverter(List<String> integerEntities, Problems problems) {
+  IntegerEntitiesConverter(List<String> integerEntities, Problems problems) {
     this.integerEntities = ImmutableSet.copyOf(integerEntities);
     // use of LinkedHashSet for always reporting unused entities in the same order
     this.unusedIntegerEntities = new LinkedHashSet<>(integerEntities);
@@ -45,47 +42,48 @@ public class IntegerEntitiesConverter extends AbstractModelVisitor {
   }
 
   @Override
-  public boolean visit(Program program) {
-    return !integerEntities.isEmpty();
-  }
+  public void applyTo(Program program) {
+    if (integerEntities.isEmpty()) {
+      return;
+    }
 
-  @Override
-  public void endVisit(Program program) {
+    program.accept(
+        new AbstractRewriter() {
+
+          @Override
+          public TypeReference rewriteTypeReference(TypeReference typeReference) {
+            if (mustBeConvertedToInt(typeReference)) {
+              unusedIntegerEntities.remove(getCurrentConfigurationIdentifier());
+              return INT;
+            }
+
+            return typeReference;
+          }
+
+          private boolean mustBeConvertedToInt(TypeReference originalTypeReference) {
+            return integerEntities.contains(getCurrentConfigurationIdentifier())
+                && DOUBLE.equals(originalTypeReference);
+          }
+
+          private String getCurrentConfigurationIdentifier() {
+            if (getCurrentParameter() != null) {
+              return getCurrentParameter().getConfigurationIdentifier();
+            }
+
+            if (getCurrentMethod() != null) {
+              return getCurrentMethod().getConfigurationIdentifier();
+            }
+
+            if (getCurrentField() != null) {
+              return getCurrentField().getConfigurationIdentifier();
+            }
+
+            return null;
+          }
+        });
+
     if (!unusedIntegerEntities.isEmpty()) {
       problems.reportWarning("Unused integer entities: %s", unusedIntegerEntities);
     }
-  }
-
-  @Override
-  public boolean visit(Field field) {
-    currentConfigurationIdentifier = field.getConfigurationIdentifier();
-    return true;
-  }
-
-  @Override
-  public boolean visit(Method.Parameter parameter) {
-    currentConfigurationIdentifier = parameter.getConfigurationIdentifier();
-    return true;
-  }
-
-  @Override
-  public boolean visit(Method method) {
-    currentConfigurationIdentifier = method.getConfigurationIdentifier();
-    return true;
-  }
-
-  private boolean mustBeConvertedToInt(TypeReference originalTypeReference) {
-    return integerEntities.contains(currentConfigurationIdentifier)
-        && DOUBLE.equals(originalTypeReference);
-  }
-
-  @Override
-  public TypeReference endVisit(TypeReference typeReference) {
-    if (mustBeConvertedToInt(typeReference)) {
-      unusedIntegerEntities.remove(currentConfigurationIdentifier);
-      return INT;
-    }
-
-    return typeReference;
   }
 }

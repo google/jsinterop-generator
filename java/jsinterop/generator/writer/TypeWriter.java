@@ -29,7 +29,7 @@ import java.util.function.Predicate;
 import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 

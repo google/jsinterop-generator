@@ -17,8 +17,11 @@
 
 package jsinterop.generator.model;
 
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
 
 /** Model a reference to a Java type created from a typescript type. */
+@Visitable
 public class JavaTypeReference extends AbstractTypeReference {
   private Type typeDeclaration;
   public String comment;
@@ -78,5 +81,10 @@ public class JavaTypeReference extends AbstractTypeReference {
   @Override
   public boolean isInstanceofAllowed() {
     return !typeDeclaration.isNativeInterface();
+  }
+
+  @Override
+  public TypeReference accept(Processor processor) {
+    return Visitor_JavaTypeReference.visit(processor, this);
   }
 }

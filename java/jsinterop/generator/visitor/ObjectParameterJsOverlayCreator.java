@@ -19,7 +19,7 @@ package jsinterop.generator.visitor;
 
 import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.PredefinedTypeReference;
 
 /**

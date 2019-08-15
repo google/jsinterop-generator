@@ -17,6 +17,7 @@
 package jsinterop.generator.visitor;
 
 import java.util.Map;
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
@@ -37,23 +38,29 @@ public class FixReferencesToDuplicatedTypes extends AbstractModelVisitor {
   }
 
   @Override
-  public void endVisit(Program program) {
-    // Remove the synthetic types at the end of this visitor. Otherwise we delete the relationship
-    // with their enclosing type and we cannot clean correctly all type references to the synthetic
-    // types.
-    typesToReplace.keySet().forEach(Type::removeFromParent);
-  }
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public boolean enterTypeReference(TypeReference typeReference) {
+            if (typeReference instanceof JavaTypeReference) {
+              JavaTypeReference javaTypeReference = (JavaTypeReference) typeReference;
+              Type syntheticType = javaTypeReference.getTypeDeclaration();
 
-  @Override
-  public boolean visit(TypeReference typeReference) {
-    if (typeReference instanceof JavaTypeReference) {
-      JavaTypeReference javaTypeReference = (JavaTypeReference) typeReference;
-      Type syntheticType = javaTypeReference.getTypeDeclaration();
+              if (typesToReplace.containsKey(syntheticType)) {
+                javaTypeReference.setTypeDeclaration(typesToReplace.get(syntheticType));
+              }
+            }
+            return true;
+          }
 
-      if (typesToReplace.containsKey(syntheticType)) {
-        javaTypeReference.setTypeDeclaration(typesToReplace.get(syntheticType));
-      }
-    }
-    return true;
+          @Override
+          public void exitProgram(Program node) {
+            // Remove the synthetic types at the end of this visitor. Otherwise we delete the
+            // relationship with their enclosing type and we cannot clean correctly all type
+            // references to the synthetic types.
+            typesToReplace.keySet().forEach(Type::removeFromParent);
+          }
+        });
   }
 }

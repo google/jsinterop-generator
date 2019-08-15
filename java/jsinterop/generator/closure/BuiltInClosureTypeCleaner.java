@@ -24,11 +24,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import jsinterop.generator.model.AbstractRewriter;
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.PredefinedTypeReference;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 import jsinterop.generator.model.UnionTypeReference;
@@ -52,27 +55,58 @@ public class BuiltInClosureTypeCleaner extends AbstractModelVisitor {
   private static final String IOBJECT_VALUE_NAME = "IObject#VALUE";
 
   @Override
-  public boolean visit(Type type) {
-    String nativeFqn = type.getNativeFqn();
-    if ("Array".equals(nativeFqn)) {
-      cleanArrayType(type);
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public void exitType(Type type) {
+            String nativeFqn = type.getNativeFqn();
+            if ("Array".equals(nativeFqn)) {
+              cleanArrayType(type);
 
-    } else if (OBJECT.equals(nativeFqn)) {
-      // JsCompiler uses its own built-in definition of Object type and add the two type parameter
-      // of IObject. The resulting generated java type is a parametrized type:
-      //    class JsObject<IObject#KEY1, IObject#VALUE> {}
-      // Clear the params since we don't want parameterized Object type.
-      Collection<TypeReference> typeParameters = type.getTypeParameters();
+            } else if (OBJECT.equals(nativeFqn)) {
+              // JsCompiler uses a hardcoded definition for the Object type, one with two type
+              // parameters (from IObject). That makes the resulting java type to be generated as
+              // the following parametrized type:
+              //    class JsObject<IObject#KEY1, IObject#VALUE> {}
+              // Since Object in elemental should not be a parameterized type, the type parameters
+              // are cleared here.
+              Collection<TypeReference> typeParameters = type.getTypeParameters();
 
-      checkState(typeParameters.size() == 2, "Object is not defined with two type parameters");
-      Iterator<TypeReference> typeParameterIterator = typeParameters.iterator();
-      checkState(IOBJECT_KEY_NAME.equals(typeParameterIterator.next().getTypeName()));
-      checkState(IOBJECT_VALUE_NAME.equals(typeParameterIterator.next().getTypeName()));
+              checkState(
+                  typeParameters.size() == 2, "Object is not defined with two type parameters");
+              Iterator<TypeReference> typeParameterIterator = typeParameters.iterator();
+              checkState(IOBJECT_KEY_NAME.equals(typeParameterIterator.next().getTypeName()));
+              checkState(IOBJECT_VALUE_NAME.equals(typeParameterIterator.next().getTypeName()));
 
-      type.getTypeParameters().clear();
-    }
+              type.getTypeParameters().clear();
+            }
+          }
+        });
 
-    return true;
+    program.accept(
+        new AbstractRewriter() {
+          @Override
+          public TypeReference rewriteParametrizedTypeReference(
+              ParametrizedTypeReference parametrizedTypeReference) {
+
+            TypeReference mainTypeReference = parametrizedTypeReference.getMainType();
+
+            // Fixup the parameterization for references to Object and IObject which are abstracted
+            // in Java as JsProperty maps. The conversion removes the first type parameter which is
+            // implicit in JsPropertyMap.
+            if (isJsPropertyMapReference(mainTypeReference)
+                || isObjectTypeReference(mainTypeReference)) {
+              validateIObjectOrParametrizedObjectReference(parametrizedTypeReference);
+
+              return new ParametrizedTypeReference(
+                  JS_PROPERTY_MAP,
+                  parametrizedTypeReference.getActualTypeArguments().subList(1, 2));
+            }
+
+            return parametrizedTypeReference;
+          }
+        });
   }
 
   private static void cleanArrayType(Type arrayType) {
@@ -128,28 +162,6 @@ public class BuiltInClosureTypeCleaner extends AbstractModelVisitor {
     checkState(PredefinedTypeReference.OBJECT.equals(firstParameter.getType()));
     firstParameter.setName("items");
     firstParameter.setType(arrayTypeParameter);
-  }
-
-  @Override
-  public TypeReference endVisit(TypeReference typeReference) {
-    if (!(typeReference instanceof ParametrizedTypeReference)) {
-      return typeReference;
-    }
-
-    ParametrizedTypeReference parametrizedTypeReference = (ParametrizedTypeReference) typeReference;
-    TypeReference mainTypeReference = parametrizedTypeReference.getMainType();
-
-    // Fixup the parameterization for references to Object and IObject which are abstracted in
-    // Java as JsProperty maps. The conversion removes the first type parameter which is
-    // implicit in JsPropertyMap.
-    if (isJsPropertyMapReference(mainTypeReference) || isObjectTypeReference(mainTypeReference)) {
-      validateIObjectOrParametrizedObjectReference(parametrizedTypeReference);
-
-      return new ParametrizedTypeReference(
-          JS_PROPERTY_MAP, parametrizedTypeReference.getActualTypeArguments().subList(1, 2));
-    }
-
-    return typeReference;
   }
 
   /** Check that an IObject reference uses a String or an UnionType of String and number as key. */

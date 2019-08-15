@@ -39,6 +39,7 @@ import java.util.Deque;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
+import jsinterop.generator.model.AbstractRewriter;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.CastExpression;
@@ -47,10 +48,11 @@ import jsinterop.generator.model.InstanceOfExpression;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.LiteralExpression;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
 import jsinterop.generator.model.MethodInvocation;
+import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.PredefinedTypeReference;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.ReturnStatement;
 import jsinterop.generator.model.Statement;
 import jsinterop.generator.model.Type;
@@ -65,145 +67,151 @@ import jsinterop.generator.model.UnionTypeReference;
 public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
   private final IdentityHashMap<UnionTypeReference, Type> typeHelperByUnionTypeReference =
       new IdentityHashMap<>();
-  private final Deque<Type> currentType = new ArrayDeque<>();
-  private final Deque<String> currentNameStack = new ArrayDeque<>();
 
   public Set<Type> getUnionTypeHelperTypes() {
     return ImmutableSet.copyOf(typeHelperByUnionTypeReference.values());
   }
 
   @Override
-  public boolean visit(Type type) {
-    currentType.push(type);
-    return true;
-  }
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractRewriter() {
+          // TODO(dramaix): with contexts we can easily build the name and this stack is not needed
+          private final Deque<String> currentNameStack = new ArrayDeque<>();
 
-  @Override
-  public void endVisit(Type type) {
-    currentType.pop();
-  }
+          @Override
+          public boolean shouldProcessField(Field field) {
+            currentNameStack.push(toCamelUpperCase(field.getName()));
+            return true;
+          }
 
-  @Override
-  public boolean visit(Field field) {
-    currentNameStack.push(toCamelUpperCase(field.getName()));
-    return true;
-  }
+          @Override
+          public Field rewriteField(Field field) {
+            currentNameStack.pop();
+            return field;
+          }
 
-  @Override
-  public void endVisit(Field field) {
-    currentNameStack.pop();
-  }
+          @Override
+          public boolean shouldProcessMethod(Method method) {
+            // JsFunction type only have one method named onInvoke, don't use the method name
+            // because it doesn't give us any much more information.
+            if (!isCurrentTypeJsFunction()) {
+              currentNameStack.push(
+                  method.getKind() == CONSTRUCTOR
+                      ? "Constructor"
+                      : toCamelUpperCase(method.getName()));
+            }
+            return true;
+          }
 
-  @Override
-  public boolean visit(Method method) {
-    // JsFunction type only have one method named onInvoke, don't use the method name because
-    // it doesn't give us any much more information.
-    if (!isCurrentTypeJsFunction()) {
-      currentNameStack.push(
-          method.getKind() == CONSTRUCTOR ? "Constructor" : toCamelUpperCase(method.getName()));
-    }
-    return true;
-  }
+          @Override
+          public Method rewriteMethod(Method method) {
+            if (!isCurrentTypeJsFunction()) {
+              currentNameStack.pop();
+            }
 
-  @Override
-  public void endVisit(Method method) {
-    if (!isCurrentTypeJsFunction()) {
-      currentNameStack.pop();
-    }
-  }
+            return method;
+          }
 
-  private boolean isCurrentTypeJsFunction() {
-    return currentType.peek().hasAnnotation(JS_FUNCTION);
-  }
+          @Override
+          public boolean shouldProcessParameter(Parameter parameter) {
+            currentNameStack.push(toCamelUpperCase(parameter.getName()));
+            return true;
+          }
 
-  @Override
-  public boolean visit(Parameter parameter) {
-    currentNameStack.push(toCamelUpperCase(parameter.getName()));
-    return true;
-  }
+          @Override
+          public Parameter rewriteParameter(Parameter parameter) {
+            currentNameStack.pop();
+            return parameter;
+          }
 
-  @Override
-  public void endVisit(Parameter parameter) {
-    currentNameStack.pop();
-  }
+          @Override
+          public boolean shouldProcessParametrizedTypeReference(
+              ParametrizedTypeReference typeReference) {
+            // Manually visit the type parameter in order to know the index of the type parameter in
+            // the list and create the name accordingly for a possible union type.
+            List<TypeReference> newTypeArguments = new ArrayList<>();
+            for (int i = 0; i < typeReference.getActualTypeArguments().size(); i++) {
+              String unionTypeName = typeReference.getTypeName() + "TypeParameter";
+              if (i > 0) {
+                unionTypeName += i;
+              }
+              currentNameStack.push(unionTypeName);
+              newTypeArguments.add(typeReference.getActualTypeArguments().get(i).accept(this));
+              currentNameStack.pop();
+            }
+            typeReference.setActualTypeArguments(newTypeArguments);
 
-  @Override
-  public boolean visit(TypeReference typeReference) {
-    if (typeReference instanceof ParametrizedTypeReference) {
-      // Manually visit the type parameter in order to know the index of the type parameter in the
-      // list and create the name accordingly for a possible union type.
-      ParametrizedTypeReference parametrizedTypeReference =
-          (ParametrizedTypeReference) typeReference;
-      List<TypeReference> newTypeArguments = new ArrayList<>();
-      for (int i = 0; i < parametrizedTypeReference.getActualTypeArguments().size(); i++) {
-        String unionTypeName = typeReference.getTypeName() + "TypeParameter";
-        if (i > 0) {
-          unionTypeName += i;
-        }
-        currentNameStack.push(unionTypeName);
-        newTypeArguments.add(accept(parametrizedTypeReference.getActualTypeArguments().get(i)));
-        currentNameStack.pop();
-      }
-      parametrizedTypeReference.setActualTypeArguments(newTypeArguments);
+            return false;
+          }
 
-      return false;
-    }
+          @Override
+          public boolean shouldProcessArrayTypeReference(ArrayTypeReference typeReference) {
+            currentNameStack.push("Array");
+            return true;
+          }
 
-    if (typeReference instanceof ArrayTypeReference) {
-      currentNameStack.push("Array");
-    }
+          @Override
+          public TypeReference rewriteUnionTypeReference(UnionTypeReference typeReference) {
+            return new JavaTypeReference(createUnionTypeHelperType(typeReference));
+          }
 
-    return true;
-  }
+          @Override
+          public TypeReference rewriteArrayTypeReference(ArrayTypeReference typeReference) {
+            currentNameStack.pop();
+            return typeReference;
+          }
 
-  @Override
-  public TypeReference endVisit(TypeReference typeReference) {
-    if (typeReference instanceof UnionTypeReference) {
-      return new JavaTypeReference(createUnionTypeHelperType(((UnionTypeReference) typeReference)));
-    }
+          private boolean isCurrentTypeJsFunction() {
+            return getCurrentType().hasAnnotation(JS_FUNCTION);
+          }
 
-    if (typeReference instanceof ArrayTypeReference) {
-      currentNameStack.pop();
-    }
+          private Type createUnionTypeHelperType(UnionTypeReference unionTypeReference) {
+            if (typeHelperByUnionTypeReference.containsKey(unionTypeReference)) {
+              // because we create methods overloading when a union type is present in parameters, a
+              // same UnionTypeReference can be reused in those methods. In this case reuse the same
+              // helper type.
+              return typeHelperByUnionTypeReference.get(unionTypeReference);
+            }
 
-    return typeReference;
-  }
+            Type helperType = new Type(INTERFACE);
+            helperType.setSynthetic(true);
+            helperType.setName(buildHelperTypeName());
+            helperType.setNativeFqn(unionTypeReference.getJsDocAnnotationString());
+            helperType.addAnnotation(
+                Annotation.builder()
+                    .type(JS_TYPE)
+                    .isNativeAttribute(true)
+                    .nameAttribute("?")
+                    .namespaceAttribute("")
+                    .build());
 
-  private Type createUnionTypeHelperType(UnionTypeReference unionTypeReference) {
-    if (typeHelperByUnionTypeReference.containsKey(unionTypeReference)) {
-      // because we create methods overloading when a union type is present in parameters, a same
-      // UnionTypeReference can be reused in those methods. In this case reuse the same helper type.
-      return typeHelperByUnionTypeReference.get(unionTypeReference);
-    }
+            // add a HelperType.of(Object)
+            helperType.addMethod(createOfMethod(helperType));
 
-    Type helperType = new Type(INTERFACE);
-    helperType.setSynthetic(true);
-    helperType.setName(buildHelperTypeName());
-    helperType.setNativeFqn(unionTypeReference.getJsDocAnnotationString());
-    helperType.addAnnotation(
-        Annotation.builder()
-            .type(JS_TYPE)
-            .isNativeAttribute(true)
-            .nameAttribute("?")
-            .namespaceAttribute("")
-            .build());
+            // create all asXXX methods
+            unionTypeReference.getTypes().forEach(t -> helperType.addMethod(createAsMethod(t)));
 
-    // add a HelperType.of(Object)
-    helperType.addMethod(createOfMethod(helperType));
+            // create all isXXX methods
+            unionTypeReference.getTypes().stream()
+                .filter(TypeReference::isInstanceofAllowed)
+                .forEach(t -> helperType.addMethod(createInstanceOfMethod(t)));
 
-    // create all asXXX methods
-    unionTypeReference.getTypes().forEach(t -> helperType.addMethod(createAsMethod(t)));
+            typeHelperByUnionTypeReference.put(unionTypeReference, helperType);
 
-    // create all isXXX methods
-    unionTypeReference.getTypes().stream()
-        .filter(TypeReference::isInstanceofAllowed)
-        .forEach(t -> helperType.addMethod(createInstanceOfMethod(t)));
+            getCurrentType().addInnerType(helperType);
 
-    typeHelperByUnionTypeReference.put(unionTypeReference, helperType);
+            return helperType;
+          }
 
-    currentType.peek().addInnerType(helperType);
+          private String buildHelperTypeName() {
+            currentNameStack.push("UnionType");
+            String name = Streams.stream(currentNameStack.descendingIterator()).collect(joining());
+            currentNameStack.pop();
 
-    return helperType;
+            return name;
+          }
+        });
   }
 
   /**
@@ -301,14 +309,6 @@ public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
     builderMethod.setBody(createJsCastInvocation("o", returnTypeReference));
 
     return builderMethod;
-  }
-
-  private String buildHelperTypeName() {
-    currentNameStack.push("UnionType");
-    String name = Streams.stream(currentNameStack.descendingIterator()).collect(joining());
-    currentNameStack.pop();
-
-    return name;
   }
 
   private static String typeToName(TypeReference type) {

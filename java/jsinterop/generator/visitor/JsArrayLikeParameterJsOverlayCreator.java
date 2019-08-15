@@ -22,7 +22,7 @@ import static com.google.common.base.Preconditions.checkState;
 import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.TypeReference;

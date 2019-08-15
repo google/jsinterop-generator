@@ -16,5 +16,11 @@
  */
 package jsinterop.generator.model;
 
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
+
 /** Base contract for object that represents Java expression. */
-public interface Expression extends Visitable<Expression> {}
+@Visitable
+public interface Expression {
+  Expression accept(Processor processor);
+}

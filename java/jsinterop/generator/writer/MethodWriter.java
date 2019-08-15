@@ -18,6 +18,7 @@ package jsinterop.generator.writer;
 import java.util.List;
 import jsinterop.generator.model.AccessModifier;
 import jsinterop.generator.model.Method;
+import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.Type;
 
 /** MethodWriter generates java code for {@link Method} instances. */
@@ -90,9 +91,9 @@ public class MethodWriter {
     codeWriter.emitNewLine();
   }
 
-  private static void emitParameters(List<Method.Parameter> parameters, CodeWriter codeWriter) {
+  private static void emitParameters(List<Parameter> parameters, CodeWriter codeWriter) {
     boolean first = true;
-    for (Method.Parameter parameter : parameters) {
+    for (Parameter parameter : parameters) {
       if (!first) {
         codeWriter.emit(",");
       }

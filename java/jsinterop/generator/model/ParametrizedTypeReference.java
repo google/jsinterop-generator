@@ -18,16 +18,21 @@
 package jsinterop.generator.model;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
+import com.google.j2cl.ast.annotations.Context;
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /** Models a reference to a type with generics. */
+@Visitable
+@Context
 public class ParametrizedTypeReference extends AbstractTypeReference
     implements DelegableTypeReference {
-  private TypeReference mainType;
-  private List<TypeReference> actualTypeArguments;
+  @Visitable TypeReference mainType;
+  @Visitable List<TypeReference> actualTypeArguments;
 
   public ParametrizedTypeReference(
       TypeReference mainType, Collection<TypeReference> actualTypeArguments) {
@@ -82,12 +87,9 @@ public class ParametrizedTypeReference extends AbstractTypeReference
     return mainType;
   }
 
-  private void setMainType(TypeReference typeReference) {
-    this.mainType = typeReference;
-  }
 
   public void setActualTypeArguments(Collection<TypeReference> actualTypeArguments) {
-    this.actualTypeArguments = ImmutableList.copyOf(actualTypeArguments);
+    this.actualTypeArguments = new ArrayList<>(actualTypeArguments);
   }
 
   @Override
@@ -101,13 +103,8 @@ public class ParametrizedTypeReference extends AbstractTypeReference
   }
 
   @Override
-  public TypeReference doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      setMainType(visitor.accept(mainType));
-      setActualTypeArguments(visitor.accept(actualTypeArguments));
-    }
-
-    return visitor.endVisit(this);
+  public TypeReference accept(Processor processor) {
+    return Visitor_ParametrizedTypeReference.visit(processor, this);
   }
 
   @Override

@@ -38,7 +38,7 @@ import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.Parameter;
 
 /** Collect type information. */
 public class MemberCollector extends AbstractClosureVisitor {

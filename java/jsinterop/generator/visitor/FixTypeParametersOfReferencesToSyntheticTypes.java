@@ -19,11 +19,12 @@ package jsinterop.generator.visitor;
 
 import static com.google.common.base.Preconditions.checkState;
 
+import jsinterop.generator.model.AbstractRewriter;
 import jsinterop.generator.model.Expression;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.MethodInvocation;
 import jsinterop.generator.model.ParametrizedTypeReference;
-import jsinterop.generator.model.Statement;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 
@@ -33,80 +34,83 @@ import jsinterop.generator.model.TypeReference;
  */
 public class FixTypeParametersOfReferencesToSyntheticTypes extends AbstractModelVisitor {
   private boolean syntheticTypeChanged;
-  private boolean inSyntheticType;
 
-  @Override
-  public boolean visit(Type type) {
-    inSyntheticType = type.isSynthetic();
-    return true;
+  boolean isSyntheticTypeChanged() {
+    return syntheticTypeChanged;
   }
 
   @Override
-  public void endVisit(Type type) {
-    inSyntheticType = type.getEnclosingType() != null && type.getEnclosingType().isSynthetic();
-  }
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractRewriter() {
+          @Override
+          public boolean shouldProcessMethod(Method method) {
+            // We don't retrofit type parameters on static method of synthetic type.
+            if (getCurrentType().isSynthetic() && method.isStatic()) {
+              // For the time being we only generate two static methods: of() method on UnionType
+              // helper
+              // object and create method for dictionary types.
+              checkState(
+                  "of".equals(method.getName()) || "create".equals(method.getName()),
+                  "We don't expect a static method named [%s] in a synthetic type",
+                  method.getName());
+              return false;
+            }
 
-  @Override
-  public boolean visit(Statement statement) {
-    return true;
-  }
+            return true;
+          }
 
-  @Override
-  public boolean visit(Expression expression) {
-    return expression instanceof MethodInvocation;
-  }
+          @Override
+          public boolean shouldProcessExpression(Expression expression) {
+            return false;
+          }
 
-  @Override
-  public boolean visit(Method method) {
-    // We don't retrofit type parameters on static method of synthetic type.
-    if (inSyntheticType && method.isStatic()) {
-      // For the time being we only generate two static methods: of() method on UnionType helper
-      // object and create method for dictionary types.
-      checkState(
-          "of".equals(method.getName()) || "create".equals(method.getName()),
-          "We don't expect a static method named [%s] in a synthetic type",
-          method.getName());
-      return false;
-    }
+          @Override
+          public boolean shouldProcessMethodInvocation(MethodInvocation node) {
+            return true;
+          }
 
-    return true;
-  }
+          @Override
+          public boolean shouldProcessParametrizedTypeReference(ParametrizedTypeReference node) {
+            // Avoid visiting the reference to the underlying type of a ParametrizedTypeReference of
+            // a synthetic type otherwise we will recreate another ParametrizedTypeReference.
+            return getSyntheticType(node.getMainType()) == null;
+          }
 
-  @Override
-  public boolean visit(TypeReference typeReference) {
-    // Avoid visiting the reference to the underlying type of a ParametrizedTypeReference of
-    // a synthetic type otherwise we will recreate another ParametrizedTypeReference.
-    return !(typeReference instanceof ParametrizedTypeReference
-        && getSyntheticType(((ParametrizedTypeReference) typeReference).getMainType()) != null);
-  }
+          @Override
+          public ParametrizedTypeReference rewriteParametrizedTypeReference(
+              ParametrizedTypeReference typeReference) {
+            Type syntheticType = getSyntheticType(typeReference.getMainType());
 
-  @Override
-  public TypeReference endVisit(TypeReference typeReference) {
-    if (typeReference instanceof ParametrizedTypeReference) {
-      ParametrizedTypeReference parametrizedTypeReference =
-          (ParametrizedTypeReference) typeReference;
-      Type syntheticType = getSyntheticType(parametrizedTypeReference.getMainType());
+            // Check if we have to update type parameters because FixTypeParameterOfSyntheticType
+            // could have added type parameters to the generic type.
+            if (syntheticType != null
+                && syntheticType.getTypeParameters().size()
+                    != typeReference.getActualTypeArguments().size()) {
+              typeReference.setActualTypeArguments(syntheticType.getTypeParameters());
+              syntheticTypeChanged |= getCurrentType().isSynthetic();
+            }
 
-      // Check if we have to update type parameters because FixTypeParameterOfSyntheticType could
-      // have added type parameters to the generic type.
-      if (syntheticType != null
-          && syntheticType.getTypeParameters().size()
-              != parametrizedTypeReference.getActualTypeArguments().size()) {
-        parametrizedTypeReference.setActualTypeArguments(syntheticType.getTypeParameters());
-        syntheticTypeChanged |= inSyntheticType;
-      }
-    } else {
-      Type syntheticType = getSyntheticType(typeReference);
-      // if we have a reference to a synthetic type, check if the syntheticType doesn't have
-      // any type parameters defined on it. If so, fix the type reference by replacing it with a
-      // ParametrizedTypeReference.
-      if (syntheticType != null && !syntheticType.getTypeParameters().isEmpty()) {
-        syntheticTypeChanged |= inSyntheticType;
-        return new ParametrizedTypeReference(typeReference, syntheticType.getTypeParameters());
-      }
-    }
+            return typeReference;
+          }
 
-    return typeReference;
+          @Override
+          public TypeReference rewriteTypeReference(TypeReference typeReference) {
+
+            Type syntheticType = getSyntheticType(typeReference);
+            // if we have a reference to a synthetic type, check if the syntheticType doesn't have
+            // any type parameters defined on it. If so, fix the type reference by replacing it with
+            // a ParametrizedTypeReference.
+            if (syntheticType != null && !syntheticType.getTypeParameters().isEmpty()) {
+              syntheticTypeChanged |= getCurrentType().isSynthetic();
+              ;
+              return new ParametrizedTypeReference(
+                  typeReference, syntheticType.getTypeParameters());
+            }
+
+            return typeReference;
+          }
+        });
   }
 
   /**
@@ -121,9 +125,5 @@ public class FixTypeParametersOfReferencesToSyntheticTypes extends AbstractModel
     }
 
     return null;
-  }
-
-  public boolean isSyntheticTypeChanged() {
-    return syntheticTypeChanged;
   }
 }

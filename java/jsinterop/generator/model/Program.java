@@ -18,19 +18,24 @@
 package jsinterop.generator.model;
 
 import com.google.common.collect.ImmutableList;
+import com.google.j2cl.ast.annotations.Context;
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 /** Keep the list of generated types. */
-public class Program implements Visitable<Program> {
+@Visitable
+@Context
+public class Program implements Node {
+
   private final Map<String, String> thirdPartyTypesMapping;
-  private final List<Type> types;
+  @Visitable List<Type> types = new ArrayList<>();
 
   public Program(Map<String, String> thirdPartyTypesMapping) {
     this.thirdPartyTypesMapping = thirdPartyTypesMapping;
-    this.types = new ArrayList<>();
   }
 
   public void addType(Type type) {
@@ -42,13 +47,8 @@ public class Program implements Visitable<Program> {
   }
 
   @Override
-  public Program doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      visitor.accept(types);
-    }
-    visitor.endVisit(this);
-
-    return this;
+  public Node accept(Processor processor) {
+    return Visitor_Program.visit(processor, this);
   }
 
   public boolean isThirdPartyType(String tsFqn) {

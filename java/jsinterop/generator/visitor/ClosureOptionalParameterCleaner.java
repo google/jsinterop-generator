@@ -21,8 +21,10 @@ import static jsinterop.generator.helper.GeneratorUtils.toSafeTypeName;
 
 import java.util.HashSet;
 import java.util.Set;
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.Parameter;
+import jsinterop.generator.model.Program;
 
 /**
  * Closure requires that optional parameters are prefixed by <code>opt_</code>. In Java, we create a
@@ -30,21 +32,22 @@ import jsinterop.generator.model.Method.Parameter;
  * opt_</code>.
  */
 public class ClosureOptionalParameterCleaner extends AbstractModelVisitor {
-  private final Set<String> parameterNames = new HashSet<>();
 
   @Override
-  public boolean visit(Method method) {
-    parameterNames.clear();
-    return true;
-  }
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public void exitMethod(Method node) {
+            Set<String> parameterNames = new HashSet<>();
 
-  @Override
-  public boolean visit(Parameter parameter) {
-    if (parameter.getName().startsWith("opt_")) {
-      parameter.setName(toSafeTypeName(parameter.getName().substring(4), parameterNames));
-    }
-
-    parameterNames.add(parameter.getName());
-    return true;
+            for (Parameter parameter : node.getParameters()) {
+              if (parameter.getName().startsWith("opt_")) {
+                parameter.setName(toSafeTypeName(parameter.getName().substring(4), parameterNames));
+              }
+              parameterNames.add(parameter.getName());
+            }
+          }
+        });
   }
 }

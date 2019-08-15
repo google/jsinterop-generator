@@ -25,93 +25,19 @@ import static jsinterop.generator.model.EntityKind.METHOD;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import java.util.LinkedList;
+import com.google.j2cl.ast.annotations.Context;
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 /** Models java methods. */
-public class Method extends Entity implements HasTypeParameters, Visitable<Method> {
-
-  /** Models parameters of java methods. */
-  public static class Parameter implements Visitable<Parameter>, HasName {
-    public static Parameter from(Parameter parameter) {
-      return new Parameter(
-          parameter.getName(), parameter.getType(), parameter.isVarargs(), parameter.isOptional());
-    }
-
-    private TypeReference type;
-    private boolean varargs;
-    private final boolean optional;
-    private String name;
-    private Method enclosingMethod;
-
-    public Parameter(String name, TypeReference type, boolean varargs, boolean optional) {
-      this.name = name;
-      this.type = type;
-      this.varargs = varargs;
-
-      this.optional = optional;
-    }
-
-    public TypeReference getType() {
-      return type;
-    }
-
-    @Override
-    public String getName() {
-      return name;
-    }
-
-    public boolean isVarargs() {
-      return varargs;
-    }
-
-    public boolean isOptional() {
-      return optional;
-    }
-
-    public void setType(TypeReference type) {
-      this.type = type;
-    }
-
-    public String getConfigurationIdentifier() {
-      return checkNotNull(getEnclosingMethod()).getConfigurationIdentifier() + "." + getName();
-    }
-
-    @Override
-    public Parameter doVisit(ModelVisitor visitor) {
-      if (visitor.visit(this)) {
-        setType(visitor.accept(type));
-      }
-
-      visitor.endVisit(this);
-
-      return this;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    @Override
-    public String toString() {
-      return name;
-    }
-
-    public String getJniSignature() {
-      TypeReference jniType = isVarargs() ? new ArrayTypeReference(getType()) : getType();
-      return jniType.getJniSignature();
-    }
-
-    public Method getEnclosingMethod() {
-      return enclosingMethod;
-    }
-
-    private void setEnclosingMethod(Method enclosingMethod) {
-      this.enclosingMethod = enclosingMethod;
-    }
-  }
+@Visitable
+@Context
+public class Method extends Entity implements HasTypeParameters {
 
   public static Method from(Method method) {
     Method m = new Method();
@@ -134,10 +60,10 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
     return new Method(true);
   }
 
-  private List<Parameter> parameters = new LinkedList<>();
-  private TypeReference returnType;
-  private List<TypeReference> typeParameters = new LinkedList<>();
-  private Statement body;
+  @Visitable @Nullable TypeReference returnType;
+  @Visitable List<Parameter> parameters = new ArrayList<>();
+  @Visitable @Nullable Statement body;
+  private List<TypeReference> typeParameters = new ArrayList<>();
   private boolean isDefault;
 
   public Method(boolean isConstructor) {
@@ -223,22 +149,8 @@ public class Method extends Entity implements HasTypeParameters, Visitable<Metho
   }
 
   @Override
-  public Method doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      if (getKind() == METHOD) {
-        setReturnType(visitor.accept(returnType));
-      }
-
-      visitor.accept(parameters);
-
-      if (body != null) {
-        visitor.accept(body);
-      }
-    }
-
-    visitor.endVisit(this);
-
-    return this;
+  public Node accept(Processor processor) {
+    return Visitor_Method.visit(processor, this);
   }
 
   @Override

@@ -94,3 +94,13 @@ alias(
     actual = "@com_google_jsinterop_base//:jsinterop-base-j2cl",
     visibility = ["//visibility:public"],
 )
+
+alias(
+    name = "j2cl_visitable",
+    actual = "@com_google_j2cl//transpiler/java/com/google/j2cl/ast/annotations",
+)
+
+alias(
+    name = "j2cl_processors",
+    actual = "@com_google_j2cl//transpiler/java/com/google/j2cl/ast/processors/common",
+)

@@ -32,11 +32,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import java.util.List;
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.Parameter;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 
 /** Ensure that all our java identifier are valid in Java. */
@@ -69,34 +71,32 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
   // to avoid confusion and potential compile errors due to override of final method.
   private static final ImmutableSet<Method> OBJECT_METHODS_TO_RENAME =
       ImmutableSet.<Method>builder()
-          .addAll(methods("getClass", Lists.<Method.Parameter>newArrayList()))
-          .addAll(methods("hashCode", Lists.<Method.Parameter>newArrayList()))
-          .addAll(methods("equals", newArrayList(new Method.Parameter("o", OBJECT, false, false))))
-          .addAll(methods("toString", Lists.<Method.Parameter>newArrayList()))
-          .addAll(methods("clone", Lists.<Method.Parameter>newArrayList()))
-          .addAll(methods("notify", Lists.<Method.Parameter>newArrayList()))
-          .addAll(methods("notifyAll", Lists.<Method.Parameter>newArrayList()))
-          .addAll(methods("wait", Lists.<Method.Parameter>newArrayList()))
-          .addAll(
-              methods("wait", newArrayList(new Method.Parameter("timeout", LONG, false, false))))
+          .addAll(methods("getClass", Lists.<Parameter>newArrayList()))
+          .addAll(methods("hashCode", Lists.<Parameter>newArrayList()))
+          .addAll(methods("equals", newArrayList(new Parameter("o", OBJECT, false, false))))
+          .addAll(methods("toString", Lists.<Parameter>newArrayList()))
+          .addAll(methods("clone", Lists.<Parameter>newArrayList()))
+          .addAll(methods("notify", Lists.<Parameter>newArrayList()))
+          .addAll(methods("notifyAll", Lists.<Parameter>newArrayList()))
+          .addAll(methods("wait", Lists.<Parameter>newArrayList()))
+          .addAll(methods("wait", newArrayList(new Parameter("timeout", LONG, false, false))))
           .addAll(
               methods(
                   "wait",
                   newArrayList(
-                      new Method.Parameter("timeout", LONG, false, false),
-                      new Method.Parameter("nanos", INT, false, false))))
+                      new Parameter("timeout", LONG, false, false),
+                      new Parameter("nanos", INT, false, false))))
           .addAll(methods("finalize", Lists.newArrayList()))
           .build();
 
-  private static List<Method> methods(String name, List<Method.Parameter> parameterList) {
+  private static List<Method> methods(String name, List<Parameter> parameterList) {
     return ImmutableList.of(method(name, parameterList, false), method(name, parameterList, true));
   }
 
-  private static Method method(
-      String name, List<Method.Parameter> parameterList, boolean isStatic) {
+  private static Method method(String name, List<Parameter> parameterList, boolean isStatic) {
     Method method = new Method();
     method.setName(name);
-    for (Method.Parameter parameter : parameterList) {
+    for (Parameter parameter : parameterList) {
       method.addParameter(Parameter.from(parameter));
     }
     method.setStatic(isStatic);
@@ -104,64 +104,80 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
     return method;
   }
 
-  @Override
-  public boolean visit(Type type) {
-    if (!type.isExtern()) {
-      validEntityName(type, JS_TYPE, false);
-
-      String originalName = type.getName();
-      // in order to avoid Clash with java.lang classes.
-      String validName = maybeEscapeJavaClassName(originalName, type.getNativeFqn());
-
-      if (!validName.equals(originalName)) {
-        type.setName(validName);
-
-        addAnnotationNameAttributeIfNotEmpty(type, originalName, JS_TYPE, false);
-      }
+  private static String maybeEscapeJavaClassName(String className, String nativeFqn) {
+    if (TYPES_TO_PREFIX.contains(nativeFqn)) {
+      return "Js" + className;
     }
-    return true;
+
+    return className;
+  }
+
+  private static String toValidJavaIdentifier(String identifier) {
+    if (JAVA_RESERVERD_WORDS.contains(identifier)) {
+      // find maybe another way to escape reserved words
+      return identifier + "_";
+    }
+    return identifier;
   }
 
   @Override
-  public boolean visit(Field field) {
-    validEntityName(field, JS_PROPERTY, true);
-    return true;
-  }
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public void exitType(Type type) {
+            if (!type.isExtern()) {
+              validEntityName(type, JS_TYPE, false);
 
-  @Override
-  public boolean visit(Method method) {
-    if (method.getKind() == CONSTRUCTOR) {
-      // constructor are implemented as method without name
-      return true;
-    }
+              String originalName = type.getName();
+              // in order to avoid Clash with java.lang classes.
+              String validName = maybeEscapeJavaClassName(originalName, type.getNativeFqn());
 
-    AnnotationType jsInteropAnnotation;
-    if (method.hasAnnotation(JS_PROPERTY)) {
-      jsInteropAnnotation = JS_PROPERTY;
-    } else if (method.hasAnnotation(JS_OVERLAY)) {
-      jsInteropAnnotation = JS_OVERLAY;
-    } else {
-      jsInteropAnnotation = JS_METHOD;
-    }
+              if (!validName.equals(originalName)) {
+                type.setName(validName);
 
-    validEntityName(method, jsInteropAnnotation, true);
+                addAnnotationNameAttributeIfNotEmpty(type, originalName, JS_TYPE, false);
+              }
+            }
+          }
 
-    if (OBJECT_METHODS_TO_RENAME.contains(method)) {
-      String methodName = method.getName();
-      method.setName(methodName + "_");
+          @Override
+          public void exitField(Field field) {
+            validEntityName(field, JS_PROPERTY, true);
+          }
 
-      addAnnotationNameAttributeIfNotEmpty(method, methodName, jsInteropAnnotation, true);
-    }
+          @Override
+          public void exitMethod(Method method) {
+            if (method.getKind() == CONSTRUCTOR) {
+              // constructor are implemented as method without name
+              return;
+            }
 
-    return true;
-  }
+            AnnotationType jsInteropAnnotation;
+            if (method.hasAnnotation(JS_PROPERTY)) {
+              jsInteropAnnotation = JS_PROPERTY;
+            } else if (method.hasAnnotation(JS_OVERLAY)) {
+              jsInteropAnnotation = JS_OVERLAY;
+            } else {
+              jsInteropAnnotation = JS_METHOD;
+            }
 
-  @Override
-  public boolean visit(Parameter parameter) {
-    String validName = toValidJavaIdentifier(parameter.getName());
-    parameter.setName(validName);
+            validEntityName(method, jsInteropAnnotation, true);
 
-    return true;
+            if (OBJECT_METHODS_TO_RENAME.contains(method)) {
+              String methodName = method.getName();
+              method.setName(methodName + "_");
+
+              addAnnotationNameAttributeIfNotEmpty(method, methodName, jsInteropAnnotation, true);
+            }
+          }
+
+          @Override
+          public void exitParameter(Parameter parameter) {
+            String validName = toValidJavaIdentifier(parameter.getName());
+            parameter.setName(validName);
+          }
+        });
   }
 
   private void validEntityName(
@@ -176,21 +192,5 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
       addAnnotationNameAttributeIfNotEmpty(
           entity, originalName, jsInteropAnnotationType, createAnnotation);
     }
-  }
-
-  private String maybeEscapeJavaClassName(String className, String nativeFqn) {
-    if (TYPES_TO_PREFIX.contains(nativeFqn)) {
-      return "Js" + className;
-    }
-
-    return className;
-  }
-
-  private String toValidJavaIdentifier(String identifier) {
-    if (JAVA_RESERVERD_WORDS.contains(identifier)) {
-      // find maybe another way to escape reserved words
-      return identifier + "_";
-    }
-    return identifier;
   }
 }

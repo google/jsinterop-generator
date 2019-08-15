@@ -20,15 +20,18 @@ import static com.google.common.collect.Lists.transform;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 /** Models a reference to a union type. */
+@Visitable
 public class UnionTypeReference implements TypeReference {
-  private List<TypeReference> types;
+  @Visitable List<TypeReference> types;
 
   public UnionTypeReference(Collection<TypeReference> types) {
     setTypes(types);
@@ -78,7 +81,7 @@ public class UnionTypeReference implements TypeReference {
   }
 
   private void setTypes(Collection<TypeReference> types) {
-    this.types = ImmutableList.copyOf(types);
+    this.types = new ArrayList<>(types);
   }
 
   @Override
@@ -104,12 +107,8 @@ public class UnionTypeReference implements TypeReference {
   }
 
   @Override
-  public TypeReference doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      setTypes(visitor.accept(types));
-    }
-
-    return visitor.endVisit(this);
+  public TypeReference accept(Processor processor) {
+    return Visitor_UnionTypeReference.visit(processor, this);
   }
 
   @Override

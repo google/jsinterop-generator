@@ -19,11 +19,13 @@ package jsinterop.generator.visitor;
 import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
 
 import com.google.common.collect.ImmutableList;
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.MethodInvocation;
 import jsinterop.generator.model.PredefinedTypeReference;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.ReturnStatement;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeQualifier;
@@ -35,9 +37,20 @@ import jsinterop.generator.model.TypeQualifier;
  * the type and avoid that end-users need to provide an implementation.
  */
 public class DictionaryTypeVisitor extends AbstractModelVisitor {
-
   @Override
-  public boolean visit(Type type) {
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public void exitType(Type type) {
+            if (isDictionaryType(type)) {
+              addFactoryMethod(type);
+            }
+          }
+        });
+  }
+
+  private static void addFactoryMethod(Type type) {
     if (isDictionaryType(type)) {
       Method factory = new Method();
       factory.setStatic(true);
@@ -60,10 +73,9 @@ public class DictionaryTypeVisitor extends AbstractModelVisitor {
 
       type.addMethod(factory);
     }
-    return !type.getInnerTypes().isEmpty();
   }
 
-  private boolean isDictionaryType(Type type) {
+  private static boolean isDictionaryType(Type type) {
     // this visitor is ran before the fields are converted to JsProperty methods.
     return type.isInterface()
         && type.isStructural()

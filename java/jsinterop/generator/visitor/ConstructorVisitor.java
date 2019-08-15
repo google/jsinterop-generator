@@ -23,13 +23,15 @@ import static java.util.stream.Collectors.toList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.AccessModifier;
 import jsinterop.generator.model.Expression;
 import jsinterop.generator.model.ExpressionStatement;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
 import jsinterop.generator.model.MethodInvocation;
+import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 import jsinterop.generator.model.TypeVariableReference;
@@ -41,45 +43,51 @@ import jsinterop.generator.model.TypeVariableReference;
 public class ConstructorVisitor extends AbstractModelVisitor {
 
   @Override
-  public boolean visit(Type type) {
-    if (type.isInterface() || type.getExtendedTypes().isEmpty()) {
-      return true;
-    }
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public void exitType(Type type) {
+            if (type.isInterface() || type.getExtendedTypes().isEmpty()) {
+              return;
+            }
 
-    TypeReference superTypeReference = type.getSuperClass();
-    Type superTypeDeclaration = superTypeReference.getTypeDeclaration();
+            TypeReference superTypeReference = type.getSuperClass();
+            Type superTypeDeclaration = superTypeReference.getTypeDeclaration();
 
-    if (superTypeDeclaration == null) {
-      // Not a generated type. We assume that a default constructor is available.
-      return true;
-    }
+            if (superTypeDeclaration == null) {
+              // Not a generated type. We assume that a default constructor is available.
+              return;
+            }
 
-    Set<Method> superClassConstructors = new HashSet<>(superTypeDeclaration.getConstructors());
+            Set<Method> superClassConstructors =
+                new HashSet<>(superTypeDeclaration.getConstructors());
 
-    if (hasDefaultConstructor(superClassConstructors)) {
-      return true;
-    }
+            if (hasDefaultConstructor(superClassConstructors)) {
+              return;
+            }
 
-    // Call the super class constructor (the first that is declared), so that the code compiles.
-    // The class is a native JsType so the code will have no effect.
-    ExpressionStatement superConstructorCall =
-        new ExpressionStatement(createSuperMethodInvocation(superTypeReference));
-    superConstructorCall.setLeadingComment(
-        "This super call is here only for the code to compile; it is never executed.");
+            // Call the super class constructor (the first that is declared), so that the code
+            // compiles.
+            // The class is a native JsType so the code will have no effect.
+            ExpressionStatement superConstructorCall =
+                new ExpressionStatement(createSuperMethodInvocation(superTypeReference));
+            superConstructorCall.setLeadingComment(
+                "This super call is here only for the code to compile; it is never executed.");
 
-    if (type.getConstructors().isEmpty()) {
-      // If there are no constructors in the type, add a default constructor
-      Method emptyConstructor = Method.newConstructor();
-      emptyConstructor.setBody(superConstructorCall);
-      type.addConstructor(emptyConstructor);
-    } else {
-      // Ensure all constructors call a super constructor with the right parameters.
-      for (Method constructor : type.getConstructors()) {
-        constructor.setBody(superConstructorCall);
-      }
-    }
-
-    return true;
+            if (type.getConstructors().isEmpty()) {
+              // If there are no constructors in the type, add a default constructor
+              Method emptyConstructor = Method.newConstructor();
+              emptyConstructor.setBody(superConstructorCall);
+              type.addConstructor(emptyConstructor);
+            } else {
+              // Ensure all constructors call a super constructor with the right parameters.
+              for (Method constructor : type.getConstructors()) {
+                constructor.setBody(superConstructorCall);
+              }
+            }
+          }
+        });
   }
 
   private static MethodInvocation createSuperMethodInvocation(TypeReference superTypeReference) {

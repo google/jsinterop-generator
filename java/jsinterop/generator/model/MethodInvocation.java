@@ -16,17 +16,20 @@
  */
 package jsinterop.generator.model;
 
-import com.google.common.collect.ImmutableList;
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /** Represents an invocation to a method. */
+@Visitable
 public class MethodInvocation implements Expression {
-  private final Expression invocationTarget;
+  @Visitable @Nullable Expression invocationTarget;
+  @Visitable List<TypeReference> argumentTypes;
+  @Visitable List<Expression> arguments;
+  @Visitable List<TypeReference> localTypeArguments;
   private final String methodName;
-  private List<TypeReference> argumentTypes;
-  private final List<Expression> arguments;
-  private List<TypeReference> localTypeArguments;
 
   public MethodInvocation(
       Expression invocationTarget,
@@ -44,9 +47,9 @@ public class MethodInvocation implements Expression {
       List<TypeReference> localTypeArguments) {
     this.invocationTarget = invocationTarget;
     this.methodName = methodName;
-    this.argumentTypes = ImmutableList.copyOf(argumentTypes);
-    this.arguments = ImmutableList.copyOf(arguments);
-    this.localTypeArguments = ImmutableList.copyOf(localTypeArguments);
+    this.argumentTypes = argumentTypes;
+    this.arguments = arguments;
+    this.localTypeArguments = localTypeArguments;
   }
 
   public Expression getInvocationTarget() {
@@ -70,19 +73,7 @@ public class MethodInvocation implements Expression {
   }
 
   @Override
-  public Expression doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      // In our model, null means that the method is invoked on the current scope ("this" or current
-      // class if static method)
-      if (invocationTarget != null) {
-        visitor.accept(invocationTarget);
-      }
-      argumentTypes = ImmutableList.copyOf(visitor.accept(argumentTypes));
-      visitor.accept(arguments);
-
-      localTypeArguments = ImmutableList.copyOf(visitor.accept(localTypeArguments));
-    }
-
-    return this;
+  public Expression accept(Processor processor) {
+    return Visitor_MethodInvocation.visit(processor, this);
   }
 }

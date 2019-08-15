@@ -17,8 +17,15 @@
 
 package jsinterop.generator.model;
 
+import static jsinterop.generator.model.LiteralExpression.NULL;
+
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
+
 /** Minimal contract for a class modeling a reference to a type. */
-public interface TypeReference extends Visitable<TypeReference> {
+@Visitable
+// TODO(dramaix): import + remove Node
+public interface TypeReference {
   String getTypeName();
 
   String getImport();
@@ -38,7 +45,6 @@ public interface TypeReference extends Visitable<TypeReference> {
    *         <li>{@code {bar:string}} for a type literal
    *         <li>{@code function(string):boolean} for a function type
    *       </ul>
-   *
    *   <li>For {@link ArrayTypeReference}: the JsDoc Annotation String of the array type followed by
    *       []. Ex: com.foo.Bar[]
    *   <li>For {@link ParametrizedTypeReference}: the JsDoc Annotation String of the underlying type
@@ -89,7 +95,11 @@ public interface TypeReference extends Visitable<TypeReference> {
    */
   String getJniSignature();
 
-  Expression getDefaultValue();
+  TypeReference accept(Processor processor);
+
+  default Expression getDefaultValue() {
+    return NULL;
+  }
 
   /**
    * Returns true if the type reference is a reference to a type that can be legally used in
@@ -97,12 +107,6 @@ public interface TypeReference extends Visitable<TypeReference> {
    */
   default boolean isInstanceofAllowed() {
     return true;
-  }
-
-  @Override
-  default TypeReference doVisit(ModelVisitor visitor) {
-    visitor.visit(this);
-    return visitor.endVisit(this);
   }
 
   default Type getTypeDeclaration() {

@@ -30,11 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
@@ -128,26 +129,31 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
   }
 
   @Override
-  public void endVisit(Program program) {
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public boolean enterField(Field field) {
+            field.setType(
+                maybeCreateWildcardType(field.getConfigurationIdentifier(), field.getType()));
+            return false;
+          }
+
+          @Override
+          public boolean enterMethod(Method method) {
+            for (Parameter parameter : method.getParameters()) {
+              parameter.setType(
+                  maybeCreateWildcardType(
+                      parameter.getConfigurationIdentifier(), parameter.getType()));
+            }
+            return false;
+          }
+        });
+
     checkState(
         wildcardsByConfigurationIndentifier.isEmpty(),
         "Unused wildCard directives: %s",
         wildcardsByConfigurationIndentifier);
-  }
-
-  @Override
-  public boolean visit(Field field) {
-    field.setType(maybeCreateWildcardType(field.getConfigurationIdentifier(), field.getType()));
-    return false;
-  }
-
-  @Override
-  public boolean visit(Method method) {
-    for (Parameter parameter : method.getParameters()) {
-      parameter.setType(
-          maybeCreateWildcardType(parameter.getConfigurationIdentifier(), parameter.getType()));
-    }
-    return false;
   }
 
   private TypeReference maybeCreateWildcardType(
@@ -252,7 +258,7 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
     return new ParametrizedTypeReference(new JavaTypeReference(jsFunctionType), newTypeArguments);
   }
 
-  private boolean isGenericJsFunctionTypeReference(ParametrizedTypeReference typeReference) {
+  private static boolean isGenericJsFunctionTypeReference(ParametrizedTypeReference typeReference) {
     Type mainType = getMainTypeDeclaration(typeReference);
 
     return mainType != null && mainType.hasAnnotation(JS_FUNCTION);
@@ -291,12 +297,13 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
     return actualTypeArguments.contains(target);
   }
 
-  private boolean isArrayTypeReference(TypeReference target, TypeReference arrayTypeReference) {
+  private static boolean isArrayTypeReference(
+      TypeReference target, TypeReference arrayTypeReference) {
     return arrayTypeReference instanceof ArrayTypeReference
         && ((ArrayTypeReference) arrayTypeReference).getArrayType().equals(target);
   }
 
-  private Method getCallbackMethod(Type jsFunctionType) {
+  private static Method getCallbackMethod(Type jsFunctionType) {
     // A JsFunction type should have only one method that is not annotated with JsOverlay annotation
     return jsFunctionType
         .getMethods()
@@ -306,11 +313,11 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
         .get();
   }
 
-  private Type getMainTypeDeclaration(ParametrizedTypeReference typeReference) {
+  private static Type getMainTypeDeclaration(ParametrizedTypeReference typeReference) {
     return typeReference.getMainType().getTypeDeclaration();
   }
 
-  private static class TypeReferenceCounter extends AbstractModelVisitor {
+  private static class TypeReferenceCounter extends AbstractVisitor {
     private final TypeReference typeReferenceToFind;
     private int referenceCount;
 
@@ -319,17 +326,15 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
     }
 
     @Override
-    public boolean visit(TypeReference typeReference) {
+    public void exitTypeReference(TypeReference typeReference) {
       if (typeReference.equals(typeReferenceToFind)) {
         referenceCount++;
       }
-
-      return true;
     }
 
     public int countReferences(List<TypeReference> rootTypeReferences) {
       referenceCount = 0;
-      accept(rootTypeReferences);
+      rootTypeReferences.forEach(t -> t.accept(this));
       return referenceCount;
     }
   }

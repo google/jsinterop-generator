@@ -16,10 +16,14 @@
  */
 package jsinterop.generator.model;
 
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
+
 /** Represents a cast operation. */
+@Visitable
 public class CastExpression implements Expression {
-  private TypeReference type;
-  private final Expression expression;
+  @Visitable TypeReference type;
+  @Visitable Expression expression;
 
   public CastExpression(TypeReference type, Expression expression) {
     this.type = type;
@@ -35,11 +39,7 @@ public class CastExpression implements Expression {
   }
 
   @Override
-  public Expression doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      type = visitor.accept(type);
-      visitor.accept(expression);
-    }
-    return this;
+  public Expression accept(Processor processor) {
+    return Visitor_CastExpression.visit(processor, this);
   }
 }

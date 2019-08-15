@@ -16,9 +16,13 @@
  */
 package jsinterop.generator.model;
 
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
+
 /** Used to convert an expression to a statement */
+@Visitable
 public class ExpressionStatement extends AbstractStatement {
-  private final Expression expression;
+  @Visitable Expression expression;
 
   public ExpressionStatement(Expression expression) {
     this.expression = expression;
@@ -28,11 +32,12 @@ public class ExpressionStatement extends AbstractStatement {
     return expression;
   }
 
+  void setExpression(Expression expression) {
+    this.expression = expression;
+  }
+
   @Override
-  public Statement doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      visitor.accept(expression);
-    }
-    return this;
+  public Statement accept(Processor processor) {
+    return Visitor_ExpressionStatement.visit(processor, this);
   }
 }

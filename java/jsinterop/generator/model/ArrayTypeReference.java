@@ -16,13 +16,14 @@
  */
 package jsinterop.generator.model;
 
-import static jsinterop.generator.model.LiteralExpression.NULL;
-
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
 import java.util.Objects;
 
 /** Models reference to a type Array. */
+@Visitable
 public class ArrayTypeReference implements TypeReference, DelegableTypeReference {
-  private TypeReference arrayType;
+  @Visitable TypeReference arrayType;
 
   public ArrayTypeReference(TypeReference arrayType) {
     this.arrayType = arrayType;
@@ -91,22 +92,9 @@ public class ArrayTypeReference implements TypeReference, DelegableTypeReference
     return arrayType;
   }
 
-  private void setArrayType(TypeReference arrayType) {
-    this.arrayType = arrayType;
-  }
-
   @Override
-  public Expression getDefaultValue() {
-    return NULL;
-  }
-
-  @Override
-  public TypeReference doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      setArrayType(visitor.accept(getArrayType()));
-    }
-
-    return visitor.endVisit(this);
+  public TypeReference accept(Processor processor) {
+    return Visitor_ArrayTypeReference.visit(processor, this);
   }
 
   @Override

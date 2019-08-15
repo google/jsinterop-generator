@@ -31,6 +31,9 @@ import static jsinterop.generator.model.EntityKind.NAMESPACE;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.j2cl.ast.annotations.Context;
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -39,7 +42,9 @@ import java.util.Objects;
 import java.util.Set;
 
 /** Models Java classes or interfaces. */
-public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
+@Visitable
+@Context
+public class Type extends Entity implements HasTypeParameters {
   public static Type from(Type type) {
     Type clonedType = new Type(type.getKind());
 
@@ -84,14 +89,15 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     return clonedType;
   }
 
+  @Visitable List<TypeReference> extendedTypes = new ArrayList<>();
+  @Visitable List<TypeReference> implementedTypes = new ArrayList<>();
+  @Visitable List<Type> innerTypes = new ArrayList<>();
+  @Visitable List<Field> fields = new ArrayList<>();
+  @Visitable List<Method> constructors = new ArrayList<>();
+  @Visitable List<Method> methods = new ArrayList<>();
+
   private String packageName;
-  private Set<TypeReference> extendedTypes = new LinkedHashSet<>();
-  private Set<TypeReference> implementedTypes = new LinkedHashSet<>();
   private Set<TypeReference> typeParameters = new LinkedHashSet<>();
-  private List<Field> fields = new ArrayList<>();
-  private List<Method> methods = new ArrayList<>();
-  private List<Method> constructors = new ArrayList<>();
-  private List<Type> innerTypes = new ArrayList<>();
   private boolean extern;
   private boolean extensionType;
   private boolean synthetic;
@@ -110,7 +116,7 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     setKind(entityKind);
   }
 
-  public Set<TypeReference> getExtendedTypes() {
+  public List<TypeReference> getExtendedTypes() {
     return extendedTypes;
   }
 
@@ -122,19 +128,19 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     return Iterables.getOnlyElement(getExtendedTypes());
   }
 
-  public void setExtendedTypes(Collection<TypeReference> extendedTypes) {
-    this.extendedTypes = new LinkedHashSet<>(extendedTypes);
+  void setExtendedTypes(List<TypeReference> extendedTypes) {
+    this.extendedTypes = extendedTypes;
   }
 
-  public void setImplementedTypes(Collection<TypeReference> implementedTypes) {
-    this.implementedTypes = new LinkedHashSet<>(implementedTypes);
+  void setImplementedTypes(List<TypeReference> implementedTypes) {
+    this.implementedTypes = implementedTypes;
   }
 
   public void setTypeParameters(Collection<TypeReference> typeParameters) {
     this.typeParameters = new LinkedHashSet<>(typeParameters);
   }
 
-  public Set<TypeReference> getImplementedTypes() {
+  public List<TypeReference> getImplementedTypes() {
     return implementedTypes;
   }
 
@@ -284,21 +290,6 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
     return getJavaFqn().substring(getTopLevelParentType().getPackageName().length() + 1);
   }
 
-  @Override
-  public Type doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      setExtendedTypes(visitor.accept(extendedTypes));
-      setImplementedTypes(visitor.accept(implementedTypes));
-
-      visitor.accept(innerTypes);
-      visitor.accept(fields);
-      visitor.accept(constructors);
-      visitor.accept(methods);
-    }
-    visitor.endVisit(this);
-    return this;
-  }
-
   public void removeFields(List<Field> fieldsToRemove) {
     fieldsToRemove.forEach(this::removeField);
   }
@@ -388,5 +379,10 @@ public class Type extends Entity implements HasTypeParameters, Visitable<Type> {
   @Override
   public String toString() {
     return (isInterface() ? "Interface " : "Class ") + getJavaFqn();
+  }
+
+  @Override
+  public Node accept(Processor processor) {
+    return Visitor_Type.visit(processor, this);
   }
 }

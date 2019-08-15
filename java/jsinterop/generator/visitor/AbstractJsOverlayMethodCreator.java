@@ -22,7 +22,9 @@ import static java.util.stream.Collectors.toSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Method;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 
 /**
@@ -43,14 +45,21 @@ public abstract class AbstractJsOverlayMethodCreator extends AbstractModelVisito
   private final Map<Type, Set<String>> parentInterfaceMethodsByType = new HashMap<>();
 
   @Override
-  public boolean visit(Method method) {
-    // if the method is defined on a parent interface, default JsOverlay methods will be created
-    // on that interface. These methods cannot be overridden, so we don't need to do anything here.
-    if (isMethodOverrideParentInterfaceMethod(method)) {
-      return false;
-    }
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public boolean enterMethod(Method method) {
+            // if the method is defined on a parent interface, default JsOverlay methods will be
+            // created on that interface. These methods cannot be overridden, so we don't need to do
+            // anything here.
+            if (isMethodOverrideParentInterfaceMethod(method)) {
+              return false;
+            }
 
-    return processMethod(method);
+            return processMethod(method);
+          }
+        });
   }
 
   protected abstract boolean processMethod(Method method);

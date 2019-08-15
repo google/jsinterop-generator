@@ -34,6 +34,7 @@ import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 import static jsinterop.generator.model.PredefinedTypeReference.VOID;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import jsinterop.generator.model.Annotation;
@@ -44,8 +45,8 @@ import jsinterop.generator.model.ExpressionStatement;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.LiteralExpression;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
 import jsinterop.generator.model.MethodInvocation;
+import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.ReturnStatement;
@@ -273,9 +274,9 @@ public class ModelHelper {
     return new MethodInvocation(
         new TypeQualifier(PredefinedTypeReference.JS),
         "uncheckedCast",
-        ImmutableList.of(OBJECT),
-        ImmutableList.of(new LiteralExpression(overloadParameter.getName())),
-        ImmutableList.of(originalParameter.getType()));
+        Lists.newArrayList(OBJECT),
+        Lists.newArrayList(new LiteralExpression(overloadParameter.getName())),
+        Lists.newArrayList(originalParameter.getType()));
   }
 
   private ModelHelper() {}

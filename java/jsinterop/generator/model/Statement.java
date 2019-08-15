@@ -16,7 +16,13 @@
  */
 package jsinterop.generator.model;
 
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
+
 /** Represents a Java statement. */
-public interface Statement extends Visitable<Statement> {
+@Visitable
+public interface Statement {
   String getLeadingComment();
+
+  Statement accept(Processor processor);
 }

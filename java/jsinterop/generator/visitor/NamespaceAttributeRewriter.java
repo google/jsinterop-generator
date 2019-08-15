@@ -19,8 +19,10 @@ package jsinterop.generator.visitor;
 import static jsinterop.generator.helper.GeneratorUtils.maybeRemoveClutzNamespace;
 import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.Entity;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 
 /**
@@ -41,29 +43,35 @@ import jsinterop.generator.model.Type;
 public class NamespaceAttributeRewriter extends AbstractModelVisitor {
 
   @Override
-  public boolean visit(Type type) {
-    if (type.isExtern()) {
-      // because we won't emit any code for extern type, we don't need to fix the namespace.
-      return false;
-    }
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public boolean enterType(Type type) {
+            if (type.isExtern()) {
+              // because we won't emit any code for extern type, we don't need to fix the namespace.
+              return false;
+            }
 
-    if (isNativeJsType(type)) {
-      maybeRewriteAnnotationAttributes(type, type.getPackageName());
-    }
+            if (isNativeJsType(type)) {
+              maybeRewriteAnnotationAttributes(type, type.getPackageName());
+            }
 
-    // The namespace for native JsTypes is fixed at the type level and we don't set namespace on
-    // theirs members. We don't need to visit them
-    // Namespaces for non native JsTypes don't need to be fixed.
-    // We don't generate any non-JsType classes.
-    return false;
+            // The namespace for native JsTypes is fixed at the type level and we don't set
+            // namespace on theirs members. We don't need to visit them.
+            // Namespaces for non native JsTypes don't need to be fixed.
+            // We don't generate any non-JsType classes.
+            return false;
+          }
+        });
   }
 
-  private boolean isNativeJsType(Type currentType) {
+  private static boolean isNativeJsType(Type currentType) {
     return currentType.hasAnnotation(JS_TYPE)
         && currentType.getAnnotation(JS_TYPE).getIsNativeAttribute();
   }
 
-  private void maybeRewriteAnnotationAttributes(Entity owner, String defaultOwnerNamespace) {
+  private static void maybeRewriteAnnotationAttributes(Entity owner, String defaultOwnerNamespace) {
     Annotation originalAnnotation = owner.getAnnotation(JS_TYPE);
 
     String namespace = originalAnnotation.getNamespaceAttribute();

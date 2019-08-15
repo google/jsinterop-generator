@@ -16,9 +16,13 @@
  */
 package jsinterop.generator.model;
 
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
+
 /** Models a return statement. */
+@Visitable
 public class ReturnStatement extends AbstractStatement {
-  private final Expression expression;
+  @Visitable Expression expression;
 
   public ReturnStatement(Expression expression) {
     this.expression = expression;
@@ -29,10 +33,7 @@ public class ReturnStatement extends AbstractStatement {
   }
 
   @Override
-  public Statement doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      visitor.accept(expression);
-    }
-    return this;
+  public Statement accept(Processor processor) {
+    return Visitor_ReturnStatement.visit(processor, this);
   }
 }

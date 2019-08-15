@@ -16,12 +16,15 @@
  */
 package jsinterop.generator.model;
 
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /** Super class to be extended by class modeling Java entity. */
-public abstract class Entity implements HasName {
+@Visitable
+public abstract class Entity implements HasName, Node {
   protected static void copyEntityProperties(Entity from, Entity to) {
     to.setName(from.getName());
     to.setStatic(from.isStatic());
@@ -140,5 +143,10 @@ public abstract class Entity implements HasName {
 
   protected void setEnclosingType(Type enclosingType) {
     this.enclosingType = enclosingType;
+  }
+
+  @Override
+  public Node accept(Processor processor) {
+    return Visitor_Entity.visit(processor, this);
   }
 }

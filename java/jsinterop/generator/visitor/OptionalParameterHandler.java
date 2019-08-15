@@ -17,9 +17,11 @@
 
 package jsinterop.generator.visitor;
 
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.Parameter;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 
 /**
@@ -36,34 +38,41 @@ import jsinterop.generator.model.Type;
  * </pre>
  */
 public class OptionalParameterHandler extends AbstractModelVisitor {
-  @Override
-  public boolean visit(Type type) {
-    // don't create method overloading on functional interface.
-    // TODO(b/36140220): create method overloading with default methods for JsFunction type
-    return !type.hasAnnotation(AnnotationType.JS_FUNCTION);
-  }
 
   @Override
-  public boolean visit(Method method) {
-    int parameterCount = method.getParameters().size();
-    for (int i = parameterCount - 1; i >= 0; i--) {
-      Parameter currentParameter = method.getParameters().get(i);
-      if (currentParameter.isOptional()) {
-        method.getEnclosingType().addMethod(createOverloadMethod(method, i));
-      } else if (currentParameter.isVarargs()) {
-        // We don't create a method overload for a var_args parameter because java consider it
-        // already as optional. But we continue the for loop because the others parameters could be
-        // optional and we need to create method overload for them.
-      } else {
-        // if the parameter is not optional nor a varargs, the others are non optional too
-        return false;
-      }
-    }
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public boolean enterType(Type type) {
+            // don't create method overloading on functional interface.
+            // TODO(b/36140220): create method overloading with default methods for JsFunction type
+            return !type.hasAnnotation(AnnotationType.JS_FUNCTION);
+          }
 
-    return false;
+          @Override
+          public boolean enterMethod(Method method) {
+            int parameterCount = method.getParameters().size();
+            for (int i = parameterCount - 1; i >= 0; i--) {
+              Parameter currentParameter = method.getParameters().get(i);
+              if (currentParameter.isOptional()) {
+                method.getEnclosingType().addMethod(createOverloadMethod(method, i));
+              } else if (currentParameter.isVarargs()) {
+                // We don't create a method overload for a var_args parameter because java consider
+                // it already as optional. But we continue the for loop because the others
+                // parameters could be optional and we need to create method overload for them.
+              } else {
+                // if the parameter is not optional nor a varargs, the others are non optional too
+                return false;
+              }
+            }
+
+            return false;
+          }
+        });
   }
 
-  private Method createOverloadMethod(Method method, int parameterCount) {
+  private static Method createOverloadMethod(Method method, int parameterCount) {
     Method overload = Method.from(method);
 
     overload.clearParameters();

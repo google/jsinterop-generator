@@ -26,12 +26,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.DelegableTypeReference;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 import jsinterop.generator.model.TypeVariableReference;
@@ -67,11 +69,16 @@ import jsinterop.generator.model.UnionTypeReference;
 public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
 
   @Override
-  public boolean visit(Type type) {
-    if (type.isSynthetic()) {
-      retrofitUndefinedTypeParameters(type);
-    }
-    return true;
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public void exitType(Type type) {
+            if (type.isSynthetic()) {
+              retrofitUndefinedTypeParameters(type);
+            }
+          }
+        });
   }
 
   private static void retrofitUndefinedTypeParameters(Type javaType) {

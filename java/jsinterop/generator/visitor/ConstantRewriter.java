@@ -21,6 +21,7 @@ import static jsinterop.generator.model.AnnotationType.JS_PROPERTY;
 import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 
 import com.google.common.base.Preconditions;
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.EntityKind;
 import jsinterop.generator.model.Field;
@@ -34,21 +35,17 @@ import jsinterop.generator.model.Type;
  * class final to catch usage errors.
  */
 public class ConstantRewriter extends AbstractModelVisitor {
-  private Program program;
-
   @Override
-  public boolean visit(Program program) {
-    this.program = program;
-    return true;
-  }
-
-  @Override
-  public boolean visit(Type type) {
-    if (type.hasAnnotation(JS_TYPE)) {
-      processConstants(type);
-    }
-
-    return true;
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public void exitType(Type type) {
+            if (type.hasAnnotation(JS_TYPE)) {
+              processConstants(type, program);
+            }
+          }
+        });
   }
 
   /**
@@ -56,7 +53,7 @@ public class ConstantRewriter extends AbstractModelVisitor {
    * static fields that target the javascript constant symbols. Then we reexpose those fields on the
    * original type by using JsOverlay static final field.
    */
-  private void processConstants(Type originalType) {
+  private static void processConstants(Type originalType, Program program) {
     Preconditions.checkState(
         !originalType.isInterface()
             || originalType.getFields().stream()

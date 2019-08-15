@@ -23,11 +23,14 @@ import static jsinterop.generator.model.LiteralExpression.FALSE;
 import static jsinterop.generator.model.LiteralExpression.NULL;
 import static jsinterop.generator.model.LiteralExpression.ZERO;
 
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 
 /** A list of known Java types used during the generation. */
+@Visitable
 public enum PredefinedTypeReference implements TypeReference {
   VOID("void", "void", "V", NULL),
   VOID_OBJECT("java.lang.Void", "void"),
@@ -162,9 +165,8 @@ public enum PredefinedTypeReference implements TypeReference {
   }
 
   @Override
-  public TypeReference doVisit(ModelVisitor visitor) {
-    visitor.visit(this);
-    return visitor.endVisit(this);
+  public TypeReference accept(Processor processor) {
+    return Visitor_PredefinedTypeReference.visit(processor, this);
   }
 
   private boolean isPrimitive() {

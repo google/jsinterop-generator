@@ -17,11 +17,12 @@
 
 package jsinterop.generator.model;
 
-import static jsinterop.generator.model.LiteralExpression.NULL;
-
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
 import java.util.Objects;
 
 /** Abstract implementation of TypeReference */
+@Visitable
 public abstract class AbstractTypeReference implements TypeReference {
   @Override
   public final boolean equals(Object o) {
@@ -41,12 +42,7 @@ public abstract class AbstractTypeReference implements TypeReference {
   }
 
   @Override
-  public Expression getDefaultValue() {
-    return NULL;
-  }
-
-  @Override
-  public String toString() {
-    return getTypeName();
+  public TypeReference accept(Processor processor) {
+    return Visitor_AbstractTypeReference.visit(processor, this);
   }
 }

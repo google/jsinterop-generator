@@ -31,26 +31,26 @@ public final class VisitorHelper {
       List<String> integerEntities,
       Map<String, String> wildcardTypes,
       Problems problems) {
-    new EmptyNamespaceFilter().accept(program);
+    new EmptyNamespaceFilter().applyTo(program);
 
-    new DictionaryTypeVisitor().accept(program);
+    new DictionaryTypeVisitor().applyTo(program);
 
-    new FieldsConverter(useBeanConvention).accept(program);
+    new FieldsConverter(useBeanConvention).applyTo(program);
 
-    new ClosureOptionalParameterCleaner().accept(program);
+    new ClosureOptionalParameterCleaner().applyTo(program);
 
-    new OptionalParameterHandler().accept(program);
+    new OptionalParameterHandler().applyTo(program);
 
-    new ValidJavaIdentifierVisitor().accept(program);
+    new ValidJavaIdentifierVisitor().applyTo(program);
 
-    new IntegerEntitiesConverter(integerEntities, problems).accept(program);
+    new IntegerEntitiesConverter(integerEntities, problems).applyTo(program);
 
-    new ConstantRewriter().accept(program);
+    new ConstantRewriter().applyTo(program);
 
-    new UnionTypeMethodParameterHandler().accept(program);
+    new UnionTypeMethodParameterHandler().applyTo(program);
 
     UnionTypeHelperTypeCreator unionTypeHelperTypeCreator = new UnionTypeHelperTypeCreator();
-    unionTypeHelperTypeCreator.accept(program);
+    unionTypeHelperTypeCreator.applyTo(program);
 
     // These 2 visitors below have to visit our model until no more changes are made.
     // This is because inner types can refer to other inner types. Fixing one inner type has impact
@@ -65,34 +65,34 @@ public final class VisitorHelper {
     //  interface Bar<T,U> { T onInvoke(U foo);}
     //  interface Foo<V,T,U> { V onInvoke(Bar<T,U> bar);}
     while (true) {
-      new FixTypeParametersOfSyntheticTypes().accept(program);
+      new FixTypeParametersOfSyntheticTypes().applyTo(program);
 
       FixTypeParametersOfReferencesToSyntheticTypes fixTypeParametersOfReferencesToSyntheticTypes =
           new FixTypeParametersOfReferencesToSyntheticTypes();
-      fixTypeParametersOfReferencesToSyntheticTypes.accept(program);
+      fixTypeParametersOfReferencesToSyntheticTypes.applyTo(program);
       if (!fixTypeParametersOfReferencesToSyntheticTypes.isSyntheticTypeChanged()) {
         break;
       }
     }
     DuplicatedTypesUnifier duplicatedTypesUnifier = new DuplicatedTypesUnifier(useBeanConvention);
-    duplicatedTypesUnifier.accept(program);
+    duplicatedTypesUnifier.applyTo(program);
 
-    new FixReferencesToDuplicatedTypes(duplicatedTypesUnifier.getTypesToReplace()).accept(program);
+    new FixReferencesToDuplicatedTypes(duplicatedTypesUnifier.getTypesToReplace()).applyTo(program);
 
-    new MembersClassCleaner().accept(program);
+    new MembersClassCleaner().applyTo(program);
 
-    new ConstructorVisitor().accept(program);
+    new ConstructorVisitor().applyTo(program);
 
     new WildcardTypeCreator(unionTypeHelperTypeCreator.getUnionTypeHelperTypes(), wildcardTypes)
-        .accept(program);
+        .applyTo(program);
 
-    new JsConstructorFnParameterJsOverlayCreator().accept(program);
+    new JsConstructorFnParameterJsOverlayCreator().applyTo(program);
 
-    new JsArrayLikeParameterJsOverlayCreator().accept(program);
+    new JsArrayLikeParameterJsOverlayCreator().applyTo(program);
 
-    new ObjectParameterJsOverlayCreator().accept(program);
+    new ObjectParameterJsOverlayCreator().applyTo(program);
 
-    new NamespaceAttributeRewriter().accept(program);
+    new NamespaceAttributeRewriter().applyTo(program);
   }
 
   private VisitorHelper() {}

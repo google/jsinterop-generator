@@ -27,14 +27,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.AccessModifier;
 import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.Entity;
-import jsinterop.generator.model.Expression;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.PredefinedTypeReference;
-import jsinterop.generator.model.Statement;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 import jsinterop.generator.model.TypeVariableReference;
@@ -77,9 +77,7 @@ public class MembersClassCleaner extends AbstractModelVisitor {
 
       return entity.getName()
           + "("
-          + entity
-              .getParameters()
-              .stream()
+          + entity.getParameters().stream()
               .map(input -> input.getType().getJniSignature())
               .collect(Collectors.joining(","))
           + ")";
@@ -89,17 +87,89 @@ public class MembersClassCleaner extends AbstractModelVisitor {
   private Set<TypeReference> generics;
 
   @Override
-  public boolean visit(Type type) {
-    if (type.isInterface()) {
-      return true;
-    }
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          @Override
+          public boolean enterType(Type type) {
+            if (type.isInterface()) {
+              return true;
+            }
 
-    removeSingleDefaultConstructor(type);
-    removeDuplicatedFields(type);
-    renameSameEntities(type.getFields(), new FieldStringifier());
-    renameSameEntities(type.getMethods(), new MethodStringifier());
+            removeSingleDefaultConstructor(type);
+            removeDuplicatedFields(type);
+            renameSameEntities(type.getFields(), new FieldStringifier());
+            renameSameEntities(type.getMethods(), new MethodStringifier());
 
-    return true;
+            return true;
+          }
+
+          @Override
+          public boolean enterField(Field field) {
+            if (field.getType().equals(PredefinedTypeReference.VOID)) {
+              field.setType(PredefinedTypeReference.OBJECT);
+            }
+
+            return true;
+          }
+
+          @Override
+          public boolean enterMethod(Method method) {
+            generics = new HashSet<>();
+            return true;
+          }
+
+          @Override
+          public boolean enterTypeVariableReference(TypeVariableReference typeReference) {
+            if (generics != null) {
+              generics.add(typeReference);
+            }
+            return true;
+          }
+
+          @Override
+          public void exitMethod(Method method) {
+            List<TypeReference> methodGenerics = new ArrayList<>();
+
+            for (TypeReference typeReference : method.getTypeParameters()) {
+              if (generics.contains(typeReference)) {
+                methodGenerics.add(typeReference);
+              }
+            }
+
+            method.setTypeParameters(methodGenerics);
+
+            generics = null;
+          }
+
+          private <T extends Entity> void renameSameEntities(
+              Collection<T> entities, EntityStringifier<T> stringifier) {
+            Set<String> nonStaticEntities = new HashSet<>();
+
+            for (T entity : entities) {
+              if (!entity.isStatic()) {
+                nonStaticEntities.add(stringifier.toString(entity));
+              }
+            }
+
+            if (nonStaticEntities.isEmpty() || nonStaticEntities.size() == entities.size()) {
+              return;
+            }
+
+            for (T entity : entities) {
+              if (entity.isStatic() && nonStaticEntities.contains(stringifier.toString(entity))) {
+                String name = entity.getName();
+                entity.setName(name + "_STATIC");
+
+                // TODO(dramaix): add a javadoc above the field explaining why it was renamed
+                AnnotationType annotationType =
+                    entity.getKind() == METHOD ? JS_METHOD : JS_PROPERTY;
+
+                addAnnotationNameAttributeIfNotEmpty(entity, name, annotationType, true);
+              }
+            }
+          }
+        });
   }
 
   private static void removeSingleDefaultConstructor(Type type) {
@@ -108,81 +178,6 @@ public class MembersClassCleaner extends AbstractModelVisitor {
       if (singleConstructor.getParameters().isEmpty()
           && singleConstructor.getAccessModifier() == AccessModifier.PUBLIC) {
         type.removeMethod(singleConstructor);
-      }
-    }
-  }
-
-  @Override
-  public boolean visit(Field field) {
-    if (field.getType().equals(PredefinedTypeReference.VOID)) {
-      field.setType(PredefinedTypeReference.OBJECT);
-    }
-
-    return true;
-  }
-
-  @Override
-  public boolean visit(Method method) {
-    generics = new HashSet<>();
-    return true;
-  }
-
-  @Override
-  public boolean visit(TypeReference typeReference) {
-    if (generics != null && typeReference instanceof TypeVariableReference) {
-      generics.add(typeReference);
-    }
-    return true;
-  }
-
-  @Override
-  public void endVisit(Method method) {
-    List<TypeReference> methodGenerics = new ArrayList<>();
-
-    for (TypeReference typeReference : method.getTypeParameters()) {
-      if (generics.contains(typeReference)) {
-        methodGenerics.add(typeReference);
-      }
-    }
-
-    method.setTypeParameters(methodGenerics);
-
-    generics = null;
-  }
-
-  @Override
-  public boolean visit(Expression expression) {
-    return true;
-  }
-
-  @Override
-  public boolean visit(Statement statement) {
-    return true;
-  }
-
-  private <T extends Entity> void renameSameEntities(
-      Collection<T> entities, EntityStringifier<T> stringifier) {
-    Set<String> nonStaticEntities = new HashSet<>();
-
-    for (T entity : entities) {
-      if (!entity.isStatic()) {
-        nonStaticEntities.add(stringifier.toString(entity));
-      }
-    }
-
-    if (nonStaticEntities.size() == 0 || nonStaticEntities.size() == entities.size()) {
-      return;
-    }
-
-    for (T entity : entities) {
-      if (entity.isStatic() && nonStaticEntities.contains(stringifier.toString(entity))) {
-        String name = entity.getName();
-        entity.setName(name + "_STATIC");
-
-        // TODO(dramaix): add a javadoc above the field explaining why it was renamed
-        AnnotationType annotationType = entity.getKind() == METHOD ? JS_METHOD : JS_PROPERTY;
-
-        addAnnotationNameAttributeIfNotEmpty(entity, name, annotationType, true);
       }
     }
   }

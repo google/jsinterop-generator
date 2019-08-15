@@ -29,9 +29,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
+import jsinterop.generator.model.Parameter;
+import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 
@@ -43,62 +46,71 @@ import jsinterop.generator.model.TypeReference;
  */
 public class FieldsConverter extends AbstractModelVisitor {
   private final boolean useBeanConvention;
-  // When we visit a class, we ensure that implemented interfaces are visited first. Keep a track
-  // of visited interface in order to avoid visiting them several times.
-  private final Set<Type> alreadyVisitedType = new HashSet<>();
 
-  public FieldsConverter(boolean useBeanConvention) {
+  FieldsConverter(boolean useBeanConvention) {
     this.useBeanConvention = useBeanConvention;
   }
 
   @Override
-  public boolean visit(Type type) {
-    if (!alreadyVisitedType.add(type)) {
-      return false;
-    }
-    if (!type.hasAnnotation(JS_TYPE)) {
-      // nothing to fix but the type might contain inner types to fix
-      return true;
-    }
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractVisitor() {
+          // When we visit a class, we ensure that implemented interfaces are visited first. Keep a
+          // track of visited interface in order to avoid visiting them several times.
+          private final Set<Type> alreadyVisitedType = new HashSet<>();
 
-
-    if (type.isInterface()) {
-      // convert non static fields of interface to pair of getter/setter.
-      List<Field> nonStaticFields =
-          type.getFields().stream().filter(not(Field::isStatic)).collect(Collectors.toList());
-
-      nonStaticFields.forEach(
-          field -> {
-            // getter method to access field
-            type.addMethod(createAccessorMethod(field, false, useBeanConvention));
-            if (!field.isNativeReadOnly()) {
-              // setter method to access field
-              type.addMethod(createAccessorMethod(field, true, useBeanConvention));
+          @Override
+          public boolean enterType(Type type) {
+            if (!alreadyVisitedType.add(type)) {
+              return false;
             }
-          });
+            if (!type.hasAnnotation(JS_TYPE)) {
+              // nothing to fix but the type might contain inner types to fix
+              return true;
+            }
 
-      type.removeFields(nonStaticFields);
+            if (type.isInterface()) {
+              // convert non static fields of interface to pair of getter/setter.
+              List<Field> nonStaticFields =
+                  type.getFields().stream()
+                      .filter(not(Field::isStatic))
+                      .collect(Collectors.toList());
 
-    } else if (type.isClass()) {
-      // Classes can implement interfaces with non static fields. Now that these fields have been
-      // replaced with getters/setters, classes have to provide an implementation for those.
+              nonStaticFields.forEach(
+                  field -> {
+                    // getter method to access field
+                    type.addMethod(createAccessorMethod(field, false, useBeanConvention));
+                    if (!field.isNativeReadOnly()) {
+                      // setter method to access field
+                      type.addMethod(createAccessorMethod(field, true, useBeanConvention));
+                    }
+                  });
 
-      List<Type> parentInterfaces = getParentInterfaces(type, true);
-      // ensure implemented interfaces have been visited
-      accept(parentInterfaces);
+              type.removeFields(nonStaticFields);
 
-      // ensure implementations for newly created accessors.
-      parentInterfaces
-          .stream()
-          .flatMap(t -> t.getMethods().stream())
-          .filter(m -> m.hasAnnotation(JS_PROPERTY))
-          .forEach(m -> type.addMethod(Method.from(m)));
-    }
+            } else if (type.isClass()) {
+              // Classes can implement interfaces with non static fields. Now that these fields have
+              // been replaced with getters/setters, classes have to provide an implementation for
+              // those.
 
-    return true;
+              List<Type> parentInterfaces = getParentInterfaces(type, true);
+              // ensure implemented interfaces have been visited
+              parentInterfaces.forEach(i -> i.accept(this));
+
+              // ensure implementations for newly created accessors.
+              parentInterfaces.stream()
+                  .flatMap(t -> t.getMethods().stream())
+                  .filter(m -> m.hasAnnotation(JS_PROPERTY))
+                  .forEach(m -> type.addMethod(Method.from(m)));
+            }
+
+            return true;
+          }
+        });
   }
 
-  private Method createAccessorMethod(Field field, boolean setter, boolean useBeanConvention) {
+  private static Method createAccessorMethod(
+      Field field, boolean setter, boolean useBeanConvention) {
     String fieldName = field.getName();
     TypeReference fieldType = field.getType();
     String fieldNameUpperCamelCase = toCamelUpperCase(fieldName);
@@ -114,7 +126,7 @@ public class FieldsConverter extends AbstractModelVisitor {
     }
 
     if (setter) {
-      accessor.addParameter(new Method.Parameter(fieldName, fieldType, false, false));
+      accessor.addParameter(new Parameter(fieldName, fieldType, false, false));
       accessor.setReturnType(VOID);
     } else {
       accessor.setReturnType(fieldType);

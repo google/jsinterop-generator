@@ -18,11 +18,14 @@ package jsinterop.generator.model;
 
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
-/** Models a reference to a type variable. */
-public class TypeVariableReference extends AbstractTypeReference {
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
 
+/** Models a reference to a type variable. */
+@Visitable
+public class TypeVariableReference extends AbstractTypeReference {
+  @Visitable TypeReference upperBound;
   private final String name;
-  private TypeReference upperBound;
 
   public TypeVariableReference(String name, TypeReference upperBound) {
     this.name = name;
@@ -83,11 +86,7 @@ public class TypeVariableReference extends AbstractTypeReference {
   }
 
   @Override
-  public TypeReference doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      setUpperBound(visitor.accept(upperBound));
-    }
-
-    return visitor.endVisit(this);
+  public TypeReference accept(Processor processor) {
+    return Visitor_TypeVariableReference.visit(processor, this);
   }
 }

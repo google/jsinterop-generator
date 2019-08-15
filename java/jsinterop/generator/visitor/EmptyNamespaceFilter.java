@@ -16,8 +16,7 @@
  */
 package jsinterop.generator.visitor;
 
-import java.util.HashSet;
-import java.util.Set;
+import jsinterop.generator.model.AbstractRewriter;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 
@@ -26,24 +25,20 @@ import jsinterop.generator.model.Type;
  * any functions nor variables.
  */
 public class EmptyNamespaceFilter extends AbstractModelVisitor {
-  private static final Set<Type> typeToDelete = new HashSet<>();
-
   @Override
-  public boolean visit(Type type) {
-    if (type.isNamespace() && isEmpty(type)) {
-      typeToDelete.add(type);
-    }
-
-    return true;
+  public void applyTo(Program program) {
+    program.accept(
+        new AbstractRewriter() {
+          @Override
+          public Type rewriteType(Type node) {
+            return isEmptyNamespace(node) ? null : node;
+          }
+        });
   }
 
-  @Override
-  public void endVisit(Program program) {
-    program.removeTypes(typeToDelete);
-  }
-
-  private static boolean isEmpty(Type type) {
-    return type.getFields().isEmpty()
+  private static boolean isEmptyNamespace(Type type) {
+    return type.isNamespace()
+        && type.getFields().isEmpty()
         && type.getMethods().isEmpty()
         && type.getInnerTypes().isEmpty();
   }

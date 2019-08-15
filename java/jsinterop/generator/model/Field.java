@@ -19,10 +19,15 @@ package jsinterop.generator.model;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static jsinterop.generator.model.EntityKind.FIELD;
 
+import com.google.j2cl.ast.annotations.Context;
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
 import java.util.Objects;
 
 /** Models a Java field. */
-public class Field extends Entity implements Visitable<Field> {
+@Visitable
+@Context
+public class Field extends Entity {
 
   public static Field from(Field field) {
     Field clonedField = new Field();
@@ -46,7 +51,7 @@ public class Field extends Entity implements Visitable<Field> {
     return field;
   }
 
-  private TypeReference type;
+  @Visitable TypeReference type;
   private String initialValue;
   private boolean nativeReadOnly;
   private boolean enumConstant;
@@ -96,12 +101,8 @@ public class Field extends Entity implements Visitable<Field> {
   }
 
   @Override
-  public Field doVisit(ModelVisitor visitor) {
-    if (visitor.visit(this)) {
-      setType(visitor.accept(getType()));
-    }
-    visitor.endVisit(this);
-    return this;
+  public Node accept(Processor processor) {
+    return Visitor_Field.visit(processor, this);
   }
 
   @Override

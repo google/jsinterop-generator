@@ -17,9 +17,10 @@
 
 package jsinterop.generator.model;
 
-import static jsinterop.generator.model.LiteralExpression.NULL;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -35,6 +36,7 @@ import java.util.Objects;
  * <p>A wildcard may have a upper bound ({@code ? extends Foo}) or a lower bound ({@code ? super
  * Foo}) or neither ({@code ?}) but not both.
  */
+@Visitable
 public class WildcardTypeReference implements TypeReference {
   public static WildcardTypeReference createWildcardUpperBound(TypeReference upperBound) {
     if (upperBound.equals(PredefinedTypeReference.OBJECT)) {
@@ -118,11 +120,6 @@ public class WildcardTypeReference implements TypeReference {
   }
 
   @Override
-  public Expression getDefaultValue() {
-    return NULL;
-  }
-
-  @Override
   public final boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -148,5 +145,10 @@ public class WildcardTypeReference implements TypeReference {
       return "? extends " + upperBound;
     }
     return "?";
+  }
+
+  @Override
+  public TypeReference accept(Processor processor) {
+    return Visitor_WildcardTypeReference.visit(processor, this);
   }
 }

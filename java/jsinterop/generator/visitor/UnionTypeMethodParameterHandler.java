@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Method.Parameter;
+import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 import jsinterop.generator.model.UnionTypeReference;

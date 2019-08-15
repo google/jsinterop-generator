@@ -75,19 +75,16 @@ class ClosureJsInteropGenerator {
   }
 
   private void generateDependencyFile(Program javaProgram) {
-    DependencyFileWriter dependencyFileWriter = new DependencyFileWriter();
-    dependencyFileWriter.accept(javaProgram);
-
     try {
       Files.asCharSink(new File(options.getOutputDependencyFile()), UTF_8)
-          .write(dependencyFileWriter.getDependencyFileContent());
+          .write(DependencyFileWriter.render(javaProgram));
     } catch (IOException e) {
       throw new RuntimeException("Unable to create dependency file", e);
     }
   }
 
   private void finalizeProgram(Program javaProgram) {
-    new BuiltInClosureTypeCleaner().accept(javaProgram);
+    new BuiltInClosureTypeCleaner().applyTo(javaProgram);
 
     VisitorHelper.finalizeJavaProgram(
         javaProgram,

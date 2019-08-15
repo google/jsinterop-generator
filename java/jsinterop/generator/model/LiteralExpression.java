@@ -17,9 +17,12 @@
 package jsinterop.generator.model;
 
 import com.google.errorprone.annotations.Immutable;
+import com.google.j2cl.ast.annotations.Visitable;
+import com.google.j2cl.ast.processors.common.Processor;
 
 /** Represents a literal. */
 @Immutable
+@Visitable
 public class LiteralExpression implements Expression {
   public static final LiteralExpression ZERO = new LiteralExpression("0");
   public static final LiteralExpression FALSE = new LiteralExpression("false");
@@ -37,7 +40,7 @@ public class LiteralExpression implements Expression {
   }
 
   @Override
-  public Expression doVisit(ModelVisitor visitor) {
-    return this;
+  public Expression accept(Processor processor) {
+    return Visitor_LiteralExpression.visit(processor, this);
   }
 }
