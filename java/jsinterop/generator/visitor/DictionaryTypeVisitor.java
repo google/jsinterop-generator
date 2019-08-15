@@ -17,14 +17,15 @@
 package jsinterop.generator.visitor;
 
 import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
+import static jsinterop.generator.model.PredefinedTypeReference.JS;
+import static jsinterop.generator.model.PredefinedTypeReference.JS_PROPERTY_MAP;
+import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
-import com.google.common.collect.ImmutableList;
 import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.MethodInvocation;
-import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.ReturnStatement;
 import jsinterop.generator.model.Type;
@@ -60,16 +61,16 @@ public class DictionaryTypeVisitor extends AbstractModelVisitor {
       // body statement: return Js.uncheckedCast(JsPropertyMap.of());
       factory.setBody(
           new ReturnStatement(
-              new MethodInvocation(
-                  new TypeQualifier(PredefinedTypeReference.JS),
-                  "uncheckedCast",
-                  ImmutableList.of(PredefinedTypeReference.OBJECT),
-                  ImmutableList.of(
-                      new MethodInvocation(
-                          new TypeQualifier(PredefinedTypeReference.JS_PROPERTY_MAP),
-                          "of",
-                          ImmutableList.of(),
-                          ImmutableList.of())))));
+              MethodInvocation.builder()
+                  .setInvocationTarget(new TypeQualifier(JS))
+                  .setMethodName("uncheckedCast")
+                  .setArgumentTypes(OBJECT)
+                  .setArguments(
+                      MethodInvocation.builder()
+                          .setInvocationTarget(new TypeQualifier(JS_PROPERTY_MAP))
+                          .setMethodName("of")
+                          .build())
+                  .build()));
 
       type.addMethod(factory);
     }

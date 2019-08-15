@@ -30,7 +30,6 @@ import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE_OBJECT;
 import static jsinterop.generator.model.PredefinedTypeReference.INT;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Streams;
 import java.util.ArrayDeque;
@@ -283,7 +282,6 @@ public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
     return castMethod;
   }
 
-
   /**
    * Create a default static method that allow to cast any object to the helper type:
    *
@@ -341,10 +339,11 @@ public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
       castMethodName = "cast";
     }
     return new ReturnStatement(
-        new MethodInvocation(
-            new TypeQualifier(PredefinedTypeReference.JS),
-            castMethodName,
-            ImmutableList.of(OBJECT),
-            ImmutableList.of(new LiteralExpression(argumentName))));
+        MethodInvocation.builder()
+            .setInvocationTarget(new TypeQualifier(PredefinedTypeReference.JS))
+            .setMethodName(castMethodName)
+            .setArgumentTypes(OBJECT)
+            .setArguments(new LiteralExpression(argumentName))
+            .build());
   }
 }

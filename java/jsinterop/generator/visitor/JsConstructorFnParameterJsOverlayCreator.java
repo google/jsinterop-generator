@@ -22,7 +22,6 @@ import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 import static jsinterop.generator.model.PredefinedTypeReference.CLASS;
 import static jsinterop.generator.model.PredefinedTypeReference.JS_CONSTRUCTOR_FN;
 
-import com.google.common.collect.ImmutableList;
 import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.Expression;
 import jsinterop.generator.model.LiteralExpression;
@@ -87,11 +86,12 @@ public class JsConstructorFnParameterJsOverlayCreator extends AbstractJsOverlayM
 
     // will generate: Js.asConstructorFn(parameter)
     // We need to add the local type argument to ensure to call the original method.
-    return new MethodInvocation(
-        new TypeQualifier(PredefinedTypeReference.JS),
-        "asConstructorFn",
-        ImmutableList.of(overloadParameter.getType()),
-        ImmutableList.of(new LiteralExpression(overloadParameter.getName())));
+    return MethodInvocation.builder()
+        .setInvocationTarget(new TypeQualifier(PredefinedTypeReference.JS))
+        .setMethodName("asConstructorFn")
+        .setArgumentTypes(overloadParameter.getType())
+        .setArguments(new LiteralExpression(overloadParameter.getName()))
+        .build();
   }
 
   private static boolean isDirectJsConstructorReference(TypeReference typeReference) {

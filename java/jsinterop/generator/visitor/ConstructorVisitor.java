@@ -106,7 +106,11 @@ public class ConstructorVisitor extends AbstractModelVisitor {
     List<Expression> parameterValues =
         parameterTypes.stream().map(TypeReference::getDefaultValue).collect(toList());
 
-    return new MethodInvocation(null, "super", parameterTypes, parameterValues);
+    return MethodInvocation.builder()
+        .setMethodName("super")
+        .setArgumentTypes(parameterTypes)
+        .setArguments(parameterValues)
+        .build();
   }
 
   private static TypeReference resolveTypeVariableFromSuperType(

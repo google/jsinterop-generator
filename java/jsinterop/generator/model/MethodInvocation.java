@@ -16,6 +16,8 @@
  */
 package jsinterop.generator.model;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.j2cl.ast.annotations.Visitable;
 import com.google.j2cl.ast.processors.common.Processor;
 import java.util.ArrayList;
@@ -31,15 +33,7 @@ public class MethodInvocation implements Expression {
   @Visitable List<TypeReference> localTypeArguments;
   private final String methodName;
 
-  public MethodInvocation(
-      Expression invocationTarget,
-      String methodName,
-      List<TypeReference> argumentTypes,
-      List<Expression> arguments) {
-    this(invocationTarget, methodName, argumentTypes, arguments, new ArrayList<>());
-  }
-
-  public MethodInvocation(
+  private MethodInvocation(
       Expression invocationTarget,
       String methodName,
       List<TypeReference> argumentTypes,
@@ -75,5 +69,65 @@ public class MethodInvocation implements Expression {
   @Override
   public Expression accept(Processor processor) {
     return Visitor_MethodInvocation.visit(processor, this);
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  /** A Builder for MethodInvocation. */
+  public static class Builder {
+    private Expression invocationTarget;
+    private List<TypeReference> argumentTypes = ImmutableList.of();
+    private List<Expression> arguments = ImmutableList.of();
+    private List<TypeReference> localTypeArguments = ImmutableList.of();
+    private String methodName;
+
+    private Builder() {}
+
+    public Builder setInvocationTarget(Expression invocationTarget) {
+      this.invocationTarget = invocationTarget;
+      return this;
+    }
+
+    public Builder setArgumentTypes(TypeReference... argumentTypes) {
+      this.argumentTypes = Lists.newArrayList(argumentTypes);
+      return this;
+    }
+
+    public Builder setArgumentTypes(List<TypeReference> argumentTypes) {
+      this.argumentTypes = new ArrayList<>(argumentTypes);
+      return this;
+    }
+
+    public Builder setArguments(Expression... arguments) {
+      this.arguments = Lists.newArrayList(arguments);
+      return this;
+    }
+
+    public Builder setArguments(List<Expression> arguments) {
+      this.arguments = new ArrayList<>(arguments);
+      return this;
+    }
+
+    public Builder setLocalTypeArguments(TypeReference... localTypeArguments) {
+      this.localTypeArguments = Lists.newArrayList(localTypeArguments);
+      return this;
+    }
+
+    public Builder setLocalTypeArguments(List<TypeReference> localTypeArguments) {
+      this.localTypeArguments = new ArrayList<>(localTypeArguments);
+      return this;
+    }
+
+    public Builder setMethodName(String methodName) {
+      this.methodName = methodName;
+      return this;
+    }
+
+    public MethodInvocation build() {
+      return new MethodInvocation(
+          invocationTarget, methodName, argumentTypes, arguments, localTypeArguments);
+    }
   }
 }

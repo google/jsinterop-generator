@@ -33,8 +33,6 @@ import static jsinterop.generator.model.PredefinedTypeReference.JS;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 import static jsinterop.generator.model.PredefinedTypeReference.VOID;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import jsinterop.generator.model.Annotation;
@@ -157,11 +155,13 @@ public class ModelHelper {
     castMethod.addParameter(new Parameter("o", new JavaTypeReference(typeToExtend), false, false));
     castMethod.setBody(
         new ReturnStatement(
-            new MethodInvocation(
-                new TypeQualifier(JS),
-                "cast",
-                ImmutableList.of(OBJECT),
-                ImmutableList.of(new LiteralExpression("o")))));
+            MethodInvocation.builder()
+                .setInvocationTarget(new TypeQualifier(JS))
+                .setMethodName("cast")
+                .setArgumentTypes(OBJECT)
+                .setArguments(new LiteralExpression("o"))
+                .build()));
+
     extendingType.addMethod(castMethod);
 
     return extendingType;
@@ -259,7 +259,11 @@ public class ModelHelper {
         original.getParameters().stream().map(Parameter::getType).collect(toList());
 
     Expression delegation =
-        new MethodInvocation(null, original.getName(), originalParameterTypes, arguments);
+        MethodInvocation.builder()
+            .setMethodName(original.getName())
+            .setArgumentTypes(originalParameterTypes)
+            .setArguments(arguments)
+            .build();
 
     overload.setBody(
         overload.getReturnType() == VOID
@@ -271,12 +275,13 @@ public class ModelHelper {
       Parameter originalParameter, Parameter overloadParameter) {
     // will generate: Js.<$originalParameter.type>uncheckedCast($overloadParameter.name)
     // We need to add the local type argument to ensure to call the original method.
-    return new MethodInvocation(
-        new TypeQualifier(PredefinedTypeReference.JS),
-        "uncheckedCast",
-        Lists.newArrayList(OBJECT),
-        Lists.newArrayList(new LiteralExpression(overloadParameter.getName())),
-        Lists.newArrayList(originalParameter.getType()));
+    return MethodInvocation.builder()
+        .setInvocationTarget(new TypeQualifier(PredefinedTypeReference.JS))
+        .setMethodName("uncheckedCast")
+        .setArgumentTypes(OBJECT)
+        .setArguments(new LiteralExpression(overloadParameter.getName()))
+        .setLocalTypeArguments(originalParameter.getType())
+        .build();
   }
 
   private ModelHelper() {}
