@@ -16,24 +16,35 @@
 package jsinterop.generator.closure;
 
 import static com.google.common.base.Preconditions.checkState;
+import static jsinterop.generator.model.PredefinedTypeReference.ARRAY_STAMPER;
 import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE_OBJECT;
+import static jsinterop.generator.model.PredefinedTypeReference.JS;
 import static jsinterop.generator.model.PredefinedTypeReference.JS_PROPERTY_MAP;
 import static jsinterop.generator.model.PredefinedTypeReference.STRING;
 
+import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import jsinterop.generator.model.AbstractRewriter;
 import jsinterop.generator.model.AbstractVisitor;
+import jsinterop.generator.model.Annotation;
+import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.ArrayTypeReference;
+import jsinterop.generator.model.JavaTypeReference;
+import jsinterop.generator.model.LiteralExpression;
 import jsinterop.generator.model.Method;
+import jsinterop.generator.model.MethodInvocation;
 import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.Program;
+import jsinterop.generator.model.ReturnStatement;
 import jsinterop.generator.model.Type;
+import jsinterop.generator.model.TypeQualifier;
 import jsinterop.generator.model.TypeReference;
+import jsinterop.generator.model.TypeVariableReference;
 import jsinterop.generator.model.UnionTypeReference;
 import jsinterop.generator.visitor.AbstractModelVisitor;
 
@@ -47,6 +58,7 @@ import jsinterop.generator.visitor.AbstractModelVisitor;
  *       type for the keys and the type for the values) but the first one can only be number or
  *       string and is abstracted away in the JsPropertyMap.
  *   <li>Replaces references to Object that are parameterized by references to JsPropertyMap.
+ *   <li>Add helper methods on JsArray in order to ease the conversion fron and to java array.
  * </ul>
  */
 public class BuiltInClosureTypeCleaner extends AbstractModelVisitor {
@@ -63,6 +75,7 @@ public class BuiltInClosureTypeCleaner extends AbstractModelVisitor {
             String nativeFqn = type.getNativeFqn();
             if ("Array".equals(nativeFqn)) {
               cleanArrayType(type);
+              addJavaArrayHelperMethods(type);
 
             } else if (OBJECT.equals(nativeFqn)) {
               // JsCompiler uses a hardcoded definition for the Object type, one with two type
@@ -107,6 +120,56 @@ public class BuiltInClosureTypeCleaner extends AbstractModelVisitor {
             return parametrizedTypeReference;
           }
         });
+  }
+
+  private static void addJavaArrayHelperMethods(Type jsArrayType) {
+    checkState(jsArrayType.getTypeParameters().size() == 1);
+    TypeReference arrayTypeParameter = jsArrayType.getTypeParameters().stream().findFirst().get();
+
+    // Add {@code T[] asArray(T[] reference)} method to convert correctly JsArray to java array.
+    // This method stamps correctly the java array.
+    Method asArray = new Method();
+    asArray.addAnnotation(Annotation.builder().type(AnnotationType.JS_OVERLAY).build());
+    asArray.setFinal(true);
+    asArray.setName("asArray");
+    asArray.setReturnType(new ArrayTypeReference(arrayTypeParameter));
+    asArray.setParameters(
+        ImmutableList.of(
+            new Parameter("reference", new ArrayTypeReference(arrayTypeParameter), false, false)));
+    asArray.setBody(
+        new ReturnStatement(
+            MethodInvocation.builder()
+                .setInvocationTarget(new TypeQualifier(ARRAY_STAMPER))
+                .setMethodName("stampJavaTypeInfo")
+                .setArgumentTypes(
+                    PredefinedTypeReference.OBJECT, new ArrayTypeReference(arrayTypeParameter))
+                .setArguments(new LiteralExpression("this"), new LiteralExpression("reference"))
+                .build()));
+    jsArrayType.addMethod(asArray);
+
+    // Add {@code static JsArray<T> from(T[])} method to convert java array to JsArray.
+    TypeVariableReference methodTypeVariable = new TypeVariableReference("T", null);
+    Method from = new Method();
+    from.addAnnotation(Annotation.builder().type(AnnotationType.JS_OVERLAY).build());
+    from.setStatic(true);
+    from.setFinal(true);
+    from.setTypeParameters(ImmutableList.of(methodTypeVariable));
+    from.setName("fromJavaArray");
+    from.setReturnType(
+        new ParametrizedTypeReference(
+            new JavaTypeReference(jsArrayType), ImmutableList.of(methodTypeVariable)));
+    from.setParameters(
+        ImmutableList.of(
+            new Parameter("array", new ArrayTypeReference(methodTypeVariable), false, false)));
+    from.setBody(
+        new ReturnStatement(
+            MethodInvocation.builder()
+                .setInvocationTarget(new TypeQualifier(JS))
+                .setMethodName("uncheckedCast")
+                .setArgumentTypes(PredefinedTypeReference.OBJECT)
+                .setArguments(new LiteralExpression("array"))
+                .build()));
+    jsArrayType.addMethod(from);
   }
 
   private static void cleanArrayType(Type arrayType) {

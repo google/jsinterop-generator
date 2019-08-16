@@ -131,7 +131,7 @@ public class InterfaceWithStructuralTypeImpl<V, U> implements InterfaceWithStruc
   public static InterfaceWithStructuralTypeImpl.BarFn bar_STATIC;
 
   public static native InterfaceWithStructuralTypeImpl.FooReturnType foo(
-      InterfaceWithStructuralTypeImpl.FooFooType[][] foo);
+      InterfaceWithStructuralTypeImpl.FooFooType foo);
 
   public InterfaceWithStructuralType.BarFn bar;
 
@@ -204,7 +204,7 @@ public class InterfaceWithStructuralTypeImpl<V, U> implements InterfaceWithStruc
       InterfaceWithStructuralType.BazBaz2Type<V, U> baz2);
 
   public native InterfaceWithStructuralType.FooReturnType foo(
-      InterfaceWithStructuralType.FooFooType[][] foo);
+      InterfaceWithStructuralType.FooFooType foo);
 
   @JsProperty
   public native InterfaceWithStructuralType.BarFn getBar();

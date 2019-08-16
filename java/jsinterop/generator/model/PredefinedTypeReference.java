@@ -72,7 +72,8 @@ public enum PredefinedTypeReference implements TypeReference {
       return false;
     }
   },
-  PROMISE("elemental2.promise.Promise", "Promise");
+  PROMISE("elemental2.promise.Promise", "Promise"),
+  ARRAY_STAMPER("javaemul.internal.ArrayStamper", null);
 
   private static final Map<String, PredefinedTypeReference> nativePredefinedTypesByNativeFqn =
       Arrays.stream(values())

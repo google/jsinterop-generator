@@ -168,7 +168,7 @@ public interface InterfaceWithStructuralType<U, V> {
       InterfaceWithStructuralType.BazBazType<U, V> baz,
       InterfaceWithStructuralType.BazBaz2Type<U, V> baz2);
 
-  InterfaceWithStructuralType.FooReturnType foo(InterfaceWithStructuralType.FooFooType[][] foo);
+  InterfaceWithStructuralType.FooReturnType foo(InterfaceWithStructuralType.FooFooType foo);
 
   @JsProperty
   InterfaceWithStructuralType.BarFn getBar();

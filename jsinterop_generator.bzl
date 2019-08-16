@@ -236,6 +236,7 @@ def jsinterop_generator(
         srcs = [],
         exports = [],
         deps = [],
+        gwt_java_deps = [],
         extension_type_prefix = None,
         global_scope_class_name = None,
         name_mapping_files = [],
@@ -266,6 +267,8 @@ def jsinterop_generator(
     deps_java = [_absolute_label(dep) for dep in deps]
     deps_j2cl = ["%s-j2cl" % dep for dep in deps_java]
     deps_js_interop_generator = [JS_INTEROP_RULE_NAME_PATTERN % dep for dep in deps_java]
+
+    deps_java += [_absolute_label(gwt_java_dep) for gwt_java_dep in gwt_java_deps]
 
     jsinterop_generator_rule_name = JS_INTEROP_RULE_NAME_PATTERN % name
 

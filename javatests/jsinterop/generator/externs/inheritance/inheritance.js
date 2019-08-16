@@ -53,7 +53,6 @@ Parent2Interface.prototype.parent2InterfaceMethod = function() {};
 
 /**
  * @constructor
- * @extends {Array<number>}
  * @param {string} s
  * @param {boolean} b
  * @param {number} n
@@ -150,7 +149,7 @@ function InterfaceWithStructuralType() {}
 InterfaceWithStructuralType.prototype.bar;
 
 /**
- * @param {Array<Array<{foo: string}>>}  foo
+ * @param {{foo: string}}  foo
  * @return {{bar: number}}
  */
 InterfaceWithStructuralType.prototype.foo = function(foo) {};
@@ -197,7 +196,7 @@ InterfaceWithStructuralTypeImpl.bar;
 // Test that a static method with same signature than instance method,
 // don't reuse the synthetic types of the instance method.
 /**
- * @param {Array<Array<{foo: string}>>}  foo
+ * @param {{foo: string}}  foo
  * @return {{bar: number}}
  */
 InterfaceWithStructuralTypeImpl.foo = function(foo) {};
@@ -210,9 +209,9 @@ InterfaceWithStructuralTypeImpl.foo = function(foo) {};
 InterfaceWithStructuralTypeImpl.prototype.bar;
 
 /**
-* @param {Array<Array<{foo: string}>>}  foo
-* @return {{bar: number}}
-*/
+ * @param {{foo: string}}  foo
+ * @return {{bar: number}}
+ */
 InterfaceWithStructuralTypeImpl.prototype.foo = function(foo) {};
 
 /**
