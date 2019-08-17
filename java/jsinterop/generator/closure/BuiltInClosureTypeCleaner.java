@@ -52,7 +52,6 @@ import jsinterop.generator.visitor.AbstractModelVisitor;
  * Do some cleaning tasks around built-in closure types:
  *
  * <ul>
- *   <li>Removes the extra type parameter from Array and Object type definitions
  *   <li>Removes the extra type parameter from JsPropertyMap references. JsPropertyMap is the Java
  *       abstraction in JsInterop-base for IObject. IObject defines two templates (representing the
  *       type for the keys and the type for the values) but the first one can only be number or
@@ -173,32 +172,23 @@ public class BuiltInClosureTypeCleaner extends AbstractModelVisitor {
   }
 
   private static void cleanArrayType(Type arrayType) {
-    // 1. For some obscure reason, JsCompiler uses its own built-in definition of Array Type. This
-    // definition defines two type parameters: the first one is the IObject value name and
-    // the second one is the value type : Array<IObject#Value, T>
-    // Clean that up by removing the first type parameter.
     Collection<TypeReference> typeParameters = arrayType.getTypeParameters();
+    checkState(typeParameters.size() == 1, "Unexpected array definitions from JsCompiler");
+    TypeReference arrayValueTypeParameter = typeParameters.iterator().next();
 
-    checkState(typeParameters.size() == 2, "Unexpected array definitions from JsCompiler");
-    Iterator<TypeReference> typeParameterIterator = typeParameters.iterator();
-    TypeReference firstTypeParameter = typeParameterIterator.next();
-    TypeReference arrayValueTypeParameter = typeParameterIterator.next();
-    checkState(IOBJECT_VALUE_NAME.equals(firstTypeParameter.getTypeName()));
-    typeParameters.remove(firstTypeParameter);
-
-    // 2. Improve the typing of the Array constructor. Array constructor should be parameterized by
+    // 1. Improve the typing of the Array constructor. Array constructor should be parameterized by
     // T (not Object).
     checkState(arrayType.getConstructors().size() == 1);
     Method arrayConstructor = arrayType.getConstructors().get(0);
     improveArrayMethodTyping(arrayConstructor, arrayValueTypeParameter);
 
-    // 3. Improve the typing of Array.unshift. It must accept items of type T (not Object).
+    // 2. Improve the typing of Array.unshift. It must accept items of type T (not Object).
     Optional<Method> unshiftMethod =
         arrayType.getMethods().stream().filter(m -> "unshift".equals(m.getName())).findAny();
     checkState(unshiftMethod.isPresent());
     improveArrayMethodTyping(unshiftMethod.get(), arrayValueTypeParameter);
 
-    // 4. Improve the typing of Array.concat. It must accept items of type T (not Object) and
+    // 3. Improve the typing of Array.concat. It must accept items of type T (not Object) and
     // return an array of type T[] (not Object[]).
     Optional<Method> concatMethodOptional =
         arrayType.getMethods().stream().filter(m -> "concat".equals(m.getName())).findAny();

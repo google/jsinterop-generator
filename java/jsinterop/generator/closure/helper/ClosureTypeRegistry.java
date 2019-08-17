@@ -265,10 +265,8 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
       if (templateKeys.isEmpty()) {
         return typeReference;
       } else if (jsType.isArrayType()) {
-        // JsCompiler uses its own built-in definition of Array Type using two type parameters:
-        // Array<IObject#Value, T>
-        checkState(templateKeys.size() == 2);
-        return new ArrayTypeReference(resolveTypeReference(templateKeys.get(1)));
+        checkState(templateKeys.size() == 1, templateKeys);
+        return new ArrayTypeReference(resolveTypeReference(templateKeys.get(0)));
       } else {
         return createParametrizedTypeReference(jsType, templateKeys);
       }
