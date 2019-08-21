@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.Field;
@@ -44,7 +45,7 @@ import jsinterop.generator.model.TypeReference;
  * methods, this visitor take care of adding method implementations on a class that implements the
  * interface.
  */
-public class FieldsConverter extends AbstractModelVisitor {
+public class FieldsConverter implements ModelVisitor {
   private final boolean useBeanConvention;
 
   FieldsConverter(boolean useBeanConvention) {
@@ -93,7 +94,7 @@ public class FieldsConverter extends AbstractModelVisitor {
               // been replaced with getters/setters, classes have to provide an implementation for
               // those.
 
-              List<Type> parentInterfaces = getParentInterfaces(type, true);
+              List<Type> parentInterfaces = ModelHelper.getParentInterfaces(type, true);
               // ensure implemented interfaces have been visited
               parentInterfaces.forEach(i -> i.accept(this));
 

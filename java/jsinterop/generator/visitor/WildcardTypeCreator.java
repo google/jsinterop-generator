@@ -100,7 +100,7 @@ import jsinterop.generator.model.WildcardTypeReference;
  *
  * <p>Note that we don't support type variable in nested type parameter like List<List<T>>
  */
-public class WildcardTypeCreator extends AbstractModelVisitor {
+public class WildcardTypeCreator implements ModelVisitor {
   private enum WildcardType {
     SUPER,
     EXTENDS,

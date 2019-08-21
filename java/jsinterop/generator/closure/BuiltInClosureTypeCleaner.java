@@ -46,7 +46,7 @@ import jsinterop.generator.model.TypeQualifier;
 import jsinterop.generator.model.TypeReference;
 import jsinterop.generator.model.TypeVariableReference;
 import jsinterop.generator.model.UnionTypeReference;
-import jsinterop.generator.visitor.AbstractModelVisitor;
+import jsinterop.generator.visitor.ModelVisitor;
 
 /**
  * Do some cleaning tasks around built-in closure types:
@@ -60,7 +60,7 @@ import jsinterop.generator.visitor.AbstractModelVisitor;
  *   <li>Add helper methods on JsArray in order to ease the conversion fron and to java array.
  * </ul>
  */
-public class BuiltInClosureTypeCleaner extends AbstractModelVisitor {
+public class BuiltInClosureTypeCleaner implements ModelVisitor {
   private static final String OBJECT = "Object";
   private static final String IOBJECT_KEY_NAME = "IObject#KEY1";
   private static final String IOBJECT_VALUE_NAME = "IObject#VALUE";

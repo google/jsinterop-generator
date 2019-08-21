@@ -63,7 +63,7 @@ import jsinterop.generator.model.UnionTypeReference;
  * This visitor will create an helper type for all union types references and replace these
  * references with references to these helper types.
  */
-public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
+public class UnionTypeHelperTypeCreator implements ModelVisitor {
   private final IdentityHashMap<UnionTypeReference, Type> typeHelperByUnionTypeReference =
       new IdentityHashMap<>();
 

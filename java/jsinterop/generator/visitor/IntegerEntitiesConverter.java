@@ -29,7 +29,7 @@ import jsinterop.generator.model.Program;
 import jsinterop.generator.model.TypeReference;
 
 /** Handles number javascript entities that need to be converted to int instead of double. */
-public class IntegerEntitiesConverter extends AbstractModelVisitor {
+public class IntegerEntitiesConverter implements ModelVisitor {
   private final Set<String> integerEntities;
   private final Set<String> unusedIntegerEntities;
   private final Problems problems;

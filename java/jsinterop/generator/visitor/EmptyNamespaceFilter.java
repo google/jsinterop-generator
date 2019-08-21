@@ -24,7 +24,7 @@ import jsinterop.generator.model.Type;
  * Deletes Java class from our model that have been generated from a namespace that don't contain
  * any functions nor variables.
  */
-public class EmptyNamespaceFilter extends AbstractModelVisitor {
+public class EmptyNamespaceFilter implements ModelVisitor {
   @Override
   public void applyTo(Program program) {
     program.accept(

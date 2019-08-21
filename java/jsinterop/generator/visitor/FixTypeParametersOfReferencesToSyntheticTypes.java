@@ -32,7 +32,7 @@ import jsinterop.generator.model.TypeReference;
  * When we create a synthetic type that contains type parameters, we have to parametrize all
  * references using this type.
  */
-public class FixTypeParametersOfReferencesToSyntheticTypes extends AbstractModelVisitor {
+public class FixTypeParametersOfReferencesToSyntheticTypes implements ModelVisitor {
   private boolean syntheticTypeChanged;
 
   boolean isSyntheticTypeChanged() {

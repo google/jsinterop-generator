@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Program;
@@ -41,7 +42,7 @@ import jsinterop.generator.model.Type;
  * <p>TODO(b/29986321): we should consider adding the @Override annotation methods once and test if
  * the annotation is present on the methods before to process it.
  */
-public abstract class AbstractJsOverlayMethodCreator extends AbstractModelVisitor {
+public abstract class AbstractJsOverlayMethodCreator implements ModelVisitor {
   private final Map<Type, Set<String>> parentInterfaceMethodsByType = new HashMap<>();
 
   @Override
@@ -77,8 +78,7 @@ public abstract class AbstractJsOverlayMethodCreator extends AbstractModelVisito
   }
 
   private static Set<String> getParentInterfacesMethods(Type type) {
-    return getParentInterfaces(type, true)
-        .stream()
+    return ModelHelper.getParentInterfaces(type, true).stream()
         .flatMap(t -> t.getMethods().stream())
         .map(AbstractJsOverlayMethodCreator::getOverrideKey)
         .collect(toSet());

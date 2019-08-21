@@ -66,7 +66,7 @@ import jsinterop.generator.model.UnionTypeReference;
  *   }
  * </pre>
  */
-public class FixTypeParametersOfSyntheticTypes extends AbstractModelVisitor {
+public class FixTypeParametersOfSyntheticTypes implements ModelVisitor {
 
   @Override
   public void applyTo(Program program) {

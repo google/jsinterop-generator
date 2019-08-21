@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.AccessModifier;
 import jsinterop.generator.model.AnnotationType;
@@ -59,7 +60,7 @@ import jsinterop.generator.model.TypeVariableReference;
  * <p>Remove single public default constructor since it doesn't need to be explicit. If we need it
  * for extension purpose, it will be recreated in {@link ConstructorVisitor}
  */
-public class MembersClassCleaner extends AbstractModelVisitor {
+public class MembersClassCleaner implements ModelVisitor {
   private interface EntityStringifier<T extends Entity> {
     String toString(T entity);
   }
@@ -165,7 +166,8 @@ public class MembersClassCleaner extends AbstractModelVisitor {
                 AnnotationType annotationType =
                     entity.getKind() == METHOD ? JS_METHOD : JS_PROPERTY;
 
-                addAnnotationNameAttributeIfNotEmpty(entity, name, annotationType, true);
+                ModelHelper.addAnnotationNameAttributeIfNotEmpty(
+                    entity, name, annotationType, true);
               }
             }
           }

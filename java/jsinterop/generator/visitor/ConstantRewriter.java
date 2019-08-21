@@ -34,7 +34,7 @@ import jsinterop.generator.model.Type;
  * constants on interfaces (as they can only have final fields) and also we can keep constants in
  * class final to catch usage errors.
  */
-public class ConstantRewriter extends AbstractModelVisitor {
+public class ConstantRewriter implements ModelVisitor {
   @Override
   public void applyTo(Program program) {
     program.accept(

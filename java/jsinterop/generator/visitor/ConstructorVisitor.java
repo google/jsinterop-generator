@@ -40,7 +40,7 @@ import jsinterop.generator.model.TypeVariableReference;
  * Ensure that if the parent class doesn't have an available empty constructor, each constructors of
  * the child class implements a fake call to one constructor of the parent class.
  */
-public class ConstructorVisitor extends AbstractModelVisitor {
+public class ConstructorVisitor implements ModelVisitor {
 
   @Override
   public void applyTo(Program program) {

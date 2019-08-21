@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.Field;
@@ -74,7 +75,7 @@ import jsinterop.generator.model.TypeReference;
  *
  * <p>This visitor will try to detect that case and collect the duplicated types.
  */
-public class DuplicatedTypesUnifier extends AbstractModelVisitor {
+public class DuplicatedTypesUnifier implements ModelVisitor {
   private static final String TYPE_DELIMITER_PATTERN = "([{(,|<})>]|\\b)";
 
   private static String createTypeKey(Type type, String keyPrefix) {
@@ -149,7 +150,7 @@ public class DuplicatedTypesUnifier extends AbstractModelVisitor {
     }
 
     private Map<String, Type> getParentSyntheticTypes(Type type) {
-      List<Type> parentInterfaces = AbstractModelVisitor.getParentInterfaces(type);
+      List<Type> parentInterfaces = ModelHelper.getParentInterfaces(type);
       // visit implemented/extended interfaces first
       parentInterfaces.forEach(t -> t.accept(this));
 

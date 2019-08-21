@@ -29,7 +29,7 @@ import jsinterop.generator.model.TypeReference;
  * <p>This visitor will visit all type references and reuse the type defined on parent interfaces if
  * it found a duplicated type. It will remove the duplicated types from the java program.
  */
-public class FixReferencesToDuplicatedTypes extends AbstractModelVisitor {
+public class FixReferencesToDuplicatedTypes implements ModelVisitor {
 
   private final Map<Type, Type> typesToReplace;
 

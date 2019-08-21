@@ -40,7 +40,7 @@ import jsinterop.generator.model.Type;
  *
  * <p>This visitor is in charge to remove the clutz namespace if present.
  */
-public class NamespaceAttributeRewriter extends AbstractModelVisitor {
+public class NamespaceAttributeRewriter implements ModelVisitor {
 
   @Override
   public void applyTo(Program program) {

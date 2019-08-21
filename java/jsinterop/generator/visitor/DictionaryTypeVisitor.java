@@ -37,7 +37,7 @@ import jsinterop.generator.model.TypeQualifier;
  * <p>When we reach this kind of type, we add a static factory in order to ease the instantiation of
  * the type and avoid that end-users need to provide an implementation.
  */
-public class DictionaryTypeVisitor extends AbstractModelVisitor {
+public class DictionaryTypeVisitor implements ModelVisitor {
   @Override
   public void applyTo(Program program) {
     program.accept(

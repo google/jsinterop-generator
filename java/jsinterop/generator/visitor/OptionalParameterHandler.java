@@ -37,7 +37,7 @@ import jsinterop.generator.model.Type;
  *   void foo(int param1, String param2, int optionalParam1, String optionalParam2)
  * </pre>
  */
-public class OptionalParameterHandler extends AbstractModelVisitor {
+public class OptionalParameterHandler implements ModelVisitor {
 
   @Override
   public void applyTo(Program program) {

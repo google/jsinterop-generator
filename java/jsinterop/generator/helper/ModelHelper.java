@@ -16,6 +16,7 @@
 package jsinterop.generator.helper;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.stream.Collectors.toList;
 import static jsinterop.generator.helper.GeneratorUtils.createJavaPackage;
 import static jsinterop.generator.helper.GeneratorUtils.extractName;
@@ -33,10 +34,13 @@ import static jsinterop.generator.model.PredefinedTypeReference.JS;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 import static jsinterop.generator.model.PredefinedTypeReference.VOID;
 
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.AnnotationType;
+import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.EntityKind;
 import jsinterop.generator.model.Expression;
 import jsinterop.generator.model.ExpressionStatement;
@@ -185,6 +189,41 @@ public class ModelHelper {
 
   public static boolean isGlobalType(Type type) {
     return GLOBAL_NAMESPACE.equals(type.getNativeNamespace());
+  }
+
+  public static void addAnnotationNameAttributeIfNotEmpty(
+      Entity entity, String originalName, AnnotationType annotationType, boolean createAnnotation) {
+    Annotation annotation = entity.getAnnotation(annotationType);
+
+    if (annotation != null && isNullOrEmpty(annotation.getNameAttribute())) {
+      entity.removeAnnotation(annotationType);
+      entity.addAnnotation(annotation.withNameAttribute(originalName));
+    } else if (annotation == null && createAnnotation) {
+      entity.addAnnotation(
+          Annotation.builder().type(annotationType).nameAttribute(originalName).build());
+    }
+  }
+
+  public static List<Type> getParentInterfaces(Type type) {
+    return getParentInterfaces(type, false);
+  }
+
+  public static List<Type> getParentInterfaces(Type type, boolean transitive) {
+    List<TypeReference> parentInterfaceReferences =
+        type.isInterface() ? type.getExtendedTypes() : type.getImplementedTypes();
+
+    return parentInterfaceReferences.stream()
+        .map(TypeReference::getTypeDeclaration)
+        .filter(Objects::nonNull)
+        .flatMap(
+            t -> {
+              List<Type> types = Lists.newArrayList(t);
+              if (transitive) {
+                types.addAll(getParentInterfaces(t, true));
+              }
+              return types.stream();
+            })
+        .collect(toList());
   }
 
   /**

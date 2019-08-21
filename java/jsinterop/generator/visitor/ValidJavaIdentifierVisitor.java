@@ -30,6 +30,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.List;
+import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.AbstractRewriter;
 import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.Entity;
@@ -40,7 +41,7 @@ import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 
 /** Ensure that all our java identifier are valid in Java. */
-public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
+public class ValidJavaIdentifierVisitor implements ModelVisitor {
   private static final ImmutableSet<String> JAVA_RESERVERD_WORDS =
       ImmutableSet.copyOf(
           Splitter.on(' ')
@@ -134,7 +135,8 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
               if (!validName.equals(originalName)) {
                 type.setName(validName);
 
-                addAnnotationNameAttributeIfNotEmpty(type, originalName, JS_TYPE, false);
+                ModelHelper.addAnnotationNameAttributeIfNotEmpty(
+                    type, originalName, JS_TYPE, false);
               }
             }
             return type;
@@ -168,7 +170,8 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
               String methodName = method.getName();
               method.setName(methodName + "_");
 
-              addAnnotationNameAttributeIfNotEmpty(method, methodName, jsInteropAnnotation, true);
+              ModelHelper.addAnnotationNameAttributeIfNotEmpty(
+                  method, methodName, jsInteropAnnotation, true);
             }
 
             return method;
@@ -191,7 +194,7 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
     if (!validName.equals(originalName)) {
       entity.setName(validName);
 
-      addAnnotationNameAttributeIfNotEmpty(
+      ModelHelper.addAnnotationNameAttributeIfNotEmpty(
           entity, originalName, jsInteropAnnotationType, createAnnotation);
     }
   }

@@ -32,7 +32,7 @@ import jsinterop.generator.model.Program;
  * method overloading for each optional parameters. This visitor removes the unneeded prefix <code>
  * opt_</code>.
  */
-public class ClosureOptionalParameterCleaner extends AbstractModelVisitor {
+public class ClosureOptionalParameterCleaner implements ModelVisitor {
 
   @Override
   public void applyTo(Program program) {
