@@ -17,7 +17,6 @@
 
 package jsinterop.generator.visitor;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static jsinterop.generator.model.AnnotationType.JS_METHOD;
 import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
 import static jsinterop.generator.model.AnnotationType.JS_PROPERTY;
@@ -30,7 +29,6 @@ import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import java.util.List;
 import jsinterop.generator.model.AbstractRewriter;
 import jsinterop.generator.model.AnnotationType;
@@ -71,30 +69,25 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
   // to avoid confusion and potential compile errors due to override of final method.
   private static final ImmutableSet<Method> OBJECT_METHODS_TO_RENAME =
       ImmutableSet.<Method>builder()
-          .addAll(methods("getClass", Lists.newArrayList()))
-          .addAll(methods("hashCode", Lists.newArrayList()))
-          .addAll(
-              methods(
-                  "equals", newArrayList(Parameter.builder().setName("o").setType(OBJECT).build())))
-          .addAll(methods("toString", Lists.newArrayList()))
-          .addAll(methods("clone", Lists.newArrayList()))
-          .addAll(methods("notify", Lists.newArrayList()))
-          .addAll(methods("notifyAll", Lists.newArrayList()))
-          .addAll(methods("wait", Lists.newArrayList()))
-          .addAll(
-              methods(
-                  "wait",
-                  newArrayList(Parameter.builder().setName("timeout").setType(LONG).build())))
+          .addAll(methods("getClass"))
+          .addAll(methods("hashCode"))
+          .addAll(methods("equals", Parameter.builder().setName("o").setType(OBJECT).build()))
+          .addAll(methods("toString"))
+          .addAll(methods("clone"))
+          .addAll(methods("notify"))
+          .addAll(methods("notifyAll"))
+          .addAll(methods("wait"))
+          .addAll(methods("wait", Parameter.builder().setName("timeout").setType(LONG).build()))
           .addAll(
               methods(
                   "wait",
-                  newArrayList(
-                      Parameter.builder().setName("timeout").setType(LONG).build(),
-                      Parameter.builder().setName("nanos").setType(INT).build())))
-          .addAll(methods("finalize", Lists.newArrayList()))
+                  Parameter.builder().setName("timeout").setType(LONG).build(),
+                  Parameter.builder().setName("nanos").setType(INT).build()))
+          .addAll(methods("finalize"))
           .build();
 
-  private static List<Method> methods(String name, List<Parameter> parameterList) {
+  private static List<Method> methods(String name, Parameter... parameters) {
+    List<Parameter> parameterList = ImmutableList.copyOf(parameters);
     return ImmutableList.of(method(name, parameterList, false), method(name, parameterList, true));
   }
 
