@@ -67,7 +67,9 @@ public class IntegerEntitiesConverter extends AbstractModelVisitor {
 
           private String getCurrentConfigurationIdentifier() {
             if (getCurrentParameter() != null) {
-              return getCurrentParameter().getConfigurationIdentifier();
+              return getCurrentMethod().getConfigurationIdentifier()
+                  + "."
+                  + getCurrentParameter().getConfigurationIdentifier();
             }
 
             if (getCurrentMethod() != null) {

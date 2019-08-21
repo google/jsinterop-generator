@@ -132,9 +132,11 @@ public class BuiltInClosureTypeCleaner extends AbstractModelVisitor {
     asArray.setFinal(true);
     asArray.setName("asArray");
     asArray.setReturnType(new ArrayTypeReference(arrayTypeParameter));
-    asArray.setParameters(
-        ImmutableList.of(
-            new Parameter("reference", new ArrayTypeReference(arrayTypeParameter), false, false)));
+    asArray.addParameter(
+        Parameter.builder()
+            .setName("reference")
+            .setType(new ArrayTypeReference(arrayTypeParameter))
+            .build());
     asArray.setBody(
         new ReturnStatement(
             MethodInvocation.builder()
@@ -157,9 +159,11 @@ public class BuiltInClosureTypeCleaner extends AbstractModelVisitor {
     from.setReturnType(
         new ParametrizedTypeReference(
             new JavaTypeReference(jsArrayType), ImmutableList.of(methodTypeVariable)));
-    from.setParameters(
-        ImmutableList.of(
-            new Parameter("array", new ArrayTypeReference(methodTypeVariable), false, false)));
+    from.addParameter(
+        Parameter.builder()
+            .setName("array")
+            .setType(new ArrayTypeReference(methodTypeVariable))
+            .build());
     from.setBody(
         new ReturnStatement(
             MethodInvocation.builder()
@@ -213,8 +217,8 @@ public class BuiltInClosureTypeCleaner extends AbstractModelVisitor {
     checkState(m.getParameters().size() == 1);
     Parameter firstParameter = m.getParameters().get(0);
     checkState(PredefinedTypeReference.OBJECT.equals(firstParameter.getType()));
-    firstParameter.setName("items");
-    firstParameter.setType(arrayTypeParameter);
+    m.getParameters()
+        .set(0, firstParameter.toBuilder().setName("items").setType(arrayTypeParameter).build());
   }
 
   /** Check that an IObject reference uses a String or an UnionType of String and number as key. */

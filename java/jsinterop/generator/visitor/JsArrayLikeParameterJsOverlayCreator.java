@@ -49,11 +49,7 @@ public class JsArrayLikeParameterJsOverlayCreator extends AbstractJsOverlayMetho
     if (isJsArrayLikeReference(originalParameter.getType())) {
       TypeReference arrayTypeReference = maybeConvertToArrayType(originalParameter.getType());
 
-      return new Parameter(
-          originalParameter.getName(),
-          arrayTypeReference,
-          originalParameter.isVarargs(),
-          originalParameter.isOptional());
+      return originalParameter.toBuilder().setType(arrayTypeReference).build();
     }
 
     return Parameter.from(originalParameter);

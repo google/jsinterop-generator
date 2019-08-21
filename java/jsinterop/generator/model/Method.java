@@ -17,14 +17,12 @@
 
 package jsinterop.generator.model;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Lists.transform;
 import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 import static jsinterop.generator.model.EntityKind.METHOD;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
 import com.google.j2cl.ast.annotations.Context;
 import com.google.j2cl.ast.annotations.Visitable;
 import com.google.j2cl.ast.processors.common.Processor;
@@ -75,13 +73,11 @@ public class Method extends Entity implements HasTypeParameters {
   }
 
   public List<Parameter> getParameters() {
-    return ImmutableList.copyOf(parameters);
+    return parameters;
   }
 
   public void setParameters(List<Parameter> parameters) {
     this.parameters = parameters;
-
-    parameters.forEach(m -> m.setEnclosingMethod(this));
   }
 
   public void clearParameters() {
@@ -89,12 +85,7 @@ public class Method extends Entity implements HasTypeParameters {
   }
 
   public void addParameter(Parameter parameter) {
-    checkArgument(
-        parameter.getEnclosingMethod() == null, "%s is not an orphan parameter.", parameter);
-
     this.parameters.add(parameter);
-
-    parameter.setEnclosingMethod(this);
   }
 
   public TypeReference getReturnType() {

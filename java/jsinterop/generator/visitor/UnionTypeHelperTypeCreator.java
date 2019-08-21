@@ -302,7 +302,7 @@ public class UnionTypeHelperTypeCreator extends AbstractModelVisitor {
     Method builderMethod = createMethod(true);
     builderMethod.setName("of");
     builderMethod.setReturnType(returnTypeReference);
-    builderMethod.addParameter(new Parameter("o", OBJECT, false, false));
+    builderMethod.addParameter(Parameter.builder().setName("o").setType(OBJECT).build());
     builderMethod.addTypeParameter(OBJECT);
     builderMethod.setBody(createJsCastInvocation("o", returnTypeReference));
 

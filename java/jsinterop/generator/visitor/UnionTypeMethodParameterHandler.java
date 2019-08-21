@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.Method;
-import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 import jsinterop.generator.model.UnionTypeReference;
@@ -59,8 +58,7 @@ public class UnionTypeMethodParameterHandler extends AbstractJsOverlayMethodCrea
       Method overloadingMethod =
           ModelHelper.createDelegatingOverlayMethod(
               method,
-              (i, p) ->
-                  new Parameter(p.getName(), parameterTypes.get(i), p.isVarargs(), p.isOptional()),
+              (i, p) -> p.toBuilder().setType(parameterTypes.get(i)).build(),
               ModelHelper::callUncheckedCast);
 
       if (overloadingMethod != null) {

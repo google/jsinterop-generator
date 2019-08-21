@@ -20,6 +20,7 @@ package jsinterop.generator.visitor;
 import static jsinterop.generator.helper.GeneratorUtils.toSafeTypeName;
 
 import java.util.HashSet;
+import java.util.ListIterator;
 import java.util.Set;
 import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Method;
@@ -41,9 +42,14 @@ public class ClosureOptionalParameterCleaner extends AbstractModelVisitor {
           public void exitMethod(Method node) {
             Set<String> parameterNames = new HashSet<>();
 
-            for (Parameter parameter : node.getParameters()) {
+            for (ListIterator<Parameter> it = node.getParameters().listIterator(); it.hasNext(); ) {
+              Parameter parameter = it.next();
+
               if (parameter.getName().startsWith("opt_")) {
-                parameter.setName(toSafeTypeName(parameter.getName().substring(4), parameterNames));
+                it.set(
+                    parameter.toBuilder()
+                        .setName(toSafeTypeName(parameter.getName().substring(4), parameterNames))
+                        .build());
               }
               parameterNames.add(parameter.getName());
             }

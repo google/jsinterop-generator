@@ -152,7 +152,8 @@ public class ModelHelper {
     castMethod.setStatic(true);
     castMethod.setReturnType(new JavaTypeReference(extendingType));
     castMethod.setName("of");
-    castMethod.addParameter(new Parameter("o", new JavaTypeReference(typeToExtend), false, false));
+    castMethod.addParameter(
+        Parameter.builder().setName("o").setType(new JavaTypeReference(typeToExtend)).build());
     castMethod.setBody(
         new ReturnStatement(
             MethodInvocation.builder()

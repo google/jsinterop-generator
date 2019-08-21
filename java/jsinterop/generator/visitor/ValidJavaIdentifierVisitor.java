@@ -32,7 +32,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import java.util.List;
-import jsinterop.generator.model.AbstractVisitor;
+import jsinterop.generator.model.AbstractRewriter;
 import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.Field;
@@ -71,21 +71,26 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
   // to avoid confusion and potential compile errors due to override of final method.
   private static final ImmutableSet<Method> OBJECT_METHODS_TO_RENAME =
       ImmutableSet.<Method>builder()
-          .addAll(methods("getClass", Lists.<Parameter>newArrayList()))
-          .addAll(methods("hashCode", Lists.<Parameter>newArrayList()))
-          .addAll(methods("equals", newArrayList(new Parameter("o", OBJECT, false, false))))
-          .addAll(methods("toString", Lists.<Parameter>newArrayList()))
-          .addAll(methods("clone", Lists.<Parameter>newArrayList()))
-          .addAll(methods("notify", Lists.<Parameter>newArrayList()))
-          .addAll(methods("notifyAll", Lists.<Parameter>newArrayList()))
-          .addAll(methods("wait", Lists.<Parameter>newArrayList()))
-          .addAll(methods("wait", newArrayList(new Parameter("timeout", LONG, false, false))))
+          .addAll(methods("getClass", Lists.newArrayList()))
+          .addAll(methods("hashCode", Lists.newArrayList()))
+          .addAll(
+              methods(
+                  "equals", newArrayList(Parameter.builder().setName("o").setType(OBJECT).build())))
+          .addAll(methods("toString", Lists.newArrayList()))
+          .addAll(methods("clone", Lists.newArrayList()))
+          .addAll(methods("notify", Lists.newArrayList()))
+          .addAll(methods("notifyAll", Lists.newArrayList()))
+          .addAll(methods("wait", Lists.newArrayList()))
+          .addAll(
+              methods(
+                  "wait",
+                  newArrayList(Parameter.builder().setName("timeout").setType(LONG).build())))
           .addAll(
               methods(
                   "wait",
                   newArrayList(
-                      new Parameter("timeout", LONG, false, false),
-                      new Parameter("nanos", INT, false, false))))
+                      Parameter.builder().setName("timeout").setType(LONG).build(),
+                      Parameter.builder().setName("nanos").setType(INT).build())))
           .addAll(methods("finalize", Lists.newArrayList()))
           .build();
 
@@ -123,9 +128,9 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
   @Override
   public void applyTo(Program program) {
     program.accept(
-        new AbstractVisitor() {
+        new AbstractRewriter() {
           @Override
-          public void exitType(Type type) {
+          public Type rewriteType(Type type) {
             if (!type.isExtern()) {
               validEntityName(type, JS_TYPE, false);
 
@@ -139,18 +144,20 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
                 addAnnotationNameAttributeIfNotEmpty(type, originalName, JS_TYPE, false);
               }
             }
+            return type;
           }
 
           @Override
-          public void exitField(Field field) {
+          public Field rewriteField(Field field) {
             validEntityName(field, JS_PROPERTY, true);
+            return field;
           }
 
           @Override
-          public void exitMethod(Method method) {
+          public Method rewriteMethod(Method method) {
             if (method.getKind() == CONSTRUCTOR) {
               // constructor are implemented as method without name
-              return;
+              return method;
             }
 
             AnnotationType jsInteropAnnotation;
@@ -170,12 +177,14 @@ public class ValidJavaIdentifierVisitor extends AbstractModelVisitor {
 
               addAnnotationNameAttributeIfNotEmpty(method, methodName, jsInteropAnnotation, true);
             }
+
+            return method;
           }
 
           @Override
-          public void exitParameter(Parameter parameter) {
+          public Parameter rewriteParameter(Parameter parameter) {
             String validName = toValidJavaIdentifier(parameter.getName());
-            parameter.setName(validName);
+            return parameter.toBuilder().setName(validName).build();
           }
         });
   }

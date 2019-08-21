@@ -126,7 +126,7 @@ public class FieldsConverter extends AbstractModelVisitor {
     }
 
     if (setter) {
-      accessor.addParameter(new Parameter(fieldName, fieldType, false, false));
+      accessor.addParameter(Parameter.builder().setName(fieldName).setType(fieldType).build());
       accessor.setReturnType(VOID);
     } else {
       accessor.setReturnType(fieldType);

@@ -144,7 +144,10 @@ public class WildcardTypeCreator extends AbstractModelVisitor {
             for (Parameter parameter : method.getParameters()) {
               parameter.setType(
                   maybeCreateWildcardType(
-                      parameter.getConfigurationIdentifier(), parameter.getType()));
+                      method.getConfigurationIdentifier()
+                          + "."
+                          + parameter.getConfigurationIdentifier(),
+                      parameter.getType()));
             }
             return false;
           }

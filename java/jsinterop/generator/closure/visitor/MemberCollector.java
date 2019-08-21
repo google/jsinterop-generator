@@ -184,11 +184,12 @@ public class MemberCollector extends AbstractClosureVisitor {
   }
 
   private Parameter convertParameter(Node jsParameter, String parameterName) {
-    return new Parameter(
-        parameterName,
-        getJavaTypeRegistry().createTypeReference(jsParameter.getJSType()),
-        jsParameter.isVarArgs(),
-        jsParameter.isOptionalArg());
+    return Parameter.builder()
+        .setName(parameterName)
+        .setType(getJavaTypeRegistry().createTypeReference(jsParameter.getJSType()))
+        .setVarargs(jsParameter.isVarArgs())
+        .setOptional(jsParameter.isOptionalArg())
+        .build();
   }
 
   @Override

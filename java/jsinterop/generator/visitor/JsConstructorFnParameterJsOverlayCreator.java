@@ -67,13 +67,13 @@ public class JsConstructorFnParameterJsOverlayCreator extends AbstractJsOverlayM
 
   private static Parameter toJavaLangClass(int unusedParameterIndex, Parameter originalParameter) {
     if (isDirectJsConstructorReference(originalParameter.getType())) {
-      return new Parameter(
-          originalParameter.getName(),
-          new ParametrizedTypeReference(
-              CLASS,
-              ((ParametrizedTypeReference) originalParameter.getType()).getActualTypeArguments()),
-          originalParameter.isVarargs(),
-          originalParameter.isOptional());
+      return originalParameter.toBuilder()
+          .setType(
+              new ParametrizedTypeReference(
+                  CLASS,
+                  ((ParametrizedTypeReference) originalParameter.getType())
+                      .getActualTypeArguments()))
+          .build();
     }
 
     return Parameter.from(originalParameter);

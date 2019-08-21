@@ -15,7 +15,6 @@
  */
 package jsinterop.generator.model;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.j2cl.ast.annotations.Context;
 import com.google.j2cl.ast.annotations.Visitable;
@@ -26,17 +25,15 @@ import com.google.j2cl.ast.processors.common.Processor;
 @Context
 public class Parameter implements HasName, Node {
   public static Parameter from(Parameter parameter) {
-    return new Parameter(
-        parameter.getName(), parameter.getType(), parameter.isVarargs(), parameter.isOptional());
+    return parameter.toBuilder().build();
   }
 
   @Visitable TypeReference type;
   private final boolean varargs;
   private final boolean optional;
-  private String name;
-  private Method enclosingMethod;
+  private final String name;
 
-  public Parameter(String name, TypeReference type, boolean varargs, boolean optional) {
+  private Parameter(String name, TypeReference type, boolean varargs, boolean optional) {
     this.name = name;
     this.type = type;
     this.varargs = varargs;
@@ -66,16 +63,12 @@ public class Parameter implements HasName, Node {
   }
 
   public String getConfigurationIdentifier() {
-    return checkNotNull(getEnclosingMethod()).getConfigurationIdentifier() + "." + getName();
+    return getName();
   }
 
   @Override
   public Node accept(Processor processor) {
     return Visitor_Parameter.visit(processor, this);
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   @Override
@@ -88,11 +81,45 @@ public class Parameter implements HasName, Node {
     return jniType.getJniSignature();
   }
 
-  public Method getEnclosingMethod() {
-    return enclosingMethod;
+  public Builder toBuilder() {
+    return new Builder().setName(name).setType(type).setVarargs(varargs).setOptional(optional);
   }
 
-  void setEnclosingMethod(Method enclosingMethod) {
-    this.enclosingMethod = enclosingMethod;
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  /** A Builder for Parameter. */
+  public static class Builder {
+    private TypeReference type;
+    private boolean varargs;
+    private boolean optional;
+    private String name;
+
+    private Builder() {}
+
+    public Builder setType(TypeReference type) {
+      this.type = type;
+      return this;
+    }
+
+    public Builder setVarargs(boolean varargs) {
+      this.varargs = varargs;
+      return this;
+    }
+
+    public Builder setOptional(boolean optional) {
+      this.optional = optional;
+      return this;
+    }
+
+    public Builder setName(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Parameter build() {
+      return new Parameter(name, type, varargs, optional);
+    }
   }
 }
