@@ -20,6 +20,7 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import com.google.javascript.jscomp.SourceFile;
 import java.util.ArrayList;
 import java.util.List;
+import jsinterop.generator.helper.AbortError;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -97,6 +98,9 @@ public class Runner {
   @Option(name = "--dependency", usage = "Source file of a dependency")
   List<String> dependencyFilePaths = new ArrayList<>();
 
+  @Option(name = "--custom_preprocessing_pass", hidden = true)
+  List<String> customPreprocessingPasses = new ArrayList<>();
+
   @Argument(required = true, multiValued = true, usage = "list of source files")
   List<String> sourceFilePaths = new ArrayList<>();
 
@@ -118,9 +122,13 @@ public class Runner {
             .dependencies(
                 dependencyFilePaths.stream().map(SourceFile::fromFile).collect(toImmutableList()))
             .sources(sourceFilePaths.stream().map(SourceFile::fromFile).collect(toImmutableList()))
+            .customPreprocessingPasses(customPreprocessingPasses)
             .build();
-
-    new ClosureJsInteropGenerator(options).convert();
+    try {
+      new ClosureJsInteropGenerator(options).convert();
+    } catch (AbortError error) {
+      System.exit(1);
+    }
   }
 
   public static void main(String[] args) throws CmdLineException {

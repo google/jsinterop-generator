@@ -49,11 +49,13 @@ public abstract class Options {
 
     abstract Builder wildcardTypesFiles(List<String> wildcardTypesFiles);
 
-    abstract Options build();
-
     abstract Builder globalScopeClassName(String globalScopeClassName);
 
     abstract Builder strict(boolean strict);
+
+    abstract Builder customPreprocessingPasses(List<String> customPreprocessingPasses);
+
+    abstract Options build();
   }
 
   public abstract String getOutputJarFile();
@@ -89,6 +91,8 @@ public abstract class Options {
   public abstract List<String> getIntegerEntitiesFiles();
 
   public abstract List<String> getWildcardTypesFiles();
+
+  public abstract List<String> getCustomPreprocessingPasses();
 
   static Builder builder() {
     return new AutoValue_Options.Builder();

@@ -24,6 +24,7 @@ import java.util.ListIterator;
 import java.util.Set;
 import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Method;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.Program;
 

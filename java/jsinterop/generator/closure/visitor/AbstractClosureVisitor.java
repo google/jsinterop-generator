@@ -436,7 +436,7 @@ abstract class AbstractClosureVisitor {
     if (warnMissingName) {
       context
           .getProblems()
-          .reportInfo(
+          .info(
               "No name provided for parameter '%s'. Name can be specified in a name mapping file.",
               parameterFqn);
     }

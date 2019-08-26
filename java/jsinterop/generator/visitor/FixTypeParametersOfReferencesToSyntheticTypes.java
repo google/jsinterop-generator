@@ -23,6 +23,7 @@ import jsinterop.generator.model.AbstractRewriter;
 import jsinterop.generator.model.Expression;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.MethodInvocation;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;

@@ -15,9 +15,7 @@
  *
  */
 
-package jsinterop.generator.visitor;
-
-import jsinterop.generator.model.Program;
+package jsinterop.generator.model;
 
 /** Contracts for visitors that aims to visit our Java model. */
 public interface ModelVisitor {

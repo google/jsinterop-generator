@@ -18,6 +18,7 @@ package jsinterop.generator.helper;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Utility class for reporting problems during code generation */
@@ -27,17 +28,35 @@ public class Problems {
   private final boolean strict;
   private final List<String> warnings = new ArrayList<>();
   private final List<String> infos = new ArrayList<>();
+  private final List<ErrorMessage> errors = new ArrayList<>();
 
   public Problems(boolean strict) {
     this.strict = strict;
   }
 
-  public void reportWarning(String msg, Object... args) {
-    warnings.add(formatMessage(msg, args));
+  public void warning(String msg, Object... args) {
+    if (strict) {
+      error(msg, args);
+    } else {
+      warnings.add(formatMessage(msg, args));
+    }
   }
 
-  public void reportInfo(String msg, Object... args) {
+  public void info(String msg, Object... args) {
     infos.add(formatMessage(msg, args));
+  }
+
+  public void error(String msg, Throwable t, Object... args) {
+    errors.add(new ErrorMessage(formatMessage(msg, args), t));
+  }
+
+  public void error(String msg, Object... args) {
+    error(msg, null, args);
+  }
+
+  public void fatal(String msg, Throwable t, Object... args) {
+    error(msg, t, args);
+    report();
   }
 
   private static String formatMessage(String msg, Object... args) {
@@ -49,22 +68,35 @@ public class Problems {
   }
 
   public void report() {
-    if (!infos.isEmpty()) {
-      logger.warning(formatMessage("%s warning(s):", infos.size()));
-      for (String warning : infos) {
-        logger.warning(warning);
-      }
+    for (String info : infos) {
+      logger.info(info);
     }
 
-    if (!warnings.isEmpty()) {
-      logger.severe(formatMessage("%s errors(s):", warnings.size()));
-      for (String error : warnings) {
-        logger.severe(error);
-      }
+    for (String warning : warnings) {
+      logger.warning(warning);
+    }
+
+    for (ErrorMessage error : errors) {
+      logger.log(Level.SEVERE, error.message, error.throwable);
+    }
+
+    logger.info(
+        formatMessage(
+            "%s notice(s), %s warning(s), %s error(s)",
+            infos.size(), warnings.size(), errors.size()));
+
+    if (!errors.isEmpty()) {
+      throw new AbortError();
     }
   }
 
-  public boolean hasErrors() {
-    return strict && !warnings.isEmpty();
+  private static class ErrorMessage {
+    private final String message;
+    private final Throwable throwable;
+
+    private ErrorMessage(String message, Throwable throwable) {
+      this.message = message;
+      this.throwable = throwable;
+    }
   }
 }

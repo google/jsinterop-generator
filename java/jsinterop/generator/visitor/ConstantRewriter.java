@@ -25,6 +25,7 @@ import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.EntityKind;
 import jsinterop.generator.model.Field;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 

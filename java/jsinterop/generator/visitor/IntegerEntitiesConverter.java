@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import jsinterop.generator.helper.Problems;
 import jsinterop.generator.model.AbstractRewriter;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.TypeReference;
 
@@ -85,7 +86,7 @@ public class IntegerEntitiesConverter implements ModelVisitor {
         });
 
     if (!unusedIntegerEntities.isEmpty()) {
-      problems.reportWarning("Unused integer entities: %s", unusedIntegerEntities);
+      problems.warning("Unused integer entities: %s", unusedIntegerEntities);
     }
   }
 }

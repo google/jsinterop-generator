@@ -31,6 +31,8 @@ public final class VisitorHelper {
       List<String> integerEntities,
       Map<String, String> wildcardTypes,
       Problems problems) {
+    new ParametrizedObjectReferenceRewriter().applyTo(program);
+
     new EmptyNamespaceFilter().applyTo(program);
 
     new DictionaryTypeVisitor().applyTo(program);

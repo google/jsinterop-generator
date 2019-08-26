@@ -10,30 +10,6 @@
  *
  * @externs
  */
-
-// TODO(dramaix): move to an extern dependency
-/**
- * @interface
- * @template KEY1, VALUE1
- * @suppress {duplicate}
- */
-function IObject() {}
-
-/**
- * @record
- * @extends {IObject<number, VALUE2>}
- * @template VALUE2
- * @suppress {duplicate}
- */
-function IArrayLike() {}
-
-/**
- * @constructor
- * @param {*=} args
- * @suppress {duplicate}
- */
-function Object(args) {}
-
 /**
  * @constructor
  * @implements {IObject<string, string>}

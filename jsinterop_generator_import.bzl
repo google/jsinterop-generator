@@ -61,12 +61,13 @@ def jsinterop_generator_import(
         "visibility": visibility,
     }
 
-    # bazel doesn't support constraint and gwtxml attributes
-    if _is_bazel:
-        java_library_args["resources"] = [gwt_xml]
-    else:
-        java_library_args["gwtxml"] = gwt_xml
-        java_library_args["constraints"] = ["gwt", "public"]
+    if gwt_xml:
+        # bazel doesn't support constraint and gwtxml attributes
+        if _is_bazel:
+            java_library_args["resources"] = [gwt_xml]
+        else:
+            java_library_args["gwtxml"] = gwt_xml
+            java_library_args["constraints"] = ["gwt", "public"]
 
     native.java_library(**java_library_args)
 

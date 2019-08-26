@@ -19,6 +19,7 @@ package jsinterop.generator.visitor;
 import java.util.Map;
 import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.JavaTypeReference;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;

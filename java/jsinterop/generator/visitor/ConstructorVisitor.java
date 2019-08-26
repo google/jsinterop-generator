@@ -29,6 +29,7 @@ import jsinterop.generator.model.Expression;
 import jsinterop.generator.model.ExpressionStatement;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.MethodInvocation;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.Program;

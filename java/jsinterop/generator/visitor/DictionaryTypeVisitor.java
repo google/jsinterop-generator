@@ -26,6 +26,7 @@ import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.MethodInvocation;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.ReturnStatement;
 import jsinterop.generator.model.Type;

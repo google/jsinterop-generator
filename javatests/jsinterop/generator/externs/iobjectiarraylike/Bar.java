@@ -7,6 +7,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsArrayLike;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
+import jsinterop.generator.externs.natives.JsObject;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Bar implements JsArrayLike<String> {

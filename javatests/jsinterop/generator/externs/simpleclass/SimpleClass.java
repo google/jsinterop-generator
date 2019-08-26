@@ -5,6 +5,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.generator.externs.natives.JsObject;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class SimpleClass {

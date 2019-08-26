@@ -99,10 +99,27 @@ def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
     if ctx.attr.use_bean_convention:
         arguments += ["--bean_convention"]
 
+    if ctx.attr.runtime_deps:
+        runtime_deps_expanded = [f.path for d in ctx.attr.runtime_deps for f in d.files.to_list()]
+        main_advice_classpath = "--main_advice_classpath=%s" % ":".join(runtime_deps_expanded)
+
+        # main_advice_classpath is a flag for the java launcher shell script used for prepending
+        # additional class path entries. If it isn't the first flag presented to the script, it
+        # won't be recognized unless it's wrapped like so:
+        # --wrapper_script_flag=--main_advice_classpath=...
+        arguments += ["--wrapper_script_flag=%s" % main_advice_classpath]
+
+    if ctx.attr.custom_preprocessing_pass:
+        arguments += [
+            "--custom_preprocessing_pass=%s" % v
+            for v in ctx.attr.custom_preprocessing_pass
+        ]
+
     arguments += ["%s" % f.path for f in srcs]
 
     inputs = srcs + deps_srcs + dep_types_mapping_files + names_mapping_files
     inputs += ctx.files.integer_entities_files + ctx.files.wildcard_types_files
+    inputs += [f for d in ctx.attr.runtime_deps for f in d.files.to_list()]
 
     ctx.actions.run(
         inputs = inputs,
@@ -193,7 +210,8 @@ _jsinterop_generator = rule(
         "debug": attr.bool(),
         "conversion_mode": attr.string(),
         "gwt_module_name": attr.string(),
-
+        "runtime_deps": attr.label_list(),
+        "custom_preprocessing_pass": attr.string_list(),
         "_jar": attr.label(
             cfg = "host",
             executable = True,
@@ -249,6 +267,8 @@ def jsinterop_generator(
         conversion_mode = "closure",
         generate_j2cl_build_test = None,
         j2cl_js_deps = None,
+        runtime_deps = [],
+        custom_preprocessing_pass = [],
         visibility = None,
         testonly = None):
     if not srcs and not exports:
@@ -313,6 +333,8 @@ def jsinterop_generator(
             debug = False,
             conversion_mode = conversion_mode,
             gwt_module_name = gwt_module_name,
+            runtime_deps = runtime_deps,
+            custom_preprocessing_pass = custom_preprocessing_pass,
             testonly = testonly,
             visibility = ["//visibility:public"],
         )

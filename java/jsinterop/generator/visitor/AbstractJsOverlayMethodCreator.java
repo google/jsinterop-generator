@@ -25,6 +25,7 @@ import java.util.Set;
 import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Method;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 

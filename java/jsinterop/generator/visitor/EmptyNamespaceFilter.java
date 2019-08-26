@@ -17,6 +17,7 @@
 package jsinterop.generator.visitor;
 
 import jsinterop.generator.model.AbstractRewriter;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 

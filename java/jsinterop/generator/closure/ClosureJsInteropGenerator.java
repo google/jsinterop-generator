@@ -41,6 +41,7 @@ import jsinterop.generator.closure.visitor.TypeCollector;
 import jsinterop.generator.closure.visitor.TypeParameterCollector;
 import jsinterop.generator.helper.GeneratorUtils;
 import jsinterop.generator.helper.Problems;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.visitor.DependencyFileWriter;
@@ -65,9 +66,6 @@ class ClosureJsInteropGenerator {
     finalizeProgram(javaProgram);
 
     problems.report();
-    if (problems.hasErrors()) {
-      System.exit(1);
-    }
 
     generateJarFile(javaProgram);
 
@@ -84,7 +82,7 @@ class ClosureJsInteropGenerator {
   }
 
   private void finalizeProgram(Program javaProgram) {
-    new BuiltInClosureTypeCleaner().applyTo(javaProgram);
+    getCustomPreprocessingPasses().forEach(v -> v.applyTo(javaProgram));
 
     VisitorHelper.finalizeJavaProgram(
         javaProgram,
@@ -94,13 +92,32 @@ class ClosureJsInteropGenerator {
         problems);
   }
 
+  private List<ModelVisitor> getCustomPreprocessingPasses() {
+    List<ModelVisitor> customPreprocessingPasses = new ArrayList<>();
+
+    for (String className : options.getCustomPreprocessingPasses()) {
+      try {
+        customPreprocessingPasses.add(
+            Class.forName(className)
+                .asSubclass(ModelVisitor.class)
+                .getDeclaredConstructor()
+                .newInstance());
+      } catch (ClassNotFoundException e) {
+        problems.fatal("Class %s does not exist", e, className);
+      } catch (ReflectiveOperationException e) {
+        problems.fatal("Class %s is not instantiable: %s", e, className);
+      } catch (ClassCastException e) {
+        problems.fatal("Class %s does not implement ModelVisitor: %s", e, className);
+      }
+    }
+    return customPreprocessingPasses;
+  }
+
   private void generateJarFile(Program javaProgram) {
     try {
       JarFileCreator.generateJarFile(
           options.getOutputJarFile(),
-          javaProgram
-              .getAllTypes()
-              .stream()
+          javaProgram.getAllTypes().stream()
               .filter(t -> !t.isExtern())
               .map(this::createJavaFile)
               .collect(toImmutableList()));

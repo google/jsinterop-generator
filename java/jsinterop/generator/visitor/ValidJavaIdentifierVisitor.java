@@ -36,6 +36,7 @@ import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;

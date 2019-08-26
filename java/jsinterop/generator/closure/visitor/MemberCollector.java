@@ -61,9 +61,7 @@ public class MemberCollector extends AbstractClosureVisitor {
     super.accept(scope);
 
     if (!parameterNameMapping.isEmpty()) {
-      getContext()
-          .getProblems()
-          .reportWarning("Unused parameter name mapping: %s", parameterNameMapping);
+      getContext().getProblems().warning("Unused parameter name mapping: %s", parameterNameMapping);
     }
   }
 

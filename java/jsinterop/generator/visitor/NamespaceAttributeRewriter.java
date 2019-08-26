@@ -22,6 +22,7 @@ import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.Entity;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 

@@ -31,6 +31,7 @@ import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.DelegableTypeReference;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
+import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.Program;
