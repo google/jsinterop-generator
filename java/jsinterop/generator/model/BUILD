@@ -2,10 +2,7 @@
 #  JsInterop version of the typescript compiler api
 
 package(
-    default_visibility = [
-        "//:__subpackages__",
-        "//third_party/java_src/elemental2/java/elemental2/core:__subpackages__",
-    ],
+    default_visibility = ["//visibility:public"],
     # Apache2
     licenses = ["notice"],
 )
