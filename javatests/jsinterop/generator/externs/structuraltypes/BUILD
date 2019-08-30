@@ -26,4 +26,5 @@ jsinterop_generator_test(
         "ClassInModule.java",
     ],
     global_scope_class_name = "Global",
+    deps = ["//javatests/jsinterop/generator/externs/natives"],
 )

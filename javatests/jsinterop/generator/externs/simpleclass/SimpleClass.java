@@ -5,6 +5,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.generator.externs.natives.JsArray;
 import jsinterop.generator.externs.natives.JsObject;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
@@ -76,7 +77,7 @@ public class SimpleClass {
 
   @Deprecated public String deprecatedProperty;
   public String fooProperty;
-  public String[][][] fooProperty2;
+  public JsArray<JsArray<JsArray<String>>> fooProperty2;
   public boolean readonlyProperty;
   public SimpleClass thisType;
 

@@ -90,7 +90,7 @@ public final class VisitorHelper {
 
     new JsConstructorFnParameterJsOverlayCreator().applyTo(program);
 
-    new JsArrayLikeParameterJsOverlayCreator().applyTo(program);
+    new JavaArrayParameterJsOverlayCreator().applyTo(program);
 
     new ObjectParameterJsOverlayCreator().applyTo(program);
 

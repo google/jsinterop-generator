@@ -17,9 +17,7 @@ package jsinterop.generator.closure.helper;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
-import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.IN_HERITAGE_CLAUSE;
 import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.IN_TYPE_ARGUMENTS;
 import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.REGULAR;
 import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN;
@@ -217,25 +215,6 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseTemplatizedType(TemplatizedType type) {
-      if (type.getReferencedType().isArrayType()) {
-        TypeReference arrayType = PredefinedTypeReference.OBJECT;
-        if (type.getTemplateTypes().size() == 1) {
-          arrayType =
-              new TypeReferenceCreator(
-                      referenceContext == IN_HERITAGE_CLAUSE ? IN_TYPE_ARGUMENTS : REGULAR)
-                  .resolveTypeReference(type.getTemplateTypes().get(0));
-        }
-        if (referenceContext == IN_HERITAGE_CLAUSE) {
-          // In java you cannot extends classic array. In this case create a parametrized reference
-          // to JsArray class.
-          return new ParametrizedTypeReference(
-              resolveTypeReference(type.getReferencedType()), newArrayList(arrayType));
-        } else {
-          // Convert array type to classic java array where it's valid.
-          return new ArrayTypeReference(arrayType);
-        }
-      }
-
       return createParametrizedTypeReference(type.getReferencedType(), type.getTemplateTypes());
     }
 

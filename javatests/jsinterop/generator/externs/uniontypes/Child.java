@@ -5,6 +5,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.generator.externs.natives.JsArray;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Child implements ParentInterface<Child.ParentInterfaceTypeParameterUnionType> {
@@ -201,8 +202,8 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
     }
 
     @JsOverlay
-    default double asDouble() {
-      return Js.asDouble(this);
+    default Double asDouble() {
+      return Js.cast(this);
     }
 
     @JsOverlay
@@ -257,7 +258,7 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
     }
 
     @JsOverlay
-    default Child.Method3FooArrayUnionType[] asMethod3FooArrayUnionTypeArray() {
+    default JsArray<Child.Method3FooArrayUnionType> asJsArray() {
       return Js.cast(this);
     }
 
@@ -267,8 +268,8 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
     }
 
     @JsOverlay
-    default boolean isMethod3FooArrayUnionTypeArray() {
-      return (Object) this instanceof Object[];
+    default boolean isJsArray() {
+      return (Object) this instanceof JsArray;
     }
 
     @JsOverlay
@@ -548,8 +549,13 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   }
 
   @JsOverlay
-  public final void method3(Child.Method3FooArrayUnionType[] foo) {
+  public final void method3(JsArray<Child.Method3FooArrayUnionType> foo) {
     method3(Js.<Child.Method3FooUnionType>uncheckedCast(foo));
+  }
+
+  @JsOverlay
+  public final void method3(Child.Method3FooArrayUnionType[] foo) {
+    method3(Js.<JsArray<Child.Method3FooArrayUnionType>>uncheckedCast(foo));
   }
 
   public native void method3(Child.Method3FooUnionType foo);

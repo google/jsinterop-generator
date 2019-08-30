@@ -6,6 +6,7 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import jsinterop.generator.externs.natives.JsArray;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class SimpleClass {
@@ -117,7 +118,7 @@ public class SimpleClass {
     void setFoo(double foo);
   }
 
-  public SimpleClass.RecordTypeArrayFieldType[] recordTypeArray;
+  public JsArray<SimpleClass.RecordTypeArrayFieldType> recordTypeArray;
 
   public native void consumeAliasedType(SimpleClass.ConsumeAliasedTypeNumberUnionType number);
 

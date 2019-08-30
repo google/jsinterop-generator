@@ -76,7 +76,6 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
   public void applyTo(Program program) {
     program.accept(
         new AbstractRewriter() {
-          // TODO(dramaix): with contexts we can easily build the name and this stack is not needed
           private final Deque<String> currentNameStack = new ArrayDeque<>();
 
           @Override
@@ -128,6 +127,11 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
           @Override
           public boolean shouldProcessParametrizedTypeReference(
               ParametrizedTypeReference typeReference) {
+            if (isJsArrayReference(typeReference)) {
+              currentNameStack.push("Array");
+              return true;
+            }
+
             // Manually visit the type parameter in order to know the index of the type parameter in
             // the list and create the name accordingly for a possible union type.
             List<TypeReference> newTypeArguments = new ArrayList<>();
@@ -145,6 +149,11 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
             return false;
           }
 
+          private boolean isJsArrayReference(ParametrizedTypeReference reference) {
+            return reference.getMainType().getTypeDeclaration() != null
+                && reference.getMainType().getTypeDeclaration().getNativeFqn().equals("Array");
+          }
+
           @Override
           public boolean shouldProcessArrayTypeReference(ArrayTypeReference typeReference) {
             currentNameStack.push("Array");
@@ -160,6 +169,15 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
           public TypeReference rewriteArrayTypeReference(ArrayTypeReference typeReference) {
             currentNameStack.pop();
             return typeReference;
+          }
+
+          @Override
+          public TypeReference rewriteParametrizedTypeReference(ParametrizedTypeReference node) {
+            if (isJsArrayReference(node)) {
+              currentNameStack.pop();
+            }
+
+            return node;
           }
 
           private boolean isCurrentTypeJsFunction() {

@@ -25,4 +25,5 @@ jsinterop_generator_test(
         "SimpleClassChild.java",
         "BarChild.java",
     ],
+    deps = ["//javatests/jsinterop/generator/externs/natives"],
 )

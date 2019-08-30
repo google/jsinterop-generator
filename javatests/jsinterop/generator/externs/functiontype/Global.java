@@ -8,6 +8,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
+import jsinterop.generator.externs.natives.JsArray;
 
 @JsType(isNative = true, name = "window", namespace = JsPackage.GLOBAL)
 public class Global {
@@ -154,7 +155,7 @@ public class Global {
   }
 
   public static AliasedFunctionType bar;
-  public static Global.BazFn[] baz;
+  public static JsArray<Global.BazFn> baz;
   public static Global.FooFn foo;
   public static JsConstructorFn<? extends SimpleClass> simpleClassCtor;
 

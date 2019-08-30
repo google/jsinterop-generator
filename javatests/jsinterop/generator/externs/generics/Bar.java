@@ -7,6 +7,7 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import jsinterop.generator.externs.natives.JsArray;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public interface Bar<U, T, V> {
@@ -119,16 +120,31 @@ public interface Bar<U, T, V> {
       }
     }
 
-    void onInvoke(U p0, U[] p1, Bar.BarMethod5FooCallbackFn.P2UnionType<T> p2);
+    void onInvoke(U p0, JsArray<U> p1, Bar.BarMethod5FooCallbackFn.P2UnionType<T> p2);
 
     @JsOverlay
-    default void onInvoke(U p0, U[] p1, String p2) {
+    default void onInvoke(U p0, JsArray<U> p1, String p2) {
       onInvoke(p0, p1, Js.<Bar.BarMethod5FooCallbackFn.P2UnionType<T>>uncheckedCast(p2));
     }
 
     @JsOverlay
-    default void onInvoke(U p0, U[] p1, T p2) {
+    default void onInvoke(U p0, JsArray<U> p1, T p2) {
       onInvoke(p0, p1, Js.<Bar.BarMethod5FooCallbackFn.P2UnionType<T>>uncheckedCast(p2));
+    }
+
+    @JsOverlay
+    default void onInvoke(U p0, U[] p1, Bar.BarMethod5FooCallbackFn.P2UnionType<T> p2) {
+      onInvoke(p0, Js.<JsArray<U>>uncheckedCast(p1), p2);
+    }
+
+    @JsOverlay
+    default void onInvoke(U p0, U[] p1, String p2) {
+      onInvoke(p0, Js.<JsArray<U>>uncheckedCast(p1), p2);
+    }
+
+    @JsOverlay
+    default void onInvoke(U p0, U[] p1, T p2) {
+      onInvoke(p0, Js.<JsArray<U>>uncheckedCast(p1), p2);
     }
   }
 
@@ -143,7 +159,7 @@ public interface Bar<U, T, V> {
 
   void barMethod4(Bar.BarMethod4FooCallbackFn<U> fooCallback);
 
-  void barMethod5(Bar.BarMethod5FooCallbackFn<? super U, ? super T> fooCallback);
+  void barMethod5(Bar.BarMethod5FooCallbackFn<U, ? super T> fooCallback);
 
   void barMethod6(Bar.BarMethod6FooCallbackFn<U, T> fooCallback);
 

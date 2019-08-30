@@ -21,4 +21,5 @@ jsinterop_generator_test(
         "Child.java",
         "Foo.java",
     ],
+    deps = ["//javatests/jsinterop/generator/externs/natives"],
 )
