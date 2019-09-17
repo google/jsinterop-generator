@@ -41,7 +41,7 @@ merge_jars() {
   rm -rf ${tmp_directory}
 }
 
-deploy_target='@com_google_jsinterop_base//:deploy'
+deploy_target='@com_google_j2cl//:deploy'
 license_header="--no-license"
 group_id="com.google.jsinterop"
 maven_artifact="closure-generator"
