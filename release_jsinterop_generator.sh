@@ -42,7 +42,6 @@ merge_jars() {
 }
 
 deploy_target='@com_google_j2cl//:deploy'
-license_header="--no-license"
 group_id="com.google.jsinterop"
 maven_artifact="closure-generator"
 
@@ -79,13 +78,13 @@ pom_template=${bazel_root}/maven/pom-closure-generator.xml
 
 # we cannot run the script directly from Bazel as bazel doesn't allow interactive script
 runcmd="$(mktemp /tmp/bazel-run.XXXXXX)"
-bazel run --script_path="$runcmd"  ${deploy_target} -- ${maven_artifact} \
-    ${tmp_artifact_dir}/generator.jar \
-    ${tmp_artifact_dir}/generator-src.jar \
-    ${license_header} \
-    ${pom_template} \
-    ${lib_version} \
-    ${group_id}
+bazel run --script_path="$runcmd"  ${deploy_target} -- \
+    --artifact ${maven_artifact} \
+    --jar-file ${tmp_artifact_dir}/generator.jar \
+    --src-jar ${tmp_artifact_dir}/generator-src.jar \
+    --pom-template ${pom_template} \
+    --lib-version ${lib_version} \
+    --group-id ${group_id}
 
 "$runcmd"
 
