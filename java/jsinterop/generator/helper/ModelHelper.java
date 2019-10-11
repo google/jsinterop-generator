@@ -182,7 +182,7 @@ public class ModelHelper {
             .type(JS_TYPE)
             .isNativeAttribute(true)
             .namespaceAttribute("")
-            .nameAttribute("window")
+            .nameAttribute("goog.global")
             .build());
     return type;
   }

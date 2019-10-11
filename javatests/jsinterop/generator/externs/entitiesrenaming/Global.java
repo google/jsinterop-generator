@@ -8,7 +8,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 
-@JsType(isNative = true, name = "window", namespace = JsPackage.GLOBAL)
+@JsType(isNative = true, name = "goog.global", namespace = JsPackage.GLOBAL)
 public class Global {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface FooFooUnionType {

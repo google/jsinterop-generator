@@ -10,7 +10,7 @@ import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 import jsinterop.generator.externs.natives.JsArray;
 
-@JsType(isNative = true, name = "window", namespace = JsPackage.GLOBAL)
+@JsType(isNative = true, name = "goog.global", namespace = JsPackage.GLOBAL)
 public class Global {
   @JsFunction
   public interface BazFn {
