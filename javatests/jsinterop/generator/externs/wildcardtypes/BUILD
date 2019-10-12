@@ -17,8 +17,8 @@ jsinterop_generator_test(
     name = "wildcardtypes",
     srcs = ["wildcardtypes.js"],
     expected_output = [
-        "Foo.java",
-        "Bar.java",
+        "Foo.java.txt",
+        "Bar.java.txt",
     ],
     wildcard_types_files = ["wildcardtypes.txt"],
 )

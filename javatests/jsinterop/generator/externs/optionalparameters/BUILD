@@ -17,7 +17,7 @@ jsinterop_generator_test(
     name = "optionalparameters",
     srcs = ["optionalparameters.js"],
     expected_output = [
-        "SimpleClass.java",
-        "SimpleInterface.java",
+        "SimpleClass.java.txt",
+        "SimpleInterface.java.txt",
     ],
 )

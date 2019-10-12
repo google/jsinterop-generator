@@ -17,9 +17,9 @@ jsinterop_generator_test(
     name = "UnionTypes",
     srcs = ["uniontypes.js"],
     expected_output = [
-        "ParentInterface.java",
-        "Child.java",
-        "Foo.java",
+        "ParentInterface.java.txt",
+        "Child.java.txt",
+        "Foo.java.txt",
     ],
     deps = ["//javatests/jsinterop/generator/externs/natives"],
 )

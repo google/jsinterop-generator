@@ -149,7 +149,7 @@ public class SimpleClass {
   public final boolean fooMethod(String foo, String bar, Object baz) {
     return fooMethod(foo, bar, Js.<JsObject>uncheckedCast(baz));
   }
-  
+
   public native boolean fooMethod(String foo, String bar);
 
   @JsMethod(name = "getClass")

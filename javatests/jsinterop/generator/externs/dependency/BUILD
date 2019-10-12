@@ -17,11 +17,11 @@ jsinterop_generator_test(
     name = "dependency",
     srcs = ["dependency.js"],
     expected_output = [
-        "MyLibGlobal.java",
-        "SimpleClass.java",
-        "SimpleInterface.java",
-        "MyLibThirdPartyClass.java",
-        "MyLibGlobal__Constants.java",
+        "MyLibGlobal.java.txt",
+        "SimpleClass.java.txt",
+        "SimpleInterface.java.txt",
+        "MyLibThirdPartyClass.java.txt",
+        "MyLibGlobal__Constants.java.txt",
     ],
     extension_type_prefix = "MyLib",
     deps = [

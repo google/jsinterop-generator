@@ -17,10 +17,10 @@ jsinterop_generator_test(
     name = "Modules",
     srcs = ["modules.js"],
     expected_output = [
-        "Bar.java",
-        "BarInterface.java",
-        "Baz.java",
-        "Foo.java",
-        "FooInterface.java",
+        "Bar.java.txt",
+        "BarInterface.java.txt",
+        "Baz.java.txt",
+        "Foo.java.txt",
+        "FooInterface.java.txt",
     ],
 )

@@ -17,9 +17,9 @@ jsinterop_generator_test(
     name = "entitiesrenaming",
     srcs = ["entitiesrenaming.js"],
     expected_output = [
-        "SimpleInterface.java",
-        "Foo.java",
-        "Global.java",
+        "SimpleInterface.java.txt",
+        "Foo.java.txt",
+        "Global.java.txt",
     ],
     global_scope_class_name = "Global",
     name_mapping_files = ["renaming.txt"],

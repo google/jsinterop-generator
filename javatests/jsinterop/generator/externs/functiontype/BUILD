@@ -17,11 +17,11 @@ jsinterop_generator_test(
     name = "FunctionType",
     srcs = ["functiontype.js"],
     expected_output = [
-        "AliasedFunctionType.java",
-        "SimpleClass.java",
-        "SimpleInterface.java",
-        "SimpleModule.java",
-        "Global.java",
+        "AliasedFunctionType.java.txt",
+        "SimpleClass.java.txt",
+        "SimpleInterface.java.txt",
+        "SimpleModule.java.txt",
+        "Global.java.txt",
     ],
     global_scope_class_name = "Global",
     deps = [

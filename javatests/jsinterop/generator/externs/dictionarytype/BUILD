@@ -17,7 +17,7 @@ jsinterop_generator_test(
     name = "dictionarytype",
     srcs = ["dictionarytype.js"],
     expected_output = [
-        "DictionaryType.java",
-        "SimpleDictionaryType.java",
+        "DictionaryType.java.txt",
+        "SimpleDictionaryType.java.txt",
     ],
 )

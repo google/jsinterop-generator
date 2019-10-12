@@ -2,7 +2,7 @@
 # Script taking as input the jar file containing the generated java classes and the directory
 # containing the golden files and tests that for each generated java file, it exists one golden file
 # with the same name and the contents are the same.
-set -e
+set -ex
 
 readonly WORKSPACE=$(pwd)
 
@@ -46,8 +46,10 @@ setup_test() {
   cd -
   strip_java_comments ${GENERATED_FILES_DIR}
 
-  # copy golden files and format them
-  cp ${ORIGINAL_GOLDEN_FILES_DIR}/*.java ${GOLDEN_FILES_DIR}
+  # copy golden files, remove .txt suffix and format them
+  for f in $(find "${ORIGINAL_GOLDEN_FILES_DIR}" -name '*.java.txt'); do
+     cp $f "${GOLDEN_FILES_DIR}"/$(basename ${f%.txt})
+  done
   # TODO(dramaix): remove this when all feature are implemented.
   strip_java_comments ${GOLDEN_FILES_DIR}
   format_java_code ${GOLDEN_FILES_DIR}
