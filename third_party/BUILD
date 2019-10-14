@@ -104,3 +104,9 @@ alias(
     name = "j2cl_processors",
     actual = "@com_google_j2cl//transpiler/java/com/google/j2cl/ast/processors/common",
 )
+
+java_library(
+    name = "junit",
+    testonly = 1,
+    exports = ["@org_junit//jar"],
+)

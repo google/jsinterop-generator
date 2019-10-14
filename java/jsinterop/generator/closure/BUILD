@@ -3,7 +3,7 @@
 
 package(
     default_visibility = [
-        "//third_party/java/jsinterop:__subpackages__",
+        "//:__subpackages__",
     ],
     # Apache2
     licenses = ["notice"],

@@ -22,8 +22,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
+import com.google.javascript.jscomp.CheckLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.DiagnosticGroups;
+import com.google.javascript.jscomp.JSError;
+import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.TypedScope;
 import java.io.File;
@@ -143,7 +147,8 @@ class ClosureJsInteropGenerator {
             .addAll(options.getSources())
             .build();
 
-    compiler.compile(new ArrayList<>(), allSources, createCompilerOptions());
+    checkJavascriptCompilationResults(
+        compiler.compile(new ArrayList<>(), allSources, createCompilerOptions()));
 
     GenerationContext ctx =
         GenerationContext.builder()
@@ -179,6 +184,14 @@ class ClosureJsInteropGenerator {
     return ctx.getJavaProgram();
   }
 
+  private void checkJavascriptCompilationResults(Result compilationResult) {
+    for (JSError error : compilationResult.errors) {
+      problems.error("Javascript compilation error: %s", error.getDescription());
+    }
+
+    problems.report();
+  }
+
   private static Map<String, String> readKeyValueFiles(List<String> filePaths) {
     return GeneratorUtils.readKeyValueFiles(
         filePaths, p -> Files.asCharSource(new File(p), UTF_8).read());
@@ -197,6 +210,7 @@ class ClosureJsInteropGenerator {
     options.setStrictModeInput(true);
     options.setCheckTypes(true);
     options.setPreserveDetailedSourceInfo(true);
+    options.setWarningLevel(DiagnosticGroups.UNRECOGNIZED_TYPE_ERROR, CheckLevel.ERROR);
 
     return options;
   }
