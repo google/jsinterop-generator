@@ -2,7 +2,7 @@
 # Script taking as input the jar file containing the generated java classes and the directory
 # containing the golden files and tests that for each generated java file, it exists one golden file
 # with the same name and the contents are the same.
-set -ex
+set -e
 
 readonly WORKSPACE=$(pwd)
 
