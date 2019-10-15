@@ -1,0 +1,15 @@
+package jsinterop.generator.externs.nestedclasses.foo;
+
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+
+@JsType(isNative = true, name = "Foo.Bar", namespace = JsPackage.GLOBAL)
+public class Bar {
+  public static String staticStringField;
+
+  public static native void staticMethod(String param);
+
+  public String stringField;
+
+  public native void method(String param);
+}
