@@ -66,12 +66,6 @@ alias(
 )
 
 alias(
-    name = "jdk",
-    actual = "@bazel_tools//tools/jdk:current_java_runtime",
-    visibility = ["//visibility:public"],
-)
-
-alias(
     name = "gwt-jsinterop-annotations",
     actual = "@com_google_j2cl//:jsinterop-annotations",
     visibility = ["//visibility:public"],
