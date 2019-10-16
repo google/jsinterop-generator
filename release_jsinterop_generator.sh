@@ -17,11 +17,49 @@
 # upload them to sonatype.
 set -e
 
-lib_version=$1
+usage() {
+    echo ""
+    echo "$(basename $0): Build and deploy script for JsInterop Generator."
+    echo ""
+    echo "$(basename $0) --version <version> [--no-deploy]"
+    echo "    --help"
+    echo "        Print this help output and exit."
+    echo "    --version-file <version>"
+    echo "        Maven version to use for deploying to sonatype."
+    echo "    --no-deploy"
+    echo "        Skip the deployment part but build all artifacts."
+    echo ""
+}
 
-if [ -z ${lib_version} ]; then
-  echo "Please specify the lib version."
-  exit 1;
+deploy_flag=""
+
+while [[ "$1" != "" ]]; do
+  case $1 in
+    --version )    if [ -z $2 ] || [[ $2 == "--no-deploy" ]]; then
+                     echo "Error: Incorrect version value."
+                     usage
+                     exit 1
+                   fi
+                   shift
+                   lib_version=$1
+                   ;;
+    --no-deploy )  deploy_flag="--no-deploy"
+                   ;;
+    --help )       usage
+                   exit 1
+                   ;;
+    * )            echo "Error: unexpected option $1"
+                   usage
+                   exit 1
+                   ;;
+  esac
+  shift
+done
+
+if [[ -z "$lib_version" ]]; then
+  echo "Error: --version flag is missing"
+  usage
+  exit 1
 fi
 
 bazel_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -78,7 +116,7 @@ pom_template=${bazel_root}/maven/pom-closure-generator.xml
 
 # we cannot run the script directly from Bazel as bazel doesn't allow interactive script
 runcmd="$(mktemp /tmp/bazel-run.XXXXXX)"
-bazel run --script_path="$runcmd"  ${deploy_target} -- \
+bazel run --script_path="$runcmd"  ${deploy_target} -- ${deploy_flag}  \
     --artifact ${maven_artifact} \
     --jar-file ${tmp_artifact_dir}/generator.jar \
     --src-jar ${tmp_artifact_dir}/generator-src.jar \
