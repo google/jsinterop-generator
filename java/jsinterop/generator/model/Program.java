@@ -22,7 +22,6 @@ import com.google.j2cl.ast.annotations.Context;
 import com.google.j2cl.ast.annotations.Visitable;
 import com.google.j2cl.ast.processors.common.Processor;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -57,9 +56,5 @@ public class Program implements Node {
 
   public String getThirdPartyTypeJavaFqn(String tsFqn) {
     return thirdPartyTypesMapping.get(tsFqn);
-  }
-
-  public void removeTypes(Collection<Type> typeToDelete) {
-    types.removeAll(typeToDelete);
   }
 }
