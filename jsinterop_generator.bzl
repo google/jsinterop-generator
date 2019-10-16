@@ -168,14 +168,14 @@ def _jsinterop_generator_impl(ctx):
         ctx.executable._jar.path,
     ]
 
-    inputs = [
-        ctx.outputs._generated_jar,
+    tools = [
         ctx.executable._google_java_formatter,
         ctx.executable._jar,
     ]
 
     ctx.actions.run(
-        inputs = inputs,
+        inputs = [ctx.outputs._generated_jar],
+        tools = tools,
         outputs = [ctx.outputs._formatted_jar],
         executable = ctx.executable._format_jar_script,
         progress_message = "Formatting java classes",
