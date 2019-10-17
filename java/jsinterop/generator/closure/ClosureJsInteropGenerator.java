@@ -155,7 +155,6 @@ class ClosureJsInteropGenerator {
             .compiler(compiler)
             .sourceFiles(options.getSources())
             .externDependencyFiles(options.getDependencies())
-            // TODO(b/36178451): set the map in the context directly
             .javaProgram(new Program(readKeyValueFiles(options.getDependencyMappingFiles())))
             .typeRegistry(new ClosureTypeRegistry())
             .nameMapping(readKeyValueFiles(options.getNameMappingFiles()))
