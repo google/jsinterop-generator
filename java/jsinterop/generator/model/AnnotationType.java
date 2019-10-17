@@ -18,26 +18,29 @@ package jsinterop.generator.model;
 
 /** A list of annotations we use in our JsInterop code generation. */
 public enum AnnotationType {
-  JS_ENUM(PredefinedTypeReference.JS_ENUM, true, true, true),
-  JS_TYPE(PredefinedTypeReference.JS_TYPE, true, true, true),
-  JS_PROPERTY(PredefinedTypeReference.JS_PROPERTY, false, true, true),
-  JS_METHOD(PredefinedTypeReference.JS_METHOD, false, true, true),
-  JS_PACKAGE(PredefinedTypeReference.JS_PACKAGE, false, true, false),
-  JS_FUNCTION(PredefinedTypeReference.JS_FUNCTION, false, false, false),
-  JS_OVERLAY(PredefinedTypeReference.JS_OVERLAY, false, false, false),
-  DEPRECATED(PredefinedTypeReference.DEPRECATED, false, false, false);
+  JS_ENUM(PredefinedTypeReference.JS_ENUM, true, true, true, true),
+  JS_TYPE(PredefinedTypeReference.JS_TYPE, true, true, true, true),
+  JS_PROPERTY(PredefinedTypeReference.JS_PROPERTY, false, false, true, true),
+  JS_METHOD(PredefinedTypeReference.JS_METHOD, false, false, true, true),
+  JS_PACKAGE(PredefinedTypeReference.JS_PACKAGE, false, false, true, false),
+  JS_FUNCTION(PredefinedTypeReference.JS_FUNCTION, false, false, false, false),
+  JS_OVERLAY(PredefinedTypeReference.JS_OVERLAY, false, false, false, false),
+  DEPRECATED(PredefinedTypeReference.DEPRECATED, false, false, false, false);
 
   private final PredefinedTypeReference type;
-  private boolean hasNamespaceAttribute;
-  private boolean hasNameAttribute;
-  private boolean hasIsNativeAttribute;
+  private final boolean isTypeAnnotation;
+  private final boolean hasNameAttribute;
+  private final boolean hasNamespaceAttribute;
+  private final boolean hasIsNativeAttribute;
 
   AnnotationType(
       PredefinedTypeReference type,
+      boolean isTypeAnnotation,
       boolean hasIsNativeAttribute,
       boolean hasNamespaceAttribute,
       boolean hasNameAttribute) {
     this.type = type;
+    this.isTypeAnnotation = isTypeAnnotation;
     this.hasNamespaceAttribute = hasNamespaceAttribute;
     this.hasNameAttribute = hasNameAttribute;
     this.hasIsNativeAttribute = hasIsNativeAttribute;
@@ -57,5 +60,9 @@ public enum AnnotationType {
 
   public boolean hasIsNativeAttribute() {
     return hasIsNativeAttribute;
+  }
+
+  public boolean isTypeAnnotation() {
+    return isTypeAnnotation;
   }
 }

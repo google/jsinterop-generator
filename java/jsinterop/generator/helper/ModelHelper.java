@@ -104,12 +104,8 @@ public class ModelHelper {
       Annotation.Builder annotationBuilder =
           Annotation.builder().type(annotationType).isNativeAttribute(true);
 
-      if (!javaPackageName.equals(namespace)) {
-        annotationBuilder.namespaceAttribute(namespace);
-      }
-
-      if (!javaName.equals(name)) {
-        annotationBuilder.nameAttribute(name);
+      if (!javaName.equals(nativeFqn)) {
+        annotationBuilder.nameAttribute(nativeFqn);
       }
 
       type.addAnnotation(annotationBuilder.build());
@@ -140,14 +136,14 @@ public class ModelHelper {
 
     String nativeTypeName = typeToExtend.getAnnotation(JS_TYPE).getNameAttribute();
     if (nativeTypeName == null) {
-      nativeTypeName = typeToExtend.getName();
+      nativeTypeName = typeToExtend.getNativeFqn();
     }
+
     extendingType.addAnnotation(
         Annotation.builder()
             .type(JS_TYPE)
             .isNativeAttribute(true)
             .nameAttribute(nativeTypeName)
-            .namespaceAttribute(extendingType.getNativeNamespace())
             .build());
 
     // we add a of() casting method for easing casting to this type
@@ -181,7 +177,6 @@ public class ModelHelper {
         Annotation.builder()
             .type(JS_TYPE)
             .isNativeAttribute(true)
-            .namespaceAttribute("")
             .nameAttribute("goog.global")
             .build());
     return type;

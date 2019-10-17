@@ -29,8 +29,6 @@ public abstract class Annotation {
 
     public abstract Builder nameAttribute(@Nullable String nameAttribute);
 
-    public abstract Builder namespaceAttribute(@Nullable String namespaceAttribute);
-
     public abstract Builder isNativeAttribute(boolean isNativeAttribute);
 
     public abstract Annotation build();
@@ -43,16 +41,9 @@ public abstract class Annotation {
   @Nullable
   public abstract String getNameAttribute();
 
-  @Nullable
-  public abstract String getNamespaceAttribute();
-
   public abstract boolean getIsNativeAttribute();
 
   public abstract AnnotationType getType();
-
-  public Annotation withNamespaceAttribute(String namespaceAttribute) {
-    return toBuilder().namespaceAttribute(namespaceAttribute).build();
-  }
 
   public Annotation withNameAttribute(String nameAttribute) {
     return toBuilder().nameAttribute(nameAttribute).build();

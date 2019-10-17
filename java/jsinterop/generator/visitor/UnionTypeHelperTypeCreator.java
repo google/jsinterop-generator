@@ -201,7 +201,6 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
                     .type(JS_TYPE)
                     .isNativeAttribute(true)
                     .nameAttribute("?")
-                    .namespaceAttribute("")
                     .build());
 
             // add a HelperType.of(Object)

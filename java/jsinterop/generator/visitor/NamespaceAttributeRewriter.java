@@ -26,21 +26,7 @@ import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 
-/**
- * For the time being we only generate JsType coming from extern files or d.ts file. If a type is
- * defined under a namespace, we need to put the namespace in the name attribute of the JsInterop
- * annotation in order to force J2Cl not to emit a goog.require for the type.
- *
- * <pre>
- *   Ex:
- *   Instead of emitting:
- *      @JsType(isNative = true, name = "Foo", namespace = "Bar")
- *   emit:
- *      @JsType(isNative = true, name = "Bar.Foo", namespace = JsPackage.GLOBAL)
- * </pre>
- *
- * <p>This visitor is in charge to remove the clutz namespace if present.
- */
+/** This visitor is in charge to remove the clutz namespace if present. */
 public class NamespaceAttributeRewriter implements ModelVisitor {
 
   @Override
@@ -55,7 +41,7 @@ public class NamespaceAttributeRewriter implements ModelVisitor {
             }
 
             if (isNativeJsType(type)) {
-              maybeRewriteAnnotationAttributes(type, type.getPackageName());
+              maybeRewriteAnnotationAttributes(type);
             }
 
             // The namespace for native JsTypes is fixed at the type level and we don't set
@@ -72,40 +58,20 @@ public class NamespaceAttributeRewriter implements ModelVisitor {
         && currentType.getAnnotation(JS_TYPE).getIsNativeAttribute();
   }
 
-  private static void maybeRewriteAnnotationAttributes(Entity owner, String defaultOwnerNamespace) {
+  private static void maybeRewriteAnnotationAttributes(Entity owner) {
     Annotation originalAnnotation = owner.getAnnotation(JS_TYPE);
 
-    String namespace = originalAnnotation.getNamespaceAttribute();
+    String name = originalAnnotation.getNameAttribute();
 
-    if (namespace == null) {
-      // if namespace is null, it means that the real namespace is the package name of the JsType.
-      namespace = defaultOwnerNamespace;
+    if (name == null) {
+      return;
     }
 
-    String cleanedNamespace = maybeRemoveClutzNamespace(namespace);
+    String cleanName = maybeRemoveClutzNamespace(name);
 
-    Annotation newAnnotation = null;
-    if (!cleanedNamespace.isEmpty()) {
-      String name = originalAnnotation.getNameAttribute();
-      if (name == null) {
-        name = owner.getName();
-      }
-
-      // prefix the name with the namespace and change namespace to global namespace (modeled in
-      // our java model by an empty string).
-      newAnnotation =
-          originalAnnotation
-              .withNameAttribute(cleanedNamespace + "." + name)
-              .withNamespaceAttribute("");
-
-    } else if (!namespace.isEmpty()) {
-      // namespace is the clutz global namespace. Change it to the global namespace.
-      newAnnotation = originalAnnotation.withNamespaceAttribute("");
-    }
-
-    if (newAnnotation != null) {
+    if (!cleanName.equals(name)) {
       owner.removeAnnotation(JS_TYPE);
-      owner.addAnnotation(newAnnotation);
+      owner.addAnnotation(originalAnnotation.withNameAttribute(cleanName));
     }
   }
 }

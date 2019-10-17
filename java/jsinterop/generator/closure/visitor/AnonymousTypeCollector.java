@@ -89,7 +89,6 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
             .type(JS_TYPE)
             .isNativeAttribute(true)
             .nameAttribute("?")
-            .namespaceAttribute("")
             .build());
   }
 

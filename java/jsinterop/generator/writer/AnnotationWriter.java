@@ -15,10 +15,9 @@
  */
 package jsinterop.generator.writer;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static jsinterop.generator.helper.GeneratorUtils.maybeRemoveClutzNamespace;
 import static jsinterop.generator.model.AnnotationType.JS_PACKAGE;
 
+import com.google.common.base.Joiner;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.AnnotationType;
 import jsinterop.generator.model.TypeReference;
@@ -31,46 +30,30 @@ public class AnnotationWriter {
 
     codeWriter.emit("@").emitTypeReference(annotationType.getType());
 
-    String parameters = "";
+    String annotationParameters =
+        Joiner.on(",")
+            .skipNulls()
+            .join(
+                annotation.getIsNativeAttribute() ? "isNative = true" : null,
+                annotation.getNameAttribute() != null
+                    ? "name = \"" + annotation.getNameAttribute() + "\""
+                    : null,
+                annotationType.isTypeAnnotation()
+                    ? "namespace = " + getGlobalNamespace(codeWriter)
+                    : null);
 
-    // We don't use a generic way to handle attributes because the JsInterop annotations have at
-    // most three attributes. Refactor if more attributes are added.
-    if (annotationType.hasIsNativeAttribute() && annotation.getIsNativeAttribute()) {
-      parameters += "isNative = true";
-    }
-
-    if (annotationType.hasNameAttribute() && !isNullOrEmpty(annotation.getNameAttribute())) {
-      if (!isNullOrEmpty(parameters)) {
-        parameters += ", ";
-      }
-
-      parameters += "name = \"" + annotation.getNameAttribute() + "\"";
-    }
-
-    if (annotationType.hasNamespaceAttribute() && annotation.getNamespaceAttribute() != null) {
-      if (!isNullOrEmpty(parameters)) {
-        parameters += ", ";
-      }
-
-      String cleanedNamespace = maybeRemoveClutzNamespace(annotation.getNamespaceAttribute());
-
-      if (cleanedNamespace.length() == 0) {
-        TypeReference jsPackage = JS_PACKAGE.getType();
-        boolean imported = codeWriter.addImport(jsPackage);
-
-        parameters += "namespace = ";
-        parameters += imported ? jsPackage.getTypeName() : jsPackage.getImport();
-        parameters += ".GLOBAL";
-      } else {
-        parameters += "namespace = \"" + cleanedNamespace + "\"";
-      }
-    }
-
-    if (!isNullOrEmpty(parameters)) {
-      codeWriter.emit("(").emit(parameters).emit(")");
+    if (!annotationParameters.isEmpty()) {
+      codeWriter.emit("(").emit(annotationParameters).emit(")");
     }
 
     codeWriter.emitNewLine();
+  }
+
+  private static String getGlobalNamespace(CodeWriter codeWriter) {
+    TypeReference jsPackage = JS_PACKAGE.getType();
+    boolean imported = codeWriter.addImport(jsPackage);
+
+    return (imported ? jsPackage.getTypeName() : jsPackage.getImport()) + ".GLOBAL";
   }
 
   private AnnotationWriter() {}
