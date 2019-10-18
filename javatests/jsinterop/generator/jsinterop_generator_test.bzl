@@ -55,6 +55,9 @@ def jsinterop_generator_test(
         generate_j2cl_build_test = generate_j2cl_build_test,
     )
 
+    jar_tool = "@bazel_tools//tools/jdk:jar"
+    java_format_tool = "//third_party:google_java_format"
+
     native.sh_test(
         name = name,
         size = "small",
@@ -62,14 +65,14 @@ def jsinterop_generator_test(
             "//javatests/jsinterop/generator:jsinterop_generator_test.sh",
         ],
         data = [
-            "//third_party:jar",
-            "//third_party:google_java_format",
+            jar_tool,
+            java_format_tool,
             generator_output,
         ] + expected_output,
         args = [
             "$(location %s)" % generator_output,
             native.package_name(),
-            "$(location //third_party:jar)",
-            "$(location //third_party:google_java_format)",
+            "$(location %s)" % jar_tool,
+            "$(location %s)" % java_format_tool,
         ],
     )

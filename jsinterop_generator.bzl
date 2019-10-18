@@ -215,7 +215,7 @@ _jsinterop_generator = rule(
         "_jar": attr.label(
             cfg = "host",
             executable = True,
-            default = Label("//third_party:jar"),
+            default = Label("@bazel_tools//tools/jdk:jar"),
         ),
         "_google_java_formatter": attr.label(
             cfg = "host",
