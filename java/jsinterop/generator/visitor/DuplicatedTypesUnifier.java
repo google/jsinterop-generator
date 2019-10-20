@@ -107,13 +107,7 @@ public class DuplicatedTypesUnifier implements ModelVisitor {
     return currentKey;
   }
 
-  private final boolean useBeanConvention;
   private final Map<Type, Type> syntheticTypesToReplace = new HashMap<>();
-
-
-  public DuplicatedTypesUnifier(boolean useBeanConvention) {
-    this.useBeanConvention = useBeanConvention;
-  }
 
   public Map<Type, Type> getTypesToReplace() {
     return ImmutableMap.copyOf(syntheticTypesToReplace);
@@ -203,12 +197,9 @@ public class DuplicatedTypesUnifier implements ModelVisitor {
     }
 
     private String getGetterName(Field field) {
-      if (useBeanConvention) {
-        return "get"
-            + Ascii.toUpperCase(field.getName().substring(0, 1))
-            + field.getName().substring(1);
-      }
-      return field.getName();
+      return "get"
+          + Ascii.toUpperCase(field.getName().substring(0, 1))
+          + field.getName().substring(1);
     }
 
     @Override

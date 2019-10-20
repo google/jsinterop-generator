@@ -30,7 +30,6 @@ public final class TestUtil {
         .globalScopeClassName("unused")
         .extensionTypePrefix("unused")
         .debugEnabled(false)
-        .beanConventionUsed(false)
         .strict(true)
         .dependencyMappingFiles(ImmutableList.of())
         .dependencies(ImmutableList.of())

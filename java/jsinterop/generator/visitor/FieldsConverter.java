@@ -47,11 +47,7 @@ import jsinterop.generator.model.TypeReference;
  * interface.
  */
 public class FieldsConverter implements ModelVisitor {
-  private final boolean useBeanConvention;
-
-  FieldsConverter(boolean useBeanConvention) {
-    this.useBeanConvention = useBeanConvention;
-  }
+  FieldsConverter() {}
 
   @Override
   public void applyTo(Program program) {
@@ -81,10 +77,10 @@ public class FieldsConverter implements ModelVisitor {
               nonStaticFields.forEach(
                   field -> {
                     // getter method to access field
-                    type.addMethod(createAccessorMethod(field, false, useBeanConvention));
+                    type.addMethod(createAccessorMethod(field, false));
                     if (!field.isNativeReadOnly()) {
                       // setter method to access field
-                      type.addMethod(createAccessorMethod(field, true, useBeanConvention));
+                      type.addMethod(createAccessorMethod(field, true));
                     }
                   });
 
@@ -111,8 +107,7 @@ public class FieldsConverter implements ModelVisitor {
         });
   }
 
-  private static Method createAccessorMethod(
-      Field field, boolean setter, boolean useBeanConvention) {
+  private static Method createAccessorMethod(Field field, boolean setter) {
     String fieldName = field.getName();
     TypeReference fieldType = field.getType();
     String fieldNameUpperCamelCase = toCamelUpperCase(fieldName);
@@ -120,12 +115,8 @@ public class FieldsConverter implements ModelVisitor {
 
     Method accessor = new Method();
 
-    if (useBeanConvention) {
-      String methodPrefix = setter ? "set" : BOOLEAN == fieldType ? "is" : "get";
-      accessor.setName(methodPrefix + fieldNameUpperCamelCase);
-    } else {
-      accessor.setName(fieldName);
-    }
+    String methodPrefix = setter ? "set" : BOOLEAN == fieldType ? "is" : "get";
+    accessor.setName(methodPrefix + fieldNameUpperCamelCase);
 
     if (setter) {
       accessor.addParameter(Parameter.builder().setName(fieldName).setType(fieldType).build());
@@ -137,7 +128,7 @@ public class FieldsConverter implements ModelVisitor {
     accessor.setStatic(field.isStatic());
 
     Annotation.Builder jsPropertyAnnotation = Annotation.builder().type(JS_PROPERTY);
-    if (!useBeanConvention || !fieldNameIsLowerCamelCase) {
+    if (!fieldNameIsLowerCamelCase) {
       jsPropertyAnnotation.nameAttribute(fieldName);
     }
 

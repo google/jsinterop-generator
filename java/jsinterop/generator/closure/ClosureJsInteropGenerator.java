@@ -90,7 +90,6 @@ class ClosureJsInteropGenerator {
 
     VisitorHelper.finalizeJavaProgram(
         javaProgram,
-        options.isBeanConventionUsed(),
         readListFiles(options.getIntegerEntitiesFiles()),
         readKeyValueFiles(options.getWildcardTypesFiles()),
         problems);

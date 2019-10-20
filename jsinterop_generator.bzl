@@ -96,9 +96,6 @@ def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
     if ctx.attr.debug:
         arguments += ["--debug_mode"]
 
-    if ctx.attr.use_bean_convention:
-        arguments += ["--bean_convention"]
-
     if ctx.attr.runtime_deps:
         runtime_deps_expanded = [f.path for d in ctx.attr.runtime_deps for f in d.files.to_list()]
         main_advice_classpath = "--main_advice_classpath=%s" % ":".join(runtime_deps_expanded)
@@ -206,7 +203,6 @@ _jsinterop_generator = rule(
         "name_mapping_files": attr.label_list(allow_files = True),
         "integer_entities_files": attr.label_list(allow_files = True),
         "wildcard_types_files": attr.label_list(allow_files = True),
-        "use_bean_convention": attr.bool(),
         "debug": attr.bool(),
         "conversion_mode": attr.string(),
         "gwt_module_name": attr.string(),
@@ -256,7 +252,6 @@ def jsinterop_generator(
         name_mapping_files = [],
         integer_entities_files = [],
         wildcard_types_files = [],
-        use_bean_convention = True,
         package_prefix = None,
         generate_j2cl_library = True,
         generate_gwt_library = True,
@@ -324,7 +319,6 @@ def jsinterop_generator(
             name_mapping_files = name_mapping_files,
             integer_entities_files = integer_entities_files,
             wildcard_types_files = wildcard_types_files,
-            use_bean_convention = use_bean_convention,
             # TODO(dramaix): replace it by a blaze flag
             debug = False,
             conversion_mode = conversion_mode,

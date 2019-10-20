@@ -27,7 +27,6 @@ public final class VisitorHelper {
 
   public static void finalizeJavaProgram(
       Program program,
-      boolean useBeanConvention,
       List<String> integerEntities,
       Map<String, String> wildcardTypes,
       Problems problems) {
@@ -37,7 +36,7 @@ public final class VisitorHelper {
 
     new DictionaryTypeVisitor().applyTo(program);
 
-    new FieldsConverter(useBeanConvention).applyTo(program);
+    new FieldsConverter().applyTo(program);
 
     new ClosureOptionalParameterCleaner().applyTo(program);
 
@@ -76,7 +75,7 @@ public final class VisitorHelper {
         break;
       }
     }
-    DuplicatedTypesUnifier duplicatedTypesUnifier = new DuplicatedTypesUnifier(useBeanConvention);
+    DuplicatedTypesUnifier duplicatedTypesUnifier = new DuplicatedTypesUnifier();
     duplicatedTypesUnifier.applyTo(program);
 
     new FixReferencesToDuplicatedTypes(duplicatedTypesUnifier.getTypesToReplace()).applyTo(program);

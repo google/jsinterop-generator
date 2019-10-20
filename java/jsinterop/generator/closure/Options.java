@@ -35,8 +35,6 @@ public abstract class Options {
 
     abstract Builder debugEnabled(boolean debugEnabled);
 
-    abstract Builder beanConventionUsed(boolean beanConventionUsed);
-
     abstract Builder dependencyMappingFiles(List<String> dependencyFiles);
 
     abstract Builder dependencies(List<SourceFile> dependencyFiles);
@@ -70,8 +68,6 @@ public abstract class Options {
   public abstract String getExtensionTypePrefix();
 
   public abstract boolean isDebugEnabled();
-
-  public abstract boolean isBeanConventionUsed();
 
   public abstract boolean isStrict();
 
