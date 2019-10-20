@@ -96,7 +96,7 @@ public class TypeCollector extends AbstractClosureVisitor {
       globalJavaType.setName("__Global_Dependencies");
     }
 
-    getJavaTypeRegistry().registerJavaGlobalType(globalJavaType, scope.getTypeOfThis());
+    getJavaTypeRegistry().registerJavaGlobalType(scope.getTypeOfThis(), globalJavaType);
     getContext().getJavaProgram().addType(globalJavaType);
     // push the current java type to be able to create an extension type later.
     super.pushCurrentJavaType(globalJavaType);
@@ -113,7 +113,7 @@ public class TypeCollector extends AbstractClosureVisitor {
     if (type.getJSDocInfo() != null && type.getJSDocInfo().isDeprecated()) {
       javaType.addAnnotation(Annotation.builder().type(AnnotationType.DEPRECATED).build());
     }
-    getJavaTypeRegistry().registerJavaType(javaType, type.getInstanceType());
+    getJavaTypeRegistry().registerJavaType(type.getInstanceType(), javaType);
 
     // keep the current java type to be able to create an extension type later.
     super.pushCurrentJavaType(javaType);
@@ -132,8 +132,8 @@ public class TypeCollector extends AbstractClosureVisitor {
 
     // In closure, the type used for the enum and the type for the enum members are different.
     // In our model, it's the same java type. We need to register the java type two times.
-    getJavaTypeRegistry().registerJavaType(enumType, type);
-    getJavaTypeRegistry().registerJavaType(enumType, type.getElementsType());
+    getJavaTypeRegistry().registerJavaType(type, enumType);
+    getJavaTypeRegistry().registerJavaType(type.getElementsType(), enumType);
 
     return false;
   }
@@ -146,7 +146,7 @@ public class TypeCollector extends AbstractClosureVisitor {
             : module.getName();
 
     Type javaType = createJavaType(jsFqn, NAMESPACE, false);
-    getJavaTypeRegistry().registerJavaType(javaType, module.getType());
+    getJavaTypeRegistry().registerJavaType(module.getType(), javaType);
     super.pushCurrentJavaType(javaType);
     return true;
   }
@@ -167,7 +167,7 @@ public class TypeCollector extends AbstractClosureVisitor {
 
     Type javaType = createJavaType(jsFqn, INTERFACE, false);
     javaType.setStructural(true);
-    getJavaTypeRegistry().registerJavaType(javaType, type);
+    getJavaTypeRegistry().registerJavaType(type, javaType);
     return false;
   }
 
@@ -182,7 +182,7 @@ public class TypeCollector extends AbstractClosureVisitor {
 
     Type javaType = createJavaType(jsFqn, INTERFACE, true);
     javaType.setStructural(true);
-    getJavaTypeRegistry().registerJavaType(javaType, type);
+    getJavaTypeRegistry().registerJavaType(type, javaType);
     return false;
   }
 

@@ -70,8 +70,8 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
     super(new IdentityHashMap<>());
   }
 
-  public void registerJavaType(Type javaType, JSType jsType) {
-    registerJavaTypeByKey(javaType, jsType);
+  public void registerJavaType(JSType jsType, Type javaType) {
+    registerJavaTypeByKey(jsType, javaType);
   }
 
   public Type getJavaType(JSType type) {

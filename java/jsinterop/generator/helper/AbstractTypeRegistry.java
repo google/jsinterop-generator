@@ -57,19 +57,19 @@ public abstract class AbstractTypeRegistry<T> {
     return type;
   }
 
-  protected void registerJavaTypeByKey(Type type, T nativeTypeKey) {
+  protected void registerJavaTypeByKey(T nativeTypeKey, Type type) {
     Type previousType = javaTypesById.put(nativeTypeKey, type);
     checkState(previousType == null, "A type already exists with key [%s]", nativeTypeKey);
   }
 
-  public void registerJavaGlobalType(Type type, T nativeTypeKey) {
+  public void registerJavaGlobalType(T nativeTypeKey, Type type) {
     checkState(globalType == null, "The global type already exists");
 
     globalType = type;
 
     // TODO(b/34278243): Clean that up for typescript when bug is fixed.
     if (nativeTypeKey != null) {
-      registerJavaTypeByKey(type, nativeTypeKey);
+      registerJavaTypeByKey(nativeTypeKey, type);
     }
   }
 

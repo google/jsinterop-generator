@@ -135,7 +135,7 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
     // existing method or field, the package name of the synthetic type will change and that
     // will introduce a breaking change.
     getCurrentJavaType().addInnerType(javaType);
-    getJavaTypeRegistry().registerJavaType(javaType, recordOrFunctionType);
+    getJavaTypeRegistry().registerJavaType(recordOrFunctionType, javaType);
 
     pushCurrentJavaType(javaType);
 
