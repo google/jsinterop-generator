@@ -49,6 +49,10 @@ public class GeneratorUtils {
     return nativeFqn.substring(0, nativeFqn.length() - nativeTypeName.length() - 1);
   }
 
+  public static String extractNamespace(String nativeFqn) {
+    return extractNamespace(nativeFqn, extractName(nativeFqn));
+  }
+
   public static String extractName(String nativeFqn) {
     return checkNotNull(nativeFqn).substring(nativeFqn.lastIndexOf('.') + 1);
   }

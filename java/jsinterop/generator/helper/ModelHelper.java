@@ -58,7 +58,7 @@ import jsinterop.generator.model.TypeReference;
 
 /** Helper methods around our java model. */
 public class ModelHelper {
-  private static final String GLOBAL_NAMESPACE = "<global>";
+  private static final String GLOBAL_TYPE = "<global>";
 
   public static Type createJavaType(
       String name,
@@ -94,7 +94,6 @@ public class ModelHelper {
 
     type.setName(javaName);
     type.setPackageName(javaPackageName);
-    type.setNativeNamespace(namespace);
     type.setNativeFqn(nativeFqn);
 
     if (isJsFunction) {
@@ -127,23 +126,22 @@ public class ModelHelper {
     extendingType.setExtensionType(true);
     extendingType.setName(extensionTypePrefix + typeToExtend.getName());
     extendingType.setPackageName(
-        createJavaPackage(typeToExtend.getNativeNamespace(), packagePrefix));
+        createJavaPackage(extractNamespace(typeToExtend.getNativeFqn()), packagePrefix));
 
     extendingType.setNativeFqn(typeToExtend.getNativeFqn());
-    extendingType.setNativeNamespace(typeToExtend.getNativeNamespace());
 
     extendingType.addExtendedType(new JavaTypeReference(typeToExtend));
 
-    String nativeTypeName = typeToExtend.getAnnotation(JS_TYPE).getNameAttribute();
-    if (nativeTypeName == null) {
-      nativeTypeName = typeToExtend.getNativeFqn();
+    String annotationTypeName = typeToExtend.getAnnotation(JS_TYPE).getNameAttribute();
+    if (annotationTypeName == null) {
+      annotationTypeName = typeToExtend.getNativeFqn();
     }
 
     extendingType.addAnnotation(
         Annotation.builder()
             .type(JS_TYPE)
             .isNativeAttribute(true)
-            .nameAttribute(nativeTypeName)
+            .nameAttribute(annotationTypeName)
             .build());
 
     // we add a of() casting method for easing casting to this type
@@ -172,7 +170,7 @@ public class ModelHelper {
     Type type = new Type(NAMESPACE);
     type.setName(globalScopeClassName);
     type.setPackageName(packagePrefix);
-    type.setNativeNamespace(GLOBAL_NAMESPACE);
+    type.setNativeFqn(GLOBAL_TYPE);
     type.addAnnotation(
         Annotation.builder()
             .type(JS_TYPE)
@@ -183,7 +181,7 @@ public class ModelHelper {
   }
 
   public static boolean isGlobalType(Type type) {
-    return GLOBAL_NAMESPACE.equals(type.getNativeNamespace());
+    return GLOBAL_TYPE.equals(type.getNativeFqn());
   }
 
   public static void addAnnotationNameAttributeIfNotEmpty(

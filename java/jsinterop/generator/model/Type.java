@@ -53,7 +53,6 @@ public class Type extends Entity implements HasTypeParameters {
 
     clonedType.setEnclosingType(type.getEnclosingType());
     clonedType.setPackageName(type.getPackageName());
-    clonedType.setNativeNamespace(type.getNativeNamespace());
     clonedType.setSynthetic(type.isSynthetic());
     clonedType.setStructural(type.isStructural());
     clonedType.setExtern(type.isExtern());
@@ -102,7 +101,6 @@ public class Type extends Entity implements HasTypeParameters {
   private boolean extensionType;
   private boolean synthetic;
   private boolean structural;
-  private String nativeNamespace;
   private String nativeFqn;
 
   public Type(EntityKind entityKind) {
@@ -253,14 +251,6 @@ public class Type extends Entity implements HasTypeParameters {
 
   public Set<String> getInnerTypesNames() {
     return newHashSet(transform(getInnerTypes(), Entity::getName));
-  }
-
-  public String getNativeNamespace() {
-    return nativeNamespace;
-  }
-
-  public void setNativeNamespace(String nativeNamespace) {
-    this.nativeNamespace = nativeNamespace;
   }
 
   public String getNativeFqn() {
