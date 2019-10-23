@@ -5,6 +5,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
+@FunctionalInterface
 public interface Bar<U, T, V> {
   @JsFunction
   public interface BarCallbackFn<U, T, V> {

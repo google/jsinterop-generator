@@ -38,7 +38,7 @@ public class AnnotationWriter {
                 annotation.getNameAttribute() != null
                     ? "name = \"" + annotation.getNameAttribute() + "\""
                     : null,
-                annotationType.isTypeAnnotation()
+                annotationType.isJsInteropTypeAnnotation()
                     ? "namespace = " + getGlobalNamespace(codeWriter)
                     : null);
 

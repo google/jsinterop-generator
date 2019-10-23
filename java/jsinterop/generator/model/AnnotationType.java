@@ -18,51 +18,33 @@ package jsinterop.generator.model;
 
 /** A list of annotations we use in our JsInterop code generation. */
 public enum AnnotationType {
-  JS_ENUM(PredefinedTypeReference.JS_ENUM, true, true, true, true),
-  JS_TYPE(PredefinedTypeReference.JS_TYPE, true, true, true, true),
-  JS_PROPERTY(PredefinedTypeReference.JS_PROPERTY, false, false, true, true),
-  JS_METHOD(PredefinedTypeReference.JS_METHOD, false, false, true, true),
-  JS_PACKAGE(PredefinedTypeReference.JS_PACKAGE, false, false, true, false),
-  JS_FUNCTION(PredefinedTypeReference.JS_FUNCTION, false, false, false, false),
-  JS_OVERLAY(PredefinedTypeReference.JS_OVERLAY, false, false, false, false),
-  DEPRECATED(PredefinedTypeReference.DEPRECATED, false, false, false, false);
+  JS_ENUM(PredefinedTypeReference.JS_ENUM, true),
+  JS_TYPE(PredefinedTypeReference.JS_TYPE, true),
+  JS_PROPERTY(PredefinedTypeReference.JS_PROPERTY, false),
+  JS_METHOD(PredefinedTypeReference.JS_METHOD, false),
+  JS_PACKAGE(PredefinedTypeReference.JS_PACKAGE, false),
+  JS_FUNCTION(PredefinedTypeReference.JS_FUNCTION, false),
+  JS_OVERLAY(PredefinedTypeReference.JS_OVERLAY, false),
+  DEPRECATED(PredefinedTypeReference.DEPRECATED, false),
+  FUNCTIONAL_INTERFACE(PredefinedTypeReference.FUNCTIONAL_INTERFACE, false);
 
   private final PredefinedTypeReference type;
-  private final boolean isTypeAnnotation;
-  private final boolean hasNameAttribute;
-  private final boolean hasNamespaceAttribute;
-  private final boolean hasIsNativeAttribute;
+  private final boolean isJsInteropTypeAnnotation;
 
-  AnnotationType(
-      PredefinedTypeReference type,
-      boolean isTypeAnnotation,
-      boolean hasIsNativeAttribute,
-      boolean hasNamespaceAttribute,
-      boolean hasNameAttribute) {
+  AnnotationType(PredefinedTypeReference type, boolean isJsInteropTypeAnnotation) {
     this.type = type;
-    this.isTypeAnnotation = isTypeAnnotation;
-    this.hasNamespaceAttribute = hasNamespaceAttribute;
-    this.hasNameAttribute = hasNameAttribute;
-    this.hasIsNativeAttribute = hasIsNativeAttribute;
+    this.isJsInteropTypeAnnotation = isJsInteropTypeAnnotation;
   }
 
   public TypeReference getType() {
     return type;
   }
 
-  public boolean hasNamespaceAttribute() {
-    return hasNamespaceAttribute;
-  }
-
-  public boolean hasNameAttribute() {
-    return hasNameAttribute;
-  }
-
-  public boolean hasIsNativeAttribute() {
-    return hasIsNativeAttribute;
-  }
-
-  public boolean isTypeAnnotation() {
-    return isTypeAnnotation;
+  /**
+   * Returns {@code true} if the annotation is a JsInterop annotation targeting a type, {@code
+   * false} otherwise.
+   */
+  public boolean isJsInteropTypeAnnotation() {
+    return isJsInteropTypeAnnotation;
   }
 }

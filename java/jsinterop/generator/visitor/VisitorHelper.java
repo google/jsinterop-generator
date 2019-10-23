@@ -94,6 +94,8 @@ public final class VisitorHelper {
     new ObjectParameterJsOverlayCreator().applyTo(program);
 
     new NamespaceAttributeRewriter().applyTo(program);
+
+    new FunctionalInterfaceAnnotator().applyTo(program);
   }
 
   private VisitorHelper() {}
