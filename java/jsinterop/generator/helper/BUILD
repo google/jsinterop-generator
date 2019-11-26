@@ -2,9 +2,7 @@
 #  Generator helper
 
 package(
-    default_visibility = [
-        "//:__subpackages__",
-    ],
+    default_visibility = ["//visibility:public"],
     # Apache2
     licenses = ["notice"],
 )
