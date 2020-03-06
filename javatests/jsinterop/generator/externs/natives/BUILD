@@ -2,17 +2,17 @@
 #   Contains helper lib used by tests
 #
 
+load(
+    "//:jsinterop_generator_import.bzl",
+    "jsinterop_generator_import",
+)
+
 package(
     default_visibility = [
         "//javatests/jsinterop/generator/externs:__subpackages__",
     ],
     # Apache2
     licenses = ["notice"],
-)
-
-load(
-    "//:jsinterop_generator_import.bzl",
-    "jsinterop_generator_import",
 )
 
 # In our test, we use a reference to native js types like Object or Array.

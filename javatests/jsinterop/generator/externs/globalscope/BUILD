@@ -2,15 +2,15 @@
 #   Tests conversion property/functions defined on the global scope
 #
 
+load(
+    "//javatests/jsinterop/generator:jsinterop_generator_test.bzl",
+    "jsinterop_generator_test",
+)
+
 package(
     default_visibility = ["//:__subpackages__"],
     # Apache2
     licenses = ["notice"],
-)
-
-load(
-    "//javatests/jsinterop/generator:jsinterop_generator_test.bzl",
-    "jsinterop_generator_test",
 )
 
 jsinterop_generator_test(

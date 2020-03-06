@@ -2,15 +2,15 @@
 #   Tests dependency mechanism
 #
 
+load(
+    "//:jsinterop_generator.bzl",
+    "jsinterop_generator",
+)
+
 package(
     default_visibility = ["//:__subpackages__"],
     # Apache2
     licenses = ["notice"],
-)
-
-load(
-    "//:jsinterop_generator.bzl",
-    "jsinterop_generator",
 )
 
 jsinterop_generator(
