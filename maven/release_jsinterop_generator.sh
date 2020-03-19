@@ -24,7 +24,7 @@ usage() {
     echo "$(basename $0) --version <version> [--no-deploy]"
     echo "    --help"
     echo "        Print this help output and exit."
-    echo "    --version-file <version>"
+    echo "    --version <version>"
     echo "        Maven version to use for deploying to sonatype."
     echo "    --no-deploy"
     echo "        Skip the deployment part but build all artifacts."
@@ -62,7 +62,12 @@ if [[ -z "$lib_version" ]]; then
   exit 1
 fi
 
-bazel_root="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+if [ ! -f "WORKSPACE" ]; then
+  echo "Error: should be run from the root of the Bazel repository"
+  exit 1
+fi
+
+bazel_root=$(pwd)
 
 merge_jars() {
   tmp_directory=$(mktemp -d)
