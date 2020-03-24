@@ -1,6 +1,6 @@
-
 # Description:
 #   Build rules in this directory are used by our tooling and build rules
+
 package(
     default_visibility = ["//visibility:public"],
     # Apache2
