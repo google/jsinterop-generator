@@ -24,7 +24,6 @@ import com.google.j2cl.ast.processors.common.Processor;
 
 /** Minimal contract for a class modeling a reference to a type. */
 @Visitable
-// TODO(dramaix): import + remove Node
 public interface TypeReference {
   String getTypeName();
 
