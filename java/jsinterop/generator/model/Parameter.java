@@ -28,6 +28,8 @@ public class Parameter implements HasName, Node {
     return parameter.toBuilder().build();
   }
 
+  // TODO(b/156549743): For varargs parameters the type does not reflect the real type of the
+  // variable which is always an array.
   @Visitable TypeReference type;
   private final boolean varargs;
   private final boolean optional;

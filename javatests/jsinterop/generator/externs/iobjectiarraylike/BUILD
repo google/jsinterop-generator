@@ -20,6 +20,7 @@ jsinterop_generator_test(
         "Foo.java.txt",
         "Bar.java.txt",
         "Baz.java.txt",
+        "Varargs.java.txt",
     ],
     deps = ["//javatests/jsinterop/generator/externs/natives"],
 )

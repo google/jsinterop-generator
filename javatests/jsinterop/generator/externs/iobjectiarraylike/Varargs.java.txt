@@ -1,0 +1,17 @@
+package jsinterop.generator.externs.iobjectiarraylike;
+
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.generator.externs.natives.JsObject;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public class Varargs {
+  public native void methodWithJsObjectVarargs(JsObject... var_args);
+
+  @JsOverlay
+  public final void methodWithJsObjectVarargs(Object... var_args) {
+    methodWithJsObjectVarargs(Js.<JsObject[]>uncheckedCast(var_args));
+  }
+}

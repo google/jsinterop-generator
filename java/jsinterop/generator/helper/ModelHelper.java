@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Objects;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.AnnotationType;
+import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.EntityKind;
 import jsinterop.generator.model.Expression;
@@ -313,7 +314,10 @@ public class ModelHelper {
         .setMethodName("uncheckedCast")
         .setArgumentTypes(OBJECT)
         .setArguments(new LiteralExpression(overloadParameter.getName()))
-        .setLocalTypeArguments(originalParameter.getType())
+        .setLocalTypeArguments(
+            originalParameter.isVarargs()
+                ? new ArrayTypeReference(originalParameter.getType())
+                : originalParameter.getType())
         .build();
   }
 

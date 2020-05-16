@@ -78,3 +78,13 @@ Bar.prototype.templatizedObjectWithTwoParameters;
  * @template T
  */
 function Baz() {}
+
+/** @constructor */
+function Varargs() {}
+
+// Test a union type in a varargs position.
+/**
+ * @param {...Object} var_args
+ * @return {void}
+ */
+Varargs.prototype.methodWithJsObjectVarargs = function(var_args) {};
