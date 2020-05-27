@@ -1,5 +1,6 @@
 package jsinterop.generator.externs.overloads;
 
+import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
@@ -9,6 +10,16 @@ import jsinterop.base.Js;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Foo {
+  @JsFunction
+  public interface FunctionPropertyFn {
+    void onInvoke();
+  }
+
+  @JsFunction
+  public interface FunctionPropertyFn0 {
+    void onInvoke();
+  }
+
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface StaticUnionArgMethodArgUnionType {
     @JsOverlay
@@ -121,6 +132,9 @@ public class Foo {
     }
   }
 
+  @JsProperty(name = "functionProperty")
+  public static Foo.FunctionPropertyFn functionProperty_STATIC;
+
   @JsProperty(name = "unionProperty")
   public static Foo.StaticUnionPropertyUnionType unionProperty_STATIC;
 
@@ -139,6 +153,7 @@ public class Foo {
     return unionArgMethod(Js.<Foo.StaticUnionArgMethodArgUnionType>uncheckedCast(arg));
   }
 
+  public Foo.FunctionPropertyFn0 functionProperty;
   public Foo.UnionPropertyUnionType unionProperty;
 
   public native Object noArgMethod();

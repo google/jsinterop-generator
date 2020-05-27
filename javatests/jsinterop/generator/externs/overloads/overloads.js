@@ -29,3 +29,13 @@ Foo.unionProperty;
  * @type {string|number}
  */
 Foo.prototype.unionProperty;
+
+/**
+ * @type {function():void}
+ */
+Foo.functionProperty;
+
+/**
+ * @type {function():void}
+ */
+Foo.prototype.functionProperty;
