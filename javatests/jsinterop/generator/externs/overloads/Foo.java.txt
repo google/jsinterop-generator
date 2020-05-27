@@ -1,0 +1,157 @@
+package jsinterop.generator.externs.overloads;
+
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public class Foo {
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface StaticUnionArgMethodArgUnionType {
+    @JsOverlay
+    static Foo.StaticUnionArgMethodArgUnionType of(Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default double asDouble() {
+      return Js.asDouble(this);
+    }
+
+    @JsOverlay
+    default String asString() {
+      return Js.asString(this);
+    }
+
+    @JsOverlay
+    default boolean isDouble() {
+      return (Object) this instanceof Double;
+    }
+
+    @JsOverlay
+    default boolean isString() {
+      return (Object) this instanceof String;
+    }
+  }
+
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface StaticUnionPropertyUnionType {
+    @JsOverlay
+    static Foo.StaticUnionPropertyUnionType of(Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default double asDouble() {
+      return Js.asDouble(this);
+    }
+
+    @JsOverlay
+    default String asString() {
+      return Js.asString(this);
+    }
+
+    @JsOverlay
+    default boolean isDouble() {
+      return (Object) this instanceof Double;
+    }
+
+    @JsOverlay
+    default boolean isString() {
+      return (Object) this instanceof String;
+    }
+  }
+
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface UnionArgMethodArgUnionType {
+    @JsOverlay
+    static Foo.UnionArgMethodArgUnionType of(Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default double asDouble() {
+      return Js.asDouble(this);
+    }
+
+    @JsOverlay
+    default String asString() {
+      return Js.asString(this);
+    }
+
+    @JsOverlay
+    default boolean isDouble() {
+      return (Object) this instanceof Double;
+    }
+
+    @JsOverlay
+    default boolean isString() {
+      return (Object) this instanceof String;
+    }
+  }
+
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface UnionPropertyUnionType {
+    @JsOverlay
+    static Foo.UnionPropertyUnionType of(Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default double asDouble() {
+      return Js.asDouble(this);
+    }
+
+    @JsOverlay
+    default String asString() {
+      return Js.asString(this);
+    }
+
+    @JsOverlay
+    default boolean isDouble() {
+      return (Object) this instanceof Double;
+    }
+
+    @JsOverlay
+    default boolean isString() {
+      return (Object) this instanceof String;
+    }
+  }
+
+  @JsProperty(name = "unionProperty")
+  public static Foo.StaticUnionPropertyUnionType unionProperty_STATIC;
+
+  @JsMethod(name = "noArgMethod")
+  public static native Object noArgMethod_STATIC();
+
+  public static native Object unionArgMethod(Foo.StaticUnionArgMethodArgUnionType arg);
+
+  @JsOverlay
+  public static final Object unionArgMethod_STATIC(String arg) {
+    return unionArgMethod(Js.<Foo.StaticUnionArgMethodArgUnionType>uncheckedCast(arg));
+  }
+
+  @JsOverlay
+  public static final Object unionArgMethod_STATIC(double arg) {
+    return unionArgMethod(Js.<Foo.StaticUnionArgMethodArgUnionType>uncheckedCast(arg));
+  }
+
+  public Foo.UnionPropertyUnionType unionProperty;
+
+  public native Object noArgMethod();
+
+  @JsOverlay
+  public final Object unionArgMethod(String arg) {
+    return unionArgMethod(Js.<Foo.UnionArgMethodArgUnionType>uncheckedCast(arg));
+  }
+
+  public native Object unionArgMethod(Foo.UnionArgMethodArgUnionType arg);
+
+  @JsOverlay
+  public final Object unionArgMethod(double arg) {
+    return unionArgMethod(Js.<Foo.UnionArgMethodArgUnionType>uncheckedCast(arg));
+  }
+}

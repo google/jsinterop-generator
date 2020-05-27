@@ -17,8 +17,7 @@
 
 package jsinterop.generator.visitor;
 
-import static jsinterop.generator.model.AnnotationType.JS_METHOD;
-import static jsinterop.generator.model.AnnotationType.JS_PROPERTY;
+import static jsinterop.generator.model.AnnotationType.*;
 import static jsinterop.generator.model.EntityKind.METHOD;
 
 import java.util.ArrayList;
@@ -163,12 +162,14 @@ public class MembersClassCleaner implements ModelVisitor {
                 String name = entity.getName();
                 entity.setName(name + "_STATIC");
 
-                // TODO(dramaix): add a javadoc above the field explaining why it was renamed
-                AnnotationType annotationType =
-                    entity.getKind() == METHOD ? JS_METHOD : JS_PROPERTY;
+                if (!entity.hasAnnotation(JS_OVERLAY)) {
+                  // TODO(dramaix): add a javadoc above the field explaining why it was renamed
+                  AnnotationType annotationType =
+                          entity.getKind() == METHOD ? JS_METHOD : JS_PROPERTY;
 
-                ModelHelper.addAnnotationNameAttributeIfNotEmpty(
-                    entity, name, annotationType, true);
+                  ModelHelper.addAnnotationNameAttributeIfNotEmpty(
+                          entity, name, annotationType, true);
+                }
               }
             }
           }

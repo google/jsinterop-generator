@@ -80,12 +80,18 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
 
           @Override
           public boolean shouldProcessField(Field field) {
+            if (field.isStatic()) {
+              currentNameStack.push("Static");
+            }
             currentNameStack.push(toCamelUpperCase(field.getName()));
             return true;
           }
 
           @Override
           public Field rewriteField(Field field) {
+            if (field.isStatic()) {
+              currentNameStack.pop();
+            }
             currentNameStack.pop();
             return field;
           }
@@ -95,6 +101,9 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
             // JsFunction type only have one method named onInvoke, don't use the method name
             // because it doesn't give us any much more information.
             if (!isCurrentTypeJsFunction()) {
+              if (method.isStatic()) {
+                currentNameStack.push("Static");
+              }
               currentNameStack.push(
                   method.getKind() == CONSTRUCTOR
                       ? "Constructor"
@@ -106,6 +115,9 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
           @Override
           public Method rewriteMethod(Method method) {
             if (!isCurrentTypeJsFunction()) {
+              if (method.isStatic()) {
+                currentNameStack.pop();
+              }
               currentNameStack.pop();
             }
 
