@@ -24,8 +24,8 @@ import static jsinterop.generator.model.AnnotationType.JS_FUNCTION;
 import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 
 import com.google.common.collect.ImmutableList;
-import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
+import com.google.javascript.rhino.jstype.FunctionType.Parameter;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSType.Nullability;
 import com.google.javascript.rhino.jstype.RecordType;
@@ -152,7 +152,7 @@ public class AnonymousTypeCollector extends AbstractClosureVisitor {
   }
 
   @Override
-  protected boolean visitParameter(Node parameter, FunctionType owner, int index) {
+  protected boolean visitParameter(Parameter parameter, FunctionType owner, int index) {
     String ownerName;
     String paramName;
     if (isAnonymousFunctionType(owner)) {

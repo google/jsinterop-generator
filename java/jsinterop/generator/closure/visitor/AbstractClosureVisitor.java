@@ -23,10 +23,10 @@ import com.google.common.collect.Streams;
 import com.google.javascript.jscomp.NodeUtil;
 import com.google.javascript.jscomp.TypedScope;
 import com.google.javascript.jscomp.TypedVar;
-import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.StaticSourceFile;
 import com.google.javascript.rhino.jstype.EnumType;
 import com.google.javascript.rhino.jstype.FunctionType;
+import com.google.javascript.rhino.jstype.FunctionType.Parameter;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
@@ -293,18 +293,18 @@ abstract class AbstractClosureVisitor {
 
   private void acceptParameters(FunctionType owner) {
     int index = 0;
-    for (Node parameter : owner.getParameters()) {
+    for (Parameter parameter : owner.getParameters()) {
       acceptParameter(parameter, owner, index++);
     }
   }
 
-  private void acceptParameter(Node parameter, FunctionType owner, int index) {
+  private void acceptParameter(Parameter parameter, FunctionType owner, int index) {
     if (visitParameter(parameter, owner, index)) {
       acceptType(parameter.getJSType());
     }
   }
 
-  protected boolean visitParameter(Node parameter, FunctionType owner, int index) {
+  protected boolean visitParameter(Parameter parameter, FunctionType owner, int index) {
     return true;
   }
 

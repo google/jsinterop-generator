@@ -21,7 +21,6 @@ import com.google.common.collect.Sets;
 import com.google.javascript.jscomp.TypedScope;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Visibility;
-import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.Property;
@@ -167,7 +166,8 @@ public class MemberCollector extends AbstractClosureVisitor {
   }
 
   @Override
-  protected boolean visitParameter(Node parameter, FunctionType owner, int index) {
+  protected boolean visitParameter(
+      FunctionType.Parameter parameter, FunctionType owner, int index) {
     Method currentMethod = currentJavaMethodDeque.peek();
 
     String parentFqn = getCurrentJavaType().getJavaFqn() + "." + currentMethod.getName();
@@ -181,12 +181,12 @@ public class MemberCollector extends AbstractClosureVisitor {
     return true;
   }
 
-  private Parameter convertParameter(Node jsParameter, String parameterName) {
+  private Parameter convertParameter(FunctionType.Parameter jsParameter, String parameterName) {
     return Parameter.builder()
         .setName(parameterName)
         .setType(getJavaTypeRegistry().createTypeReference(jsParameter.getJSType()))
-        .setVarargs(jsParameter.isVarArgs())
-        .setOptional(jsParameter.isOptionalArg())
+        .setVarargs(jsParameter.isVariadic())
+        .setOptional(jsParameter.isOptional())
         .build();
   }
 
