@@ -47,6 +47,11 @@ public abstract class AbstractNoOpVisitor<T> implements Visitor<T> {
   }
 
   @Override
+  public T caseBigIntType() {
+    return null;
+  }
+
+  @Override
   public T caseBooleanType() {
     return null;
   }

@@ -190,6 +190,12 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
     }
 
     @Override
+    public TypeReference caseBigIntType() {
+      // TODO(b/157233786): add support for bigint type
+      return OBJECT;
+    }
+
+    @Override
     public TypeReference caseStringType() {
       return STRING;
     }
