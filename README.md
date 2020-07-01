@@ -8,7 +8,7 @@ Any other uses are experimental. You can use it to generate java APIs for other 
 
 Run with Bazel
 ---------------
-If your project use [Bazel](https://bazel.build). You can use the skylark rule `jsinterop_generator` to generate java code.
+If your project uses [Bazel](https://bazel.build). You can use `jsinterop_generator` rule to generate java code.
 
 You need to add this repository as an external dependency in your `WORKSPACE` file
 
@@ -35,13 +35,23 @@ Run as a standalone java program
 
 ### Build the generator from source
 
-- You need to install [Bazel](https://bazel.build/versions/master/docs/install.html).
-- clone this repository with git: `git clone https://github.com/google/jsinterop-generator.git`
-- Inside the repository, have bazel build the jar file:
+- Install [Bazelisk](https://github.com/bazelbuild/bazelisk):
 
+```shell
+    $ npm install -g @bazel/bazelisk
+    $ alias bazel=bazelisk
+```
+- Clone this git repository:
+  ```shell
+  $ git clone https://github.com/google/jsinterop-generator.git
+  ```
+- Build the binary:
+  ```shell
+      $ cd jsinterop-generator
       $ bazel build //java/jsinterop/generator/closure:ClosureJsinteropGenerator_deploy.jar
+  ```
 
-- The generated jar file can be found at `bazel-bin/java/jsinterop/generator/closure/ClosureJsinteropGenerator_deploy.jar`
+The generated jar file can be found at `bazel-bin/java/jsinterop/generator/closure/ClosureJsinteropGenerator_deploy.jar`
 
 ### Or download the generator
 TODO(dramaix): provides link to download the generator.
