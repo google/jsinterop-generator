@@ -28,10 +28,13 @@ usage() {
     echo "        Maven version to use for deploying to sonatype."
     echo "    --no-deploy"
     echo "        Skip the deployment part but build all artifacts."
+    echo "    --no-git-tag"
+    echo "        Skip the creation of git tag."
     echo ""
 }
 
 deploy_flag=""
+git_tag=true
 
 while [[ "$1" != "" ]]; do
   case $1 in
@@ -44,6 +47,8 @@ while [[ "$1" != "" ]]; do
                    lib_version=$1
                    ;;
     --no-deploy )  deploy_flag="--no-deploy"
+                   ;;
+    --no-git-tag ) git_tag=false
                    ;;
     --help )       usage
                    exit 1
@@ -132,3 +137,8 @@ bazel run --script_path="$runcmd"  ${deploy_target} -- ${deploy_flag}  \
 "$runcmd"
 
 rm "$runcmd"
+
+if [[ ${git_tag} == true ]]; then
+  git tag -a v${lib_version} -m "${lib_version} release"
+  git push origin v${lib_version}
+fi
