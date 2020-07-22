@@ -42,6 +42,7 @@ import jsinterop.generator.model.AbstractRewriter;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.CastExpression;
+import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.InstanceOfExpression;
 import jsinterop.generator.model.JavaTypeReference;
@@ -78,9 +79,23 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
         new AbstractRewriter() {
           private final Deque<String> currentNameStack = new ArrayDeque<>();
 
+          private final Deque<Type> currentTypeStack = new ArrayDeque<>();
+
+          @Override
+          public boolean shouldProcessType(Type node) {
+            currentTypeStack.push(node);
+            return super.shouldProcessType(node);
+          }
+
+          @Override
+          public Type rewriteType(Type node) {
+            currentTypeStack.pop();
+            return node;
+          }
+
           @Override
           public boolean shouldProcessField(Field field) {
-            if (field.isStatic()) {
+            if (field.isStatic() && currentTypeStack.peek().getFields().stream().filter(f -> !f.equals(field)).anyMatch(f -> f.getName().equals(field.getName()))) {
               currentNameStack.push("Static");
             }
             currentNameStack.push(toCamelUpperCase(field.getName()));
@@ -89,7 +104,7 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
 
           @Override
           public Field rewriteField(Field field) {
-            if (field.isStatic()) {
+            if (field.isStatic() && currentTypeStack.peek().getFields().stream().filter(f -> !f.equals(field)).anyMatch(f -> f.getName().equals(field.getName()))) {
               currentNameStack.pop();
             }
             currentNameStack.pop();
@@ -101,7 +116,7 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
             // JsFunction type only have one method named onInvoke, don't use the method name
             // because it doesn't give us any much more information.
             if (!isCurrentTypeJsFunction()) {
-              if (method.isStatic()) {
+              if (method.isStatic() && currentTypeStack.peek().getMethods().stream().filter(m -> !m.equals(method)).filter(m -> !m.hasAnnotation(JS_OVERLAY)).anyMatch(m -> m.getName().equals(method.getName()))) {
                 currentNameStack.push("Static");
               }
               currentNameStack.push(
@@ -115,7 +130,7 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
           @Override
           public Method rewriteMethod(Method method) {
             if (!isCurrentTypeJsFunction()) {
-              if (method.isStatic()) {
+              if (method.isStatic() && currentTypeStack.peek().getMethods().stream().filter(m -> !m.equals(method)).filter(m -> !m.hasAnnotation(JS_OVERLAY)).anyMatch(m -> m.getName().equals(method.getName()))) {
                 currentNameStack.pop();
               }
               currentNameStack.pop();
