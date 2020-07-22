@@ -17,7 +17,9 @@
 
 package jsinterop.generator.visitor;
 
-import static jsinterop.generator.model.AnnotationType.*;
+import static jsinterop.generator.model.AnnotationType.JS_METHOD;
+import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
+import static jsinterop.generator.model.AnnotationType.JS_PROPERTY;
 import static jsinterop.generator.model.EntityKind.METHOD;
 
 import java.util.ArrayList;
