@@ -1,7 +1,6 @@
 # Helper classes for test.
 package(
     default_visibility = ["//javatests:__subpackages__"],
-    # Apache2
     licenses = ["notice"],
 )
 

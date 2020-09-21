@@ -2,7 +2,6 @@
 #   Thirdparty dependencies indirection for bazel.
 package(default_visibility = ["//:__subpackages__"])
 
-# Apache2
 licenses(["notice"])
 
 # Direct dependencies for compiling java src code of the closure jsinterop generator.

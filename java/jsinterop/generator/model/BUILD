@@ -3,7 +3,6 @@
 
 package(
     default_visibility = ["//visibility:public"],
-    # Apache2
     licenses = ["notice"],
 )
 

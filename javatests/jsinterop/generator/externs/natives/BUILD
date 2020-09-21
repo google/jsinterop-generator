@@ -11,7 +11,6 @@ package(
     default_visibility = [
         "//javatests/jsinterop/generator/externs:__subpackages__",
     ],
-    # Apache2
     licenses = ["notice"],
 )
 
