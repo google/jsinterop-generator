@@ -16,8 +16,8 @@
  */
 package jsinterop.generator.model;
 
-import com.google.j2cl.ast.annotations.Visitable;
-import com.google.j2cl.ast.processors.common.Processor;
+import com.google.j2cl.common.visitor.Processor;
+import com.google.j2cl.common.visitor.Visitable;
 
 /** Models a return statement. */
 @Visitable

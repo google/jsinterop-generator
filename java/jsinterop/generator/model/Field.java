@@ -19,9 +19,9 @@ package jsinterop.generator.model;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static jsinterop.generator.model.EntityKind.FIELD;
 
-import com.google.j2cl.ast.annotations.Context;
-import com.google.j2cl.ast.annotations.Visitable;
-import com.google.j2cl.ast.processors.common.Processor;
+import com.google.j2cl.common.visitor.Context;
+import com.google.j2cl.common.visitor.Processor;
+import com.google.j2cl.common.visitor.Visitable;
 import java.util.Objects;
 
 /** Models a Java field. */

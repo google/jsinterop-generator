@@ -23,9 +23,9 @@ import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 import static jsinterop.generator.model.EntityKind.METHOD;
 
 import com.google.common.base.Joiner;
-import com.google.j2cl.ast.annotations.Context;
-import com.google.j2cl.ast.annotations.Visitable;
-import com.google.j2cl.ast.processors.common.Processor;
+import com.google.j2cl.common.visitor.Context;
+import com.google.j2cl.common.visitor.Processor;
+import com.google.j2cl.common.visitor.Visitable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

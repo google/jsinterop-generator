@@ -83,13 +83,8 @@ alias(
 )
 
 alias(
-    name = "j2cl_visitable",
-    actual = "@com_google_j2cl//transpiler/java/com/google/j2cl/ast/annotations",
-)
-
-alias(
-    name = "j2cl_processors",
-    actual = "@com_google_j2cl//transpiler/java/com/google/j2cl/ast/processors/common",
+    name = "j2cl_visitor",
+    actual = "@com_google_j2cl//transpiler/java/com/google/j2cl/common/visitor",
 )
 
 java_library(

@@ -15,7 +15,7 @@
  */
 package jsinterop.generator.model;
 
-import com.google.j2cl.ast.processors.common.Processor;
+import com.google.j2cl.common.visitor.Processor;
 
 /** Represent a Node in our java ast */
 public interface Node {

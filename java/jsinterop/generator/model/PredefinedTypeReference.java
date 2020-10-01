@@ -23,8 +23,8 @@ import static jsinterop.generator.model.LiteralExpression.FALSE;
 import static jsinterop.generator.model.LiteralExpression.NULL;
 import static jsinterop.generator.model.LiteralExpression.ZERO;
 
-import com.google.j2cl.ast.annotations.Visitable;
-import com.google.j2cl.ast.processors.common.Processor;
+import com.google.j2cl.common.visitor.Processor;
+import com.google.j2cl.common.visitor.Visitable;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;

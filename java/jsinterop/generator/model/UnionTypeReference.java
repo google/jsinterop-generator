@@ -20,8 +20,8 @@ import static com.google.common.collect.Lists.transform;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
 import com.google.common.base.Joiner;
-import com.google.j2cl.ast.annotations.Visitable;
-import com.google.j2cl.ast.processors.common.Processor;
+import com.google.j2cl.common.visitor.Processor;
+import com.google.j2cl.common.visitor.Visitable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
