@@ -216,6 +216,7 @@ _jsinterop_generator = rule(
         "_google_java_formatter": attr.label(
             cfg = "host",
             executable = True,
+            allow_files = True,
             default = Label("//third_party:google_java_format"),
         ),
         "_closure_generator": attr.label(
