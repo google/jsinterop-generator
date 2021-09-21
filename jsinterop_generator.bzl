@@ -334,24 +334,12 @@ def jsinterop_generator(
         gwt_xml_file = ":%s.gwt.xml" % gwt_module_name
 
         deps_java += [
-            Label(
-                "//third_party:gwt-jsinterop-annotations",
-                relative_to_caller_repository = False,
-            ),
-            Label(
-                "//third_party:jsinterop-base",
-                relative_to_caller_repository = False,
-            ),
+            Label("//third_party:gwt-jsinterop-annotations"),
+            Label("//third_party:jsinterop-base"),
         ]
         deps_j2cl += [
-            Label(
-                "//third_party:gwt-jsinterop-annotations-j2cl",
-                relative_to_caller_repository = False,
-            ),
-            Label(
-                "//third_party:jsinterop-base-j2cl",
-                relative_to_caller_repository = False,
-            ),
+            Label("//third_party:gwt-jsinterop-annotations-j2cl"),
+            Label("//third_party:jsinterop-base-j2cl"),
         ]
 
     else:
