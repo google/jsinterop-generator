@@ -2,7 +2,10 @@
 #  Generator helper
 
 package(
-    default_visibility = ["//visibility:public"],
+    default_visibility = [
+        "//:__subpackages__",
+        "@com_google_elemental2//java/elemental2:__subpackages__",
+    ],
     licenses = ["notice"],
 )
 
