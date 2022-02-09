@@ -1,17 +1,15 @@
 # Description:
 #  JsInterop version of the typescript compiler api
 
-package(
-    default_visibility = [
-        "//:__subpackages__",
-        "@com_google_elemental2//java/elemental2:__subpackages__",
-    ],
-    licenses = ["notice"],
-)
+package(licenses = ["notice"])
 
 java_library(
     name = "model",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//:__subpackages__",
+        "@com_google_elemental2//java/elemental2:__subpackages__",
+    ],
     deps = [
         "//third_party:auto_value",
         "//third_party:guava",
