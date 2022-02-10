@@ -58,35 +58,6 @@ java_binary(
     runtime_deps = ["@com_google_google_java_format//jar"],
 )
 
-alias(
-    name = "gwt-jsinterop-annotations",
-    actual = "@com_google_j2cl//:jsinterop-annotations",
-    visibility = ["//visibility:public"],
-)
-
-alias(
-    name = "gwt-jsinterop-annotations-j2cl",
-    actual = "@com_google_j2cl//:jsinterop-annotations-j2cl",
-    visibility = ["//visibility:public"],
-)
-
-alias(
-    name = "jsinterop-base",
-    actual = "@com_google_jsinterop_base//:jsinterop-base",
-    visibility = ["//visibility:public"],
-)
-
-alias(
-    name = "jsinterop-base-j2cl",
-    actual = "@com_google_jsinterop_base//:jsinterop-base-j2cl",
-    visibility = ["//visibility:public"],
-)
-
-alias(
-    name = "j2cl_visitor",
-    actual = "@com_google_j2cl//transpiler/java/com/google/j2cl/common/visitor",
-)
-
 java_library(
     name = "junit",
     testonly = 1,

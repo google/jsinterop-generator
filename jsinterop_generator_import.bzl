@@ -49,8 +49,8 @@ def jsinterop_generator_import(
         "name": name,
         "srcs": srcs,
         "deps": [
-            Label("//third_party:gwt-jsinterop-annotations"),
-            Label("//third_party:jsinterop-base"),
+            Label("@com_google_j2cl//:jsinterop-annotations"),
+            Label("@com_google_jsinterop_base//:jsinterop-base"),
         ],
         "visibility": visibility,
     }
@@ -70,7 +70,7 @@ def jsinterop_generator_import(
         srcs = srcs,
         visibility = visibility,
         deps = [
-            Label("//third_party:gwt-jsinterop-annotations-j2cl"),
-            Label("//third_party:jsinterop-base-j2cl"),
+            Label("@com_google_j2cl//:jsinterop-annotations-j2cl"),
+            Label("@com_google_jsinterop_base//:jsinterop-base-j2cl"),
         ],
     )
