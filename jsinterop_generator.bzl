@@ -33,7 +33,7 @@ Examples:
 load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 
-_is_bazel = not hasattr(native, "genmpm")
+_is_bazel = not hasattr(native, "genmpm")  # this_is_bazel
 
 JS_INTEROP_RULE_NAME_PATTERN = "%s__internal_src_generated"
 

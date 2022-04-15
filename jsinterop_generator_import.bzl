@@ -8,7 +8,7 @@ targets.
 load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
 load(":jsinterop_generator.bzl", "JS_INTEROP_RULE_NAME_PATTERN", "JsInteropGeneratorInfo")
 
-_is_bazel = not hasattr(native, "genmpm")
+_is_bazel = not hasattr(native, "genmpm")  # this_is_bazel
 
 def _jsinterop_generator_import_impl(ctx):
     # expose files and properties used when the target is used as dependency
