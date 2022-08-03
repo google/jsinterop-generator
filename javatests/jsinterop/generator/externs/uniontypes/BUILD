@@ -7,10 +7,7 @@ load(
     "jsinterop_generator_test",
 )
 
-package(
-    default_visibility = ["//:__subpackages__"],
-    licenses = ["notice"],
-)
+package(licenses = ["notice"])
 
 jsinterop_generator_test(
     name = "UnionTypes",
