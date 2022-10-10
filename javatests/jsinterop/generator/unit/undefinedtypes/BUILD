@@ -2,10 +2,7 @@
 #  Test behavior of the jsinterop generator with type that are not defined
 #
 
-package(
-    default_visibility = ["//:__subpackages__"],
-    licenses = ["notice"],
-)
+package(licenses = ["notice"])
 
 java_test(
     name = "UndefinedTypesTest",
