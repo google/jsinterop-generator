@@ -209,23 +209,23 @@ _jsinterop_generator = rule(
         "runtime_deps": attr.label_list(),
         "custom_preprocessing_pass": attr.string_list(),
         "_jar": attr.label(
-            cfg = "host",
+            cfg = "exec",
             executable = True,
             default = Label("@bazel_tools//tools/jdk:jar"),
         ),
         "_google_java_formatter": attr.label(
-            cfg = "host",
+            cfg = "exec",
             executable = True,
             allow_files = True,
             default = Label("//third_party:google_java_format"),
         ),
         "_closure_generator": attr.label(
-            cfg = "host",
+            cfg = "exec",
             executable = True,
             default = Label("//java/jsinterop/generator/closure:ClosureJsinteropGenerator"),
         ),
         "_format_jar_script": attr.label(
-            cfg = "host",
+            cfg = "exec",
             executable = True,
             allow_files = True,
             default = Label(
