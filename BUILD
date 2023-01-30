@@ -4,9 +4,17 @@
 #
 #
 
+load("@rules_license//rules:license.bzl", "license")
+
 package(
+    default_applicable_licenses = ["//:license"],
     default_visibility = ["//visibility:public"],
     licenses = ["notice"],
+)
+
+license(
+    name = "license",
+    package_name = "jsinterop_generator",
 )
 
 exports_files(["LICENSE"])
