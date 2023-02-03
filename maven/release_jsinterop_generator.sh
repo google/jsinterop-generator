@@ -13,42 +13,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# The script generates the open source artifacts for jsinterop generator (closure only) and
-# uploads them to sonatype.
+c# The script creates a tag to mark an individual point in the repository history
+# of jsinterop generator (closure only) and includes a version number for jsinterop generator release.
 set -e
 
 usage() {
     echo ""
-    echo "$(basename $0): Build and deploy script for JsInterop Generator."
+    echo "$(basename $0): Tag script for JsInterop Generator."
     echo ""
-    echo "$(basename $0) --version <version> [--no-deploy]"
+    echo "$(basename $0) --version <version>"
     echo "    --help"
     echo "        Print this help output and exit."
     echo "    --version <version>"
     echo "        Maven version of the library to use for deploying to sonatype."
-    echo "    --no-deploy"
-    echo "        Skip the deployment part but build all artifacts."
-    echo "    --no-git-tag"
-    echo "        Skip the creation of git tag."
     echo ""
 }
 
-deploy_flag=""
-git_tag=true
-
 while [[ "$1" != "" ]]; do
   case $1 in
-    --version )    if [ -z $2 ] || [[ $2 == "--no-deploy" ]]; then
+    --version )    if [ -z $2 ]; then
                      echo "Error: Incorrect version value."
                      usage
                      exit 1
                    fi
                    shift
                    lib_version=$1
-                   ;;
-    --no-deploy )  deploy_flag="--no-deploy"
-                   ;;
-    --no-git-tag ) git_tag=false
                    ;;
     --help )       usage
                    exit 1
@@ -72,73 +61,6 @@ if [ ! -f "WORKSPACE" ]; then
   exit 1
 fi
 
-bazel_root=$(pwd)
+git tag -a v${lib_version} -m "${lib_version} release"
+git push origin v${lib_version}
 
-merge_jars() {
-  tmp_directory=$(mktemp -d)
-  jars=$1
-
-  cd ${tmp_directory}
-  for jar in ${jars[@]}; do
-    jar xf ${bazel_root}/bazel-bin/java/jsinterop/generator/${jar}
-  done
-
-  jar cf $2 .
-  mv $2 $3
-  cd -
-  rm -rf ${tmp_directory}
-}
-
-deploy_target='@com_google_j2cl//maven:deploy'
-group_id="com.google.jsinterop"
-maven_artifact="closure-generator"
-
-bazel_rules=("closure:libclosure-src.jar" "closure/helper:libhelper-src.jar" \
-   "closure/visitor:libvisitor-src.jar" "helper:libhelper-src.jar" \
-   "model:libmodel-src.jar" "visitor:libvisitor-src.jar" \
-   "writer:libwriter-src.jar" "closure:libclosure.jar" \
-   "closure/helper:libhelper.jar" "closure/visitor:libvisitor.jar" \
-   "helper:libhelper.jar" "model:libmodel.jar" \
-   "visitor:libvisitor.jar" "writer:libwriter.jar")
-
-jars=("closure/libclosure.jar" "closure/helper/libhelper.jar" \
-   "closure/visitor/libvisitor.jar" "helper/libhelper.jar" \
-   "model/libmodel.jar" "visitor/libvisitor.jar" \
-   "writer/libwriter.jar")
-
-src_jars=("closure/libclosure-src.jar" "closure/helper/libhelper-src.jar" \
-   "closure/visitor/libvisitor-src.jar" "helper/libhelper-src.jar" \
-    "model/libmodel-src.jar" "visitor/libvisitor-src.jar" \
-    "writer/libwriter-src.jar")
-
-cd ${bazel_root}
-for rule in ${bazel_rules[@]}; do
-  bazel build //java/jsinterop/generator/${rule}
-done
-
-tmp_artifact_dir=$(mktemp -d)
-
-merge_jars ${jars} generator.jar ${tmp_artifact_dir}
-merge_jars ${src_jars} generator-src.jar ${tmp_artifact_dir}
-
-
-pom_template=${bazel_root}/maven/pom-closure-generator.xml
-
-# we cannot run the script directly from Bazel as bazel doesn't allow interactive script
-runcmd="$(mktemp /tmp/bazel-run.XXXXXX)"
-bazel run --script_path="$runcmd"  ${deploy_target} -- ${deploy_flag}  \
-    --artifact ${maven_artifact} \
-    --jar-file ${tmp_artifact_dir}/generator.jar \
-    --src-jar ${tmp_artifact_dir}/generator-src.jar \
-    --pom-template ${pom_template} \
-    --lib-version ${lib_version} \
-    --group-id ${group_id}
-
-"$runcmd"
-
-rm "$runcmd"
-
-if [[ ${git_tag} == true ]]; then
-  git tag -a v${lib_version} -m "${lib_version} release"
-  git push origin v${lib_version}
-fi
