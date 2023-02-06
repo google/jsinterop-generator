@@ -32,6 +32,7 @@ Examples:
 
 load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@bazel_common_javadoc//:javadoc.bzl", "javadoc_library")
 
 _is_bazel = not hasattr(native, "genmpm")  # this_is_bazel
 
@@ -387,6 +388,48 @@ def jsinterop_generator(
             java_library_args["constraints"] = ["gwt", "public"]
 
         native.java_library(**java_library_args)
+
+    _extract_srcjar(
+        name = name + "_generated_files",
+        srcjar = ":%s.srcjar" % jsinterop_generator_rule_name,
+        tags = ["manual", "notap"],
+        visibility = ["//visibility:private"],
+    )
+
+    javadoc_library(
+        name = name + "-javadoc",
+        srcs = [":" + name + "_generated_files"],
+        tags = ["manual", "notap"],
+        visibility = ["//visibility:private"],
+        deps = deps_java,
+    )
+
+def _extract_srcjar_impl(ctx):
+    """Extracts the generated java files from transpiled source jar.
+
+    Returns tree artifact outputs of the extracted java sources.
+    """
+
+    output_dir = ctx.actions.declare_directory(ctx.label.name)
+
+    ctx.actions.run_shell(
+        command = "unzip -q %s *.java -d %s" % (ctx.file.srcjar.path, output_dir.path),
+        inputs = [ctx.file.srcjar],
+        outputs = [output_dir],
+    )
+
+    return [DefaultInfo(files = depset([output_dir]))]
+
+# TODO(b/266158209): Change the jsinterop_generator rule to directly output the tree artifact
+_extract_srcjar = rule(
+    attrs = {
+        "srcjar": attr.label(
+            allow_single_file = [".srcjar"],
+            mandatory = True,
+        ),
+    },
+    implementation = _extract_srcjar_impl,
+)
 
 def _absolute_label(label):
     """Expand a label to be of the full form //package:foo.
