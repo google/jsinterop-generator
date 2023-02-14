@@ -1,7 +1,10 @@
 # Description:
 #  Generator helper
 
-package(licenses = ["notice"])
+package(
+    default_applicable_licenses = ["//:license"],
+    licenses = ["notice"],
+)
 
 java_library(
     name = "helper",

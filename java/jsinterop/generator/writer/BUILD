@@ -2,6 +2,7 @@
 #  JsInterop version of the typescript compiler api
 
 package(
+    default_applicable_licenses = ["//:license"],
     default_visibility = [
         "//:__subpackages__",
     ],

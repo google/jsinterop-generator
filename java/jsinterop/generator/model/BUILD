@@ -1,7 +1,10 @@
 # Description:
 #  JsInterop version of the typescript compiler api
 
-package(licenses = ["notice"])
+package(
+    default_applicable_licenses = ["//:license"],
+    licenses = ["notice"],
+)
 
 java_library(
     name = "model",

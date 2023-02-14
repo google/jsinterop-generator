@@ -2,6 +2,7 @@
 #   Build rules in this directory are used by our tooling and build rules
 
 package(
+    default_applicable_licenses = ["//:license"],
     default_visibility = ["//visibility:public"],
     licenses = ["notice"],
 )

@@ -1,5 +1,6 @@
 # Helper classes for test.
 package(
+    default_applicable_licenses = ["//:license"],
     default_visibility = ["//javatests:__subpackages__"],
     licenses = ["notice"],
 )
