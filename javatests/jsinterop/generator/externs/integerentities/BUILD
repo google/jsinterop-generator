@@ -7,7 +7,10 @@ load(
     "jsinterop_generator_test",
 )
 
-package(licenses = ["notice"])
+package(
+    default_applicable_licenses = ["//:license"],
+    licenses = ["notice"],
+)
 
 jsinterop_generator_test(
     name = "integerentities",
