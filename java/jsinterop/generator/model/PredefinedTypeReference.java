@@ -57,6 +57,13 @@ public enum PredefinedTypeReference implements TypeReference {
       return false;
     }
   },
+  JS_BIGINT("jsinterop.base.JsBigint", "bigint") {
+    @Override
+    public boolean isInstanceofAllowed() {
+      return false;
+    }
+  },
+
   JS_PROPERTY_MAP("jsinterop.base.JsPropertyMap", "IObject") {
     @Override
     public boolean isInstanceofAllowed() {

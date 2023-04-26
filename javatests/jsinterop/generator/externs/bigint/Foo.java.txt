@@ -1,0 +1,89 @@
+package jsinterop.generator.externs.bigint;
+
+import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.base.JsArrayLike;
+import jsinterop.base.JsBigint;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public class Foo {
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface ConsumeBigintBigintOrArrayLikeOfBigintUnionType {
+    @JsOverlay
+    static Foo.ConsumeBigintBigintOrArrayLikeOfBigintUnionType of(Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default JsArrayLike<JsBigint> asJsArrayLike() {
+      return Js.cast(this);
+    }
+
+    @JsOverlay
+    default JsBigint asJsBigint() {
+      return Js.cast(this);
+    }
+  }
+
+  @JsFunction
+  public interface ConsumeBigintMapFn {
+    JsBigint onInvoke(double p0);
+  }
+
+  public JsBigint bigintField;
+
+  public native JsBigint asBigint();
+
+  public native void consumeBigint(
+      Foo.ConsumeBigintBigintOrArrayLikeOfBigintUnionType bigintOrArrayLikeOfBigint,
+      Foo.ConsumeBigintMapFn mapFn);
+
+  public native void consumeBigint(
+      Foo.ConsumeBigintBigintOrArrayLikeOfBigintUnionType bigintOrArrayLikeOfBigint);
+
+  @JsOverlay
+  public final void consumeBigint(
+      JsArrayLike<JsBigint> bigintOrArrayLikeOfBigint, Foo.ConsumeBigintMapFn mapFn) {
+    consumeBigint(
+        Js.<Foo.ConsumeBigintBigintOrArrayLikeOfBigintUnionType>uncheckedCast(
+            bigintOrArrayLikeOfBigint),
+        mapFn);
+  }
+
+  @JsOverlay
+  public final void consumeBigint(JsArrayLike<JsBigint> bigintOrArrayLikeOfBigint) {
+    consumeBigint(
+        Js.<Foo.ConsumeBigintBigintOrArrayLikeOfBigintUnionType>uncheckedCast(
+            bigintOrArrayLikeOfBigint));
+  }
+
+  @JsOverlay
+  public final void consumeBigint(
+      JsBigint bigintOrArrayLikeOfBigint, Foo.ConsumeBigintMapFn mapFn) {
+    consumeBigint(
+        Js.<Foo.ConsumeBigintBigintOrArrayLikeOfBigintUnionType>uncheckedCast(
+            bigintOrArrayLikeOfBigint),
+        mapFn);
+  }
+
+  @JsOverlay
+  public final void consumeBigint(
+      JsBigint[] bigintOrArrayLikeOfBigint, Foo.ConsumeBigintMapFn mapFn) {
+    consumeBigint(Js.<JsArrayLike<JsBigint>>uncheckedCast(bigintOrArrayLikeOfBigint), mapFn);
+  }
+
+  @JsOverlay
+  public final void consumeBigint(JsBigint bigintOrArrayLikeOfBigint) {
+    consumeBigint(
+        Js.<Foo.ConsumeBigintBigintOrArrayLikeOfBigintUnionType>uncheckedCast(
+            bigintOrArrayLikeOfBigint));
+  }
+
+  @JsOverlay
+  public final void consumeBigint(JsBigint[] bigintOrArrayLikeOfBigint) {
+    consumeBigint(Js.<JsArrayLike<JsBigint>>uncheckedCast(bigintOrArrayLikeOfBigint));
+  }
+}

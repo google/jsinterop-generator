@@ -24,6 +24,7 @@ import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN;
 import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN_OBJECT;
 import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE;
 import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE_OBJECT;
+import static jsinterop.generator.model.PredefinedTypeReference.JS_BIGINT;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 import static jsinterop.generator.model.PredefinedTypeReference.STRING;
 import static jsinterop.generator.model.PredefinedTypeReference.VOID;
@@ -191,8 +192,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseBigIntType() {
-      // TODO(b/157233786): add support for bigint type
-      return OBJECT;
+      return JS_BIGINT;
     }
 
     @Override
