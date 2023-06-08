@@ -101,7 +101,7 @@ public class Field extends Entity {
   }
 
   @Override
-  public Node accept(Processor processor) {
+  Entity acceptInternal(Processor processor) {
     return Visitor_Field.visit(processor, this);
   }
 

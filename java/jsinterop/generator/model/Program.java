@@ -28,7 +28,7 @@ import java.util.Map;
 /** Keep the list of generated types. */
 @Visitable
 @Context
-public class Program implements Node {
+public class Program {
 
   private final Map<String, String> thirdPartyTypesMapping;
   @Visitable List<Type> types = new ArrayList<>();
@@ -45,16 +45,19 @@ public class Program implements Node {
     return ImmutableList.copyOf(types);
   }
 
-  @Override
-  public Node accept(Processor processor) {
-    return Visitor_Program.visit(processor, this);
-  }
-
   public boolean isThirdPartyType(String tsFqn) {
     return thirdPartyTypesMapping.containsKey(tsFqn);
   }
 
   public String getThirdPartyTypeJavaFqn(String tsFqn) {
     return thirdPartyTypesMapping.get(tsFqn);
+  }
+
+  public void accept(Processor processor) {
+    acceptInternal(processor);
+  }
+
+  Program acceptInternal(Processor processor) {
+    return Visitor_Program.visit(processor, this);
   }
 }

@@ -21,7 +21,7 @@ import com.google.j2cl.common.visitor.Visitable;
 
 /** Represents an expression to a type qualifier. */
 @Visitable
-public class TypeQualifier implements Expression {
+public class TypeQualifier extends Expression {
   @Visitable TypeReference type;
 
   public TypeQualifier(TypeReference type) {
@@ -33,7 +33,7 @@ public class TypeQualifier implements Expression {
   }
 
   @Override
-  public Expression accept(Processor processor) {
+  Expression acceptInternal(Processor processor) {
     return Visitor_TypeQualifier.visit(processor, this);
   }
 }

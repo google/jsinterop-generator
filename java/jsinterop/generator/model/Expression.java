@@ -19,8 +19,8 @@ package jsinterop.generator.model;
 import com.google.j2cl.common.visitor.Processor;
 import com.google.j2cl.common.visitor.Visitable;
 
-/** Base contract for object that represents Java expression. */
+/** Base contract for objects that represent Java expressions. */
 @Visitable
-public interface Expression {
-  Expression accept(Processor processor);
+public abstract class Expression {
+  abstract Expression acceptInternal(Processor processor);
 }

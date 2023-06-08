@@ -21,7 +21,7 @@ import com.google.j2cl.common.visitor.Visitable;
 
 /** Represents an instanceof expression. */
 @Visitable
-public class InstanceOfExpression implements Expression {
+public class InstanceOfExpression extends Expression {
   @Visitable Expression leftOperand;
   @Visitable TypeReference rightOperand;
 
@@ -39,7 +39,7 @@ public class InstanceOfExpression implements Expression {
   }
 
   @Override
-  public Expression accept(Processor processor) {
+  Expression acceptInternal(Processor processor) {
     return Visitor_InstanceOfExpression.visit(processor, this);
   }
 }

@@ -21,7 +21,7 @@ import com.google.j2cl.common.visitor.Visitable;
 
 /** Used to convert an expression to a statement */
 @Visitable
-public class ExpressionStatement extends AbstractStatement {
+public class ExpressionStatement extends Statement {
   @Visitable Expression expression;
 
   public ExpressionStatement(Expression expression) {
@@ -37,7 +37,7 @@ public class ExpressionStatement extends AbstractStatement {
   }
 
   @Override
-  public Statement accept(Processor processor) {
+  Statement acceptInternal(Processor processor) {
     return Visitor_ExpressionStatement.visit(processor, this);
   }
 }

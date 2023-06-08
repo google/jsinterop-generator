@@ -24,7 +24,7 @@ import java.util.Objects;
 
 /** Super class to be extended by class modeling Java entity. */
 @Visitable
-public abstract class Entity implements HasName, Node {
+public abstract class Entity implements HasName {
   protected static void copyEntityProperties(Entity from, Entity to) {
     to.setName(from.getName());
     to.setStatic(from.isStatic());
@@ -145,8 +145,11 @@ public abstract class Entity implements HasName, Node {
     this.enclosingType = enclosingType;
   }
 
-  @Override
-  public Node accept(Processor processor) {
+  public void accept(Processor processor) {
+    acceptInternal(processor);
+  }
+
+  Entity acceptInternal(Processor processor) {
     return Visitor_Entity.visit(processor, this);
   }
 }

@@ -84,7 +84,7 @@ public class JavaTypeReference extends AbstractTypeReference {
   }
 
   @Override
-  public TypeReference accept(Processor processor) {
+  public TypeReference acceptInternal(Processor processor) {
     return Visitor_JavaTypeReference.visit(processor, this);
   }
 }

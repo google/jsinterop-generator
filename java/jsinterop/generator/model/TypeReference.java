@@ -22,6 +22,8 @@ import static jsinterop.generator.model.LiteralExpression.NULL;
 import com.google.j2cl.common.visitor.Processor;
 import com.google.j2cl.common.visitor.Visitable;
 
+// TODO(b/286331740): Make this type an abstract class so that acceptInternal can be made package
+// private.
 /** Minimal contract for a class modeling a reference to a type. */
 @Visitable
 public interface TypeReference {
@@ -94,7 +96,12 @@ public interface TypeReference {
    */
   String getJniSignature();
 
-  TypeReference accept(Processor processor);
+  default TypeReference accept(Processor processor) {
+    return acceptInternal(processor);
+  }
+
+  // Internal method: do not call directly.
+  TypeReference acceptInternal(Processor processor);
 
   default Expression getDefaultValue() {
     return NULL;

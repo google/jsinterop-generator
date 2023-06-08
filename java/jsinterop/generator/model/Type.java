@@ -372,7 +372,7 @@ public class Type extends Entity implements HasTypeParameters {
   }
 
   @Override
-  public Node accept(Processor processor) {
+  Entity acceptInternal(Processor processor) {
     return Visitor_Type.visit(processor, this);
   }
 }

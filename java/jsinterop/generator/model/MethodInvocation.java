@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 
 /** Represents an invocation to a method. */
 @Visitable
-public class MethodInvocation implements Expression {
+public class MethodInvocation extends Expression {
   @Visitable @Nullable Expression invocationTarget;
   @Visitable List<TypeReference> argumentTypes;
   @Visitable List<Expression> arguments;
@@ -67,7 +67,7 @@ public class MethodInvocation implements Expression {
   }
 
   @Override
-  public Expression accept(Processor processor) {
+  Expression acceptInternal(Processor processor) {
     return Visitor_MethodInvocation.visit(processor, this);
   }
 

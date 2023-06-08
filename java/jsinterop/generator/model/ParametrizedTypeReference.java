@@ -103,7 +103,7 @@ public class ParametrizedTypeReference extends AbstractTypeReference
   }
 
   @Override
-  public TypeReference accept(Processor processor) {
+  public TypeReference acceptInternal(Processor processor) {
     return Visitor_ParametrizedTypeReference.visit(processor, this);
   }
 

@@ -86,7 +86,7 @@ public class TypeVariableReference extends AbstractTypeReference {
   }
 
   @Override
-  public TypeReference accept(Processor processor) {
+  public TypeReference acceptInternal(Processor processor) {
     return Visitor_TypeVariableReference.visit(processor, this);
   }
 }

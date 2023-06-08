@@ -22,7 +22,7 @@ import com.google.j2cl.common.visitor.Visitable;
 /** Models parameters of java methods. */
 @Visitable
 @Context
-public class Parameter implements HasName, Node {
+public class Parameter implements HasName {
   public static Parameter from(Parameter parameter) {
     return parameter.toBuilder().build();
   }
@@ -67,8 +67,11 @@ public class Parameter implements HasName, Node {
     return getName();
   }
 
-  @Override
-  public Node accept(Processor processor) {
+  public void accept(Processor processor) {
+    acceptInternal(processor);
+  }
+
+  Parameter acceptInternal(Processor processor) {
     return Visitor_Parameter.visit(processor, this);
   }
 

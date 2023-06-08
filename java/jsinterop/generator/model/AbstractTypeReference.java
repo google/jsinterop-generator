@@ -42,7 +42,7 @@ public abstract class AbstractTypeReference implements TypeReference {
   }
 
   @Override
-  public TypeReference accept(Processor processor) {
+  public TypeReference acceptInternal(Processor processor) {
     return Visitor_AbstractTypeReference.visit(processor, this);
   }
 }

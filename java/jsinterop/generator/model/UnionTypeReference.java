@@ -107,7 +107,7 @@ public class UnionTypeReference implements TypeReference {
   }
 
   @Override
-  public TypeReference accept(Processor processor) {
+  public TypeReference acceptInternal(Processor processor) {
     return Visitor_UnionTypeReference.visit(processor, this);
   }
 

@@ -93,7 +93,7 @@ public class ArrayTypeReference implements TypeReference, DelegableTypeReference
   }
 
   @Override
-  public TypeReference accept(Processor processor) {
+  public TypeReference acceptInternal(Processor processor) {
     return Visitor_ArrayTypeReference.visit(processor, this);
   }
 

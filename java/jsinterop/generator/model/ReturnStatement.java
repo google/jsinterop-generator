@@ -21,7 +21,7 @@ import com.google.j2cl.common.visitor.Visitable;
 
 /** Models a return statement. */
 @Visitable
-public class ReturnStatement extends AbstractStatement {
+public class ReturnStatement extends Statement {
   @Visitable Expression expression;
 
   public ReturnStatement(Expression expression) {
@@ -33,7 +33,7 @@ public class ReturnStatement extends AbstractStatement {
   }
 
   @Override
-  public Statement accept(Processor processor) {
+  Statement acceptInternal(Processor processor) {
     return Visitor_ReturnStatement.visit(processor, this);
   }
 }

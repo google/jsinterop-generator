@@ -19,10 +19,22 @@ package jsinterop.generator.model;
 import com.google.j2cl.common.visitor.Processor;
 import com.google.j2cl.common.visitor.Visitable;
 
-/** Represents a Java statement. */
+/** Base contract for objects that represent Java statements. */
 @Visitable
-public interface Statement {
-  String getLeadingComment();
+public abstract class Statement {
+  private String leadingComment;
 
-  Statement accept(Processor processor);
+  Statement() {}
+
+  public String getLeadingComment() {
+    return leadingComment;
+  }
+
+  public void setLeadingComment(String leadingComment) {
+    this.leadingComment = leadingComment;
+  }
+
+  Statement acceptInternal(Processor processor) {
+    return Visitor_Statement.visit(processor, this);
+  }
 }

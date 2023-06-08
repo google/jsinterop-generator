@@ -148,7 +148,7 @@ public class WildcardTypeReference implements TypeReference {
   }
 
   @Override
-  public TypeReference accept(Processor processor) {
+  public TypeReference acceptInternal(Processor processor) {
     return Visitor_WildcardTypeReference.visit(processor, this);
   }
 }

@@ -23,7 +23,7 @@ import com.google.j2cl.common.visitor.Visitable;
 /** Represents a literal. */
 @Immutable
 @Visitable
-public class LiteralExpression implements Expression {
+public class LiteralExpression extends Expression {
   public static final LiteralExpression ZERO = new LiteralExpression("0");
   public static final LiteralExpression FALSE = new LiteralExpression("false");
   public static final LiteralExpression NULL = new LiteralExpression("null");
@@ -40,7 +40,7 @@ public class LiteralExpression implements Expression {
   }
 
   @Override
-  public Expression accept(Processor processor) {
+  Expression acceptInternal(Processor processor) {
     return Visitor_LiteralExpression.visit(processor, this);
   }
 }

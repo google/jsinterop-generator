@@ -21,7 +21,7 @@ import com.google.j2cl.common.visitor.Visitable;
 
 /** Represents a cast operation. */
 @Visitable
-public class CastExpression implements Expression {
+public class CastExpression extends Expression {
   @Visitable TypeReference type;
   @Visitable Expression expression;
 
@@ -39,7 +39,7 @@ public class CastExpression implements Expression {
   }
 
   @Override
-  public Expression accept(Processor processor) {
+  Expression acceptInternal(Processor processor) {
     return Visitor_CastExpression.visit(processor, this);
   }
 }
