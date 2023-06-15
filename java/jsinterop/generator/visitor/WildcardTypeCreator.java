@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import jsinterop.generator.helper.Problems;
 import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.Field;
@@ -122,11 +123,14 @@ public class WildcardTypeCreator implements ModelVisitor {
 
   private final Set<Type> unionTypeHelperTypes;
   private final Map<String, WildcardType> wildcardsByConfigurationIndentifier;
+  private final Problems problems;
 
-  public WildcardTypeCreator(Set<Type> unionTypeHelperTypes, Map<String, String> wildcardsByFqn) {
+  public WildcardTypeCreator(
+      Set<Type> unionTypeHelperTypes, Map<String, String> wildcardsByFqn, Problems problems) {
     this.unionTypeHelperTypes = unionTypeHelperTypes;
     this.wildcardsByConfigurationIndentifier =
         new HashMap<>(Maps.transformValues(wildcardsByFqn, WildcardType::from));
+    this.problems = problems;
   }
 
   @Override
@@ -154,10 +158,9 @@ public class WildcardTypeCreator implements ModelVisitor {
           }
         });
 
-    checkState(
-        wildcardsByConfigurationIndentifier.isEmpty(),
-        "Unused wildCard directives: %s",
-        wildcardsByConfigurationIndentifier);
+    if (!wildcardsByConfigurationIndentifier.isEmpty()) {
+      problems.warning("Unused wildCard directives: %s", wildcardsByConfigurationIndentifier);
+    }
   }
 
   private TypeReference maybeCreateWildcardType(

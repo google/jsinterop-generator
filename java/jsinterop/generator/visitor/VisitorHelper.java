@@ -84,7 +84,8 @@ public final class VisitorHelper {
 
     new ConstructorVisitor().applyTo(program);
 
-    new WildcardTypeCreator(unionTypeHelperTypeCreator.getUnionTypeHelperTypes(), wildcardTypes)
+    new WildcardTypeCreator(
+            unionTypeHelperTypeCreator.getUnionTypeHelperTypes(), wildcardTypes, problems)
         .applyTo(program);
 
     new JsConstructorFnParameterJsOverlayCreator().applyTo(program);
