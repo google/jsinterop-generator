@@ -30,9 +30,9 @@ Examples:
 
 """
 
+load("@bazel_common_javadoc//:javadoc.bzl", "javadoc_library")
 load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
-load("@bazel_common_javadoc//:javadoc.bzl", "javadoc_library")
 
 _is_bazel = not hasattr(native, "genmpm")  # this_is_bazel
 
@@ -259,7 +259,7 @@ def jsinterop_generator(
         generate_gwt_library = True,
         conversion_mode = "closure",
         generate_j2cl_build_test = None,
-        j2cl_js_deps = None,
+        externs_deps = None,  # Auto-populated from srcs by default.
         runtime_deps = [],
         custom_preprocessing_pass = [],
         visibility = None,
@@ -292,13 +292,17 @@ def jsinterop_generator(
             package_prefix = _get_java_package(native.package_name())
 
         if conversion_mode == "closure":
-            if j2cl_js_deps == None:
+            if externs_deps == None:
+                # Pass the extern files present in the srcs as deps of the j2cl_library
+                externs_deps = srcs
+
+            if externs_deps:
                 externs_lib_name = "%s-externs" % name
                 closure_js_library(
                     name = externs_lib_name,
-                    srcs = srcs,
+                    srcs = externs_deps,
                 )
-                deps_j2cl += [":%s" % externs_lib_name]
+                deps_j2cl.append(":%s" % externs_lib_name)
 
         else:
             fail("Unknown conversion mode")

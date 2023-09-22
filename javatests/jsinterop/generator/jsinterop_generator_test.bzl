@@ -14,7 +14,6 @@ jsinterop_generator_test(
 """
 
 load("//:jsinterop_generator.bzl", "jsinterop_generator")
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 
 def jsinterop_generator_test(
         name,
@@ -25,7 +24,7 @@ def jsinterop_generator_test(
         name_mapping_files = [],
         deps = [],
         conversion_mode = "closure",
-        j2cl_test_externs_list = [],
+        j2cl_test_externs_list = None,
         integer_entities_files = [],
         wildcard_types_files = [],
         generate_j2cl_build_test = None):
@@ -35,16 +34,6 @@ def jsinterop_generator_test(
 
     jsinterop_generator_name = "%s__jsinterop_generator" % name
     generator_output = ":%s__internal_src_generated.srcjar" % jsinterop_generator_name
-
-    j2cl_js_deps = None
-    if j2cl_test_externs_list:
-        externs_lib_name = "%s-externs" % name
-        closure_js_library(
-            name = externs_lib_name,
-            srcs = j2cl_test_externs_list,
-        )
-        j2cl_js_deps = [":%s" % externs_lib_name]
-
     jsinterop_generator(
         name = jsinterop_generator_name,
         srcs = srcs,
@@ -53,7 +42,7 @@ def jsinterop_generator_test(
         name_mapping_files = name_mapping_files,
         deps = deps,
         conversion_mode = conversion_mode,
-        j2cl_js_deps = j2cl_js_deps,
+        externs_deps = j2cl_test_externs_list,
         integer_entities_files = integer_entities_files,
         wildcard_types_files = wildcard_types_files,
         generate_j2cl_build_test = generate_j2cl_build_test,
