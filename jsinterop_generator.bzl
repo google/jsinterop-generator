@@ -31,6 +31,7 @@ Examples:
 """
 
 load("@bazel_common_javadoc//:javadoc.bzl", "javadoc_library")
+load("@rules_java//java:defs.bzl", "java_library")
 load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 
@@ -390,8 +391,7 @@ def jsinterop_generator(
         else:
             java_library_args["gwtxml"] = gwt_xml_file
             java_library_args["constraints"] = ["gwt", "public"]
-
-        native.java_library(**java_library_args)
+        java_library(**java_library_args)
 
     _extract_srcjar(
         name = name + "_generated_files",

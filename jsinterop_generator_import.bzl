@@ -5,6 +5,7 @@ jsinterop_generator_import() target to be directly depended upon from jsinterop_
 targets.
 """
 
+load("@rules_java//java:defs.bzl", "java_library")
 load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
 load(":jsinterop_generator.bzl", "JS_INTEROP_RULE_NAME_PATTERN", "JsInteropGeneratorInfo")
 
@@ -62,8 +63,7 @@ def jsinterop_generator_import(
         else:
             java_library_args["gwtxml"] = gwt_xml
             java_library_args["constraints"] = ["gwt", "public"]
-
-    native.java_library(**java_library_args)
+    java_library(**java_library_args)
 
     j2cl_library(
         name = "%s-j2cl" % name,
