@@ -13,13 +13,9 @@ package(
 )
 
 jsinterop_generator_test(
-    name = "Modules",
+    name = "modules",
     srcs = ["modules.js"],
-    expected_output = [
-        "Bar.java.txt",
-        "BarInterface.java.txt",
-        "Baz.java.txt",
-        "Foo.java.txt",
-        "FooInterface.java.txt",
-    ],
+    expected_output = glob([
+        "*.java.txt",
+    ]),
 )

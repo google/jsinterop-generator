@@ -1,0 +1,10 @@
+package jsinterop.generator.externs.modules.namespace.nestednamespace;
+
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+
+@JsType(
+    isNative = true,
+    name = "namespace.nestednamespace.InterfaceFromNestedNamespace",
+    namespace = JsPackage.GLOBAL)
+public interface InterfaceFromNestedNamespace {}

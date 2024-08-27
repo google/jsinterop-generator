@@ -6,59 +6,62 @@
 /**
  * @const
  */
-var foo = {};
+var namespace = {};
 
 /**
  * @const
  */
-foo.bar = {};
+namespace.nestednamespace = {};
 
 /**
- * @type {foo.FooInterface}
+ * Property referring the type of the enclosing namespace.
+ *
+ * @type {namespace.NamespacedInterface}
  */
-foo.bar.fooProperty;
+namespace.nestednamespace.staticProperty;
 
 /**
  * @return {undefined}
  */
-foo.bar.bar = function() {};
+namespace.nestednamespace.staticFunction = function() {};
 
 /**
  * @interface
  */
-foo.bar.BarInterface = function() {};
+namespace.nestednamespace.InterfaceFromNestedNamespace = function() {};
 
 /**
-* @type {foo.bar.BarInterface}
-*/
-foo.fooProperty;
-
-/**
- * @return {undefined}
+ * Property referring the type of the nested namespace.
+ *
+ * @type {namespace.nestednamespace.InterfaceFromNestedNamespace}
  */
-foo.foo = function() {};
+namespace.staticProperty;
 
 /**
  * @interface
  */
-foo.FooInterface = function() {};
+namespace.NamespacedInterface = function() {};
 
 /**
  * @const
  */
-var baz = {};
+var othernamespace = {};
 
 /**
- * @type {foo.bar.BarInterface}
+ * Property referring the type of another namespace.
+ *
+ * @type {namespace.nestednamespace.InterfaceFromNestedNamespace}
  */
-baz.barProperty;
+othernamespace.property;
 
 /**
- * @type {foo.FooInterface}
+ * This namespace defines types only. No Java class will be generated.
+ *
+ * @const
  */
-baz.fooProperty;
+var namespacewithtypeonly = {};
 
 /**
- * @return {undefined}
+ * @interface
  */
-baz.foo = function() {};
+namespacewithtypeonly.Interface = function() {};
