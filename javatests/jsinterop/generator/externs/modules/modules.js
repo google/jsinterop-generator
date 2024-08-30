@@ -43,6 +43,21 @@ namespace.staticProperty;
 namespace.NamespacedInterface = function() {};
 
 /**
+ * @record
+ */
+namespace.NamespacedRecord = function() {};
+
+/**
+ * @constructor
+ */
+namespace.NamespacedClass = function() {};
+
+/**
+ * @enum {string}
+ */
+namespace.NamespacedEnum = {A: 'A', B: 'B'};
+
+/**
  * @const
  */
 var othernamespace = {};

@@ -1,0 +1,10 @@
+package jsinterop.generator.externs.modules.namespace;
+
+import jsinterop.annotations.JsEnum;
+import jsinterop.annotations.JsPackage;
+
+@JsEnum(isNative = true, name = "namespace.NamespacedEnum", namespace = JsPackage.GLOBAL)
+public enum NamespacedEnum {
+  A,
+  B;
+}
