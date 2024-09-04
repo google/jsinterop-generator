@@ -1,0 +1,8 @@
+package jsinterop.generator.externs.modules.namespace;
+
+import jsinterop.annotations.JsFunction;
+
+@JsFunction
+public interface NamespacedFunctionType {
+  boolean onInvoke(String p0);
+}

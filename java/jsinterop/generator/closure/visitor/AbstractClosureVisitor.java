@@ -171,13 +171,25 @@ abstract class AbstractClosureVisitor {
 
   private void acceptTypedef(StaticTypedSlot typedef) {
     // The type linked to symbol is not the type represented in the @typedef annotations.
-    JSType realType = checkNotNull(getJsTypeRegistry().getType(
-        typedef.getScope(), typedef.getName()));
+    JSType realType = null;
+    String name = null;
+
+    if (typedef instanceof Property) {
+      // In the namespaced typedef scenario, use the fully qualified name (including namespace) of
+      // the node to accurately retrieve the corresponding type information.
+      Property namespacedTypeDef = (Property) typedef;
+      realType = getJsTypeRegistry().getType(null, namespacedTypeDef.getNode().getQualifiedName());
+      name = namespacedTypeDef.getNode().getQualifiedName();
+    } else {
+      realType = getJsTypeRegistry().getType(typedef.getScope(), typedef.getName());
+      name = typedef.getName();
+    }
+    realType = realType.restrictByNotNullOrUndefined();
 
     if (realType.isRecordType()) {
-      acceptRecordType(toRecordType(realType), typedef.getName());
+      acceptRecordType(toRecordType(realType), name);
     } else if (isAnonymousFunctionType(realType)) {
-      acceptFunctionType(toFunctionType(realType), typedef.getName());
+      acceptFunctionType(toFunctionType(realType), name);
     } else {
       // we are in a case where typedef is used as an alias and doesnt define any RecordType or
       // FunctionType.

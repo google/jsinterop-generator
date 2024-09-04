@@ -1,10 +1,45 @@
 package jsinterop.generator.externs.modules;
 
+import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.generator.externs.modules.namespace.NamespacedFunctionType;
+import jsinterop.generator.externs.modules.namespace.NamespacedTypeDefOfRecord;
 import jsinterop.generator.externs.modules.namespace.nestednamespace.InterfaceFromNestedNamespace;
 
 @JsType(isNative = true, name = "othernamespace", namespace = JsPackage.GLOBAL)
 public class Othernamespace {
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface NamespacedUnionTypeRefUnionType {
+    @JsOverlay
+    static Othernamespace.NamespacedUnionTypeRefUnionType of(Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default double asDouble() {
+      return Js.asDouble(this);
+    }
+
+    @JsOverlay
+    default String asString() {
+      return Js.asString(this);
+    }
+
+    @JsOverlay
+    default boolean isDouble() {
+      return (Object) this instanceof Double;
+    }
+
+    @JsOverlay
+    default boolean isString() {
+      return (Object) this instanceof String;
+    }
+  }
+
+  public static NamespacedFunctionType namespacedFunctionTypeRef;
+  public static NamespacedTypeDefOfRecord namespacedTypeDefOfRecordRef;
+  public static Othernamespace.NamespacedUnionTypeRefUnionType namespacedUnionTypeRef;
   public static InterfaceFromNestedNamespace property;
 }
