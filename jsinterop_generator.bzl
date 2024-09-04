@@ -302,6 +302,7 @@ def jsinterop_generator(
                 closure_js_library(
                     name = externs_lib_name,
                     srcs = externs_deps,
+                    testonly = testonly,
                 )
                 deps_j2cl.append(":%s" % externs_lib_name)
 
