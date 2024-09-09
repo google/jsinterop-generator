@@ -1,0 +1,196 @@
+package jsinterop.generator.externs.nullabletypes;
+
+import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+public class ClassWithNullableRefs {
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface AnonymousUnionTypeWithNullUnionType {
+    @JsOverlay
+    static ClassWithNullableRefs.AnonymousUnionTypeWithNullUnionType of(Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default double asDouble() {
+      return Js.asDouble(this);
+    }
+
+    @JsOverlay
+    default String asString() {
+      return Js.asString(this);
+    }
+
+    @JsOverlay
+    default boolean isDouble() {
+      return (Object) this instanceof Double;
+    }
+
+    @JsOverlay
+    default boolean isString() {
+      return (Object) this instanceof String;
+    }
+  }
+
+  @JsFunction
+  public interface NullableAnonymousFunctionTypeRefFn {
+    boolean onInvoke(String p0);
+  }
+
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface NullableAnonymousRecordRefFieldType {
+    @JsOverlay
+    static ClassWithNullableRefs.NullableAnonymousRecordRefFieldType create() {
+      return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
+    @JsProperty
+    String getBar();
+
+    @JsProperty
+    double getFoo();
+
+    @JsProperty
+    void setBar(String bar);
+
+    @JsProperty
+    void setFoo(double foo);
+  }
+
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface NullableAnonymousUnionTypeRef2UnionType {
+    @JsOverlay
+    static ClassWithNullableRefs.NullableAnonymousUnionTypeRef2UnionType of(Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default double asDouble() {
+      return Js.asDouble(this);
+    }
+
+    @JsOverlay
+    default String asString() {
+      return Js.asString(this);
+    }
+
+    @JsOverlay
+    default boolean isDouble() {
+      return (Object) this instanceof Double;
+    }
+
+    @JsOverlay
+    default boolean isString() {
+      return (Object) this instanceof String;
+    }
+  }
+
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface NullableAnonymousUnionTypeRefUnionType {
+    @JsOverlay
+    static ClassWithNullableRefs.NullableAnonymousUnionTypeRefUnionType of(Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default double asDouble() {
+      return Js.asDouble(this);
+    }
+
+    @JsOverlay
+    default String asString() {
+      return Js.asString(this);
+    }
+
+    @JsOverlay
+    default boolean isDouble() {
+      return (Object) this instanceof Double;
+    }
+
+    @JsOverlay
+    default boolean isString() {
+      return (Object) this instanceof String;
+    }
+  }
+
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface NullableUnionTypeRefUnionType {
+    @JsOverlay
+    static ClassWithNullableRefs.NullableUnionTypeRefUnionType of(Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default double asDouble() {
+      return Js.asDouble(this);
+    }
+
+    @JsOverlay
+    default String asString() {
+      return Js.asString(this);
+    }
+
+    @JsOverlay
+    default boolean isDouble() {
+      return (Object) this instanceof Double;
+    }
+
+    @JsOverlay
+    default boolean isString() {
+      return (Object) this instanceof String;
+    }
+  }
+
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface UnionTypeWithNullRefUnionType {
+    @JsOverlay
+    static ClassWithNullableRefs.UnionTypeWithNullRefUnionType of(Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default double asDouble() {
+      return Js.asDouble(this);
+    }
+
+    @JsOverlay
+    default String asString() {
+      return Js.asString(this);
+    }
+
+    @JsOverlay
+    default boolean isDouble() {
+      return (Object) this instanceof Double;
+    }
+
+    @JsOverlay
+    default boolean isString() {
+      return (Object) this instanceof String;
+    }
+  }
+
+  public ClassWithNullableRefs.AnonymousUnionTypeWithNullUnionType anonymousUnionTypeWithNull;
+  public ClassWithNullableRefs.NullableAnonymousFunctionTypeRefFn nullableAnonymousFunctionTypeRef;
+  public ClassWithNullableRefs.NullableAnonymousRecordRefFieldType nullableAnonymousRecordRef;
+  public ClassWithNullableRefs.NullableAnonymousUnionTypeRefUnionType nullableAnonymousUnionTypeRef;
+  public ClassWithNullableRefs.NullableAnonymousUnionTypeRef2UnionType
+      nullableAnonymousUnionTypeRef2;
+  public SimpleEnum nullableEnumRef;
+  public NullableFunctionType nullableFunctionTypeRef;
+  public SimpleInterface nullableInterfaceRef;
+  public double nullableNumber;
+  public SimpleRecord nullableRecordRef;
+  public String nullableString;
+  public NullableTypeDefOfRecord nullableTypeDefOfRecordRef;
+  public ClassWithNullableRefs.NullableUnionTypeRefUnionType nullableUnionTypeRef;
+  public SimpleClass simpleClassRef;
+  public ClassWithNullableRefs.UnionTypeWithNullRefUnionType unionTypeWithNullRef;
+
+  public native SimpleRecord methodWithNullableParam(SimpleInterface foo);
+}

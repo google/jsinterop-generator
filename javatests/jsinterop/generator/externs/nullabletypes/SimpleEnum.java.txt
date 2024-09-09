@@ -1,0 +1,10 @@
+package jsinterop.generator.externs.nullabletypes;
+
+import jsinterop.annotations.JsEnum;
+import jsinterop.annotations.JsPackage;
+
+@JsEnum(isNative = true, namespace = JsPackage.GLOBAL)
+public enum SimpleEnum {
+  A,
+  B;
+}

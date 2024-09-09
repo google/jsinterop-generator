@@ -1,0 +1,8 @@
+package jsinterop.generator.externs.nullabletypes;
+
+import jsinterop.annotations.JsFunction;
+
+@JsFunction
+public interface NullableFunctionType {
+  boolean onInvoke(String p0);
+}
