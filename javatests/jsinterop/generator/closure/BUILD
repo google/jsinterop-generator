@@ -1,3 +1,5 @@
+load("@rules_java//java:defs.bzl", "java_library")
+
 # Helper classes for test.
 package(
     default_applicable_licenses = ["//:license"],

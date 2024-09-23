@@ -1,6 +1,8 @@
 # Description:
 #  JsInterop version of the typescript compiler api
 
+load("@rules_java//java:defs.bzl", "java_library")
+
 package(
     default_applicable_licenses = ["//:license"],
     licenses = ["notice"],

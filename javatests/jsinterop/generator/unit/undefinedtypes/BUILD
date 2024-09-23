@@ -2,6 +2,8 @@
 #  Test behavior of the jsinterop generator with type that are not defined
 #
 
+load("@rules_java//java:defs.bzl", "java_test")
+
 package(
     default_applicable_licenses = ["//:license"],
     licenses = ["notice"],
