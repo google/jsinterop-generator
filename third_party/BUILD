@@ -1,3 +1,5 @@
+load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_import")
+
 # Description:
 #   Thirdparty dependencies indirection for bazel.
 package(default_visibility = ["//:__subpackages__"])
@@ -62,4 +64,22 @@ java_library(
     name = "junit",
     testonly = 1,
     exports = ["@org_junit//jar"],
+)
+
+alias(
+    name = "jspecify_annotations",
+    actual = "@org_jspecify",
+    visibility = [
+        "//:__subpackages__",
+        "@com_google_elemental2//:__subpackages__",
+    ],
+)
+
+j2cl_import(
+    name = "jspecify_annotations-j2cl",
+    jar = "@org_jspecify//jar",
+    visibility = [
+        "//:__subpackages__",
+        "@com_google_elemental2//:__subpackages__",
+    ],
 )
