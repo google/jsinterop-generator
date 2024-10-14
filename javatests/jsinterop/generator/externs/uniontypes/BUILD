@@ -13,7 +13,7 @@ package(
 )
 
 jsinterop_generator_test(
-    name = "UnionTypes",
+    name = "uniontypes",
     srcs = ["uniontypes.js"],
     expected_output = [
         "ParentInterface.java.txt",

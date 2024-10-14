@@ -13,7 +13,7 @@ package(
 )
 
 jsinterop_generator_test(
-    name = "GlobalScope",
+    name = "globalscope",
     srcs = ["globalscope.js"],
     expected_output = [
         "Global.java.txt",

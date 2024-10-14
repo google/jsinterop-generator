@@ -13,7 +13,7 @@ package(
 )
 
 jsinterop_generator_test(
-    name = "Inheritance",
+    name = "inheritance",
     srcs = ["inheritance.js"],
     expected_output = [
         "SimpleClass.java.txt",

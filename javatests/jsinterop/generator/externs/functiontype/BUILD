@@ -13,7 +13,7 @@ package(
 )
 
 jsinterop_generator_test(
-    name = "FunctionType",
+    name = "functiontype",
     srcs = ["functiontype.js"],
     expected_output = [
         "AliasedFunctionType.java.txt",

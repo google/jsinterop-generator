@@ -13,7 +13,7 @@ package(
 )
 
 jsinterop_generator_test(
-    name = "SimpleClass",
+    name = "simpleclass",
     srcs = ["simpleclass.js"],
     expected_output = [
         "PrivateClass.java.txt",
