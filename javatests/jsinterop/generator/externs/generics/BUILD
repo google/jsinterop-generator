@@ -12,17 +12,10 @@ package(
 )
 
 jsinterop_generator_test(
-    name = "Generics",
+    name = "generics",
     srcs = ["generics.js"],
-    expected_output = [
-        "Bar.java.txt",
-        "InterfaceWithGeneric.java.txt",
-        "SimpleInterface.java.txt",
-        "AnonymousTypes.java.txt",
-        "ExtendInterfaceWithGeneric.java.txt",
-        "SimpleClass.java.txt",
-        "SimpleClassChild.java.txt",
-        "BarChild.java.txt",
-    ],
+    expected_output = glob([
+        "*.java.txt",
+    ]),
     deps = ["//javatests/jsinterop/generator/externs/natives"],
 )

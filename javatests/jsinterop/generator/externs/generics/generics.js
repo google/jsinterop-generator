@@ -32,6 +32,15 @@ InterfaceWithGeneric.prototype.method = function(foo) {};
 InterfaceWithGeneric.prototype.method2 = function() {};
 
 /**
+ * @record
+ * @template T
+ */
+function RecordWithGeneric() {};
+
+/** @type {T} */
+RecordWithGeneric.prototype.foo;
+
+/**
  * @interface
  * @template U,T,V
  */
