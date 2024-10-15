@@ -10,7 +10,7 @@ import jsinterop.base.JsPropertyMap;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public interface RecordWithGeneric<T> {
   @JsOverlay
-  static RecordWithGeneric create() {
+  static <T> RecordWithGeneric<T> create() {
     return Js.uncheckedCast(JsPropertyMap.of());
   }
 
