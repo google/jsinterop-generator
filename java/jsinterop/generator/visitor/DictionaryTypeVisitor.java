@@ -21,19 +21,16 @@ import static jsinterop.generator.model.PredefinedTypeReference.JS;
 import static jsinterop.generator.model.PredefinedTypeReference.JS_PROPERTY_MAP;
 import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
-import com.google.common.collect.ImmutableList;
 import jsinterop.generator.model.AbstractVisitor;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.MethodInvocation;
 import jsinterop.generator.model.ModelVisitor;
-import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.ReturnStatement;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeQualifier;
-import jsinterop.generator.model.TypeReference;
 
 /**
  * A dictionary type is an interface that contains only JsProperty methods.
@@ -60,13 +57,8 @@ public class DictionaryTypeVisitor implements ModelVisitor {
       Method factory = new Method();
       factory.setStatic(true);
       factory.setName("create");
+      factory.setReturnType(new JavaTypeReference(type));
       factory.addAnnotation(Annotation.builder().type(JS_OVERLAY).build());
-      TypeReference returnType = new JavaTypeReference(type);
-      if (!type.getTypeParameters().isEmpty()) {
-        factory.setTypeParameters(ImmutableList.copyOf(type.getTypeParameters()));
-        returnType = new ParametrizedTypeReference(returnType, type.getTypeParameters());
-      }
-      factory.setReturnType(returnType);
       // body statement: return Js.uncheckedCast(JsPropertyMap.of());
       factory.setBody(
           new ReturnStatement(
