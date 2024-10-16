@@ -15,8 +15,5 @@ package(
 jsinterop_generator_test(
     name = "optionalparameters",
     srcs = ["optionalparameters.js"],
-    expected_output = [
-        "SimpleClass.java.txt",
-        "SimpleInterface.java.txt",
-    ],
+    expected_output = glob(["*.java.txt"]),
 )

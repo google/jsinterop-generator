@@ -15,8 +15,5 @@ package(
 jsinterop_generator_test(
     name = "nestedclasses",
     srcs = ["nestedclasses.js"],
-    expected_output = [
-        "Foo.java.txt",
-        "foo/Bar.java.txt",
-    ],
+    expected_output = glob(["*.java.txt"]),
 )

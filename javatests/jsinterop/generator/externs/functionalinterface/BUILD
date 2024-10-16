@@ -14,9 +14,5 @@ package(
 jsinterop_generator_test(
     name = "functionalinterface",
     srcs = ["functionalinterface.js"],
-    expected_output = [
-        "InterfaceWithOneMethod.java.txt",
-        "InterfaceWithTwoMethods.java.txt",
-        "StructuralInterface.java.txt",
-    ],
+    expected_output = glob(["*.java.txt"]),
 )

@@ -15,9 +15,6 @@ package(
 jsinterop_generator_test(
     name = "globalscope",
     srcs = ["globalscope.js"],
-    expected_output = [
-        "Global.java.txt",
-        "Global__Constants.java.txt",
-    ],
+    expected_output = glob(["*.java.txt"]),
     global_scope_class_name = "Global",
 )

@@ -15,7 +15,5 @@ package(
 jsinterop_generator_test(
     name = "bigint",
     srcs = ["bigint.js"],
-    expected_output = [
-        "Foo.java.txt",
-    ],
+    expected_output = glob(["*.java.txt"]),
 )

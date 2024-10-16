@@ -15,9 +15,5 @@ package(
 jsinterop_generator_test(
     name = "enums",
     srcs = ["enums.js"],
-    expected_output = [
-        "Foo.java.txt",
-        "Bar.java.txt",
-        "Baz.java.txt",
-    ],
+    expected_output = glob(["*.java.txt"]),
 )

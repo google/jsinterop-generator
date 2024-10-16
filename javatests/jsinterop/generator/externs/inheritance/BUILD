@@ -15,14 +15,5 @@ package(
 jsinterop_generator_test(
     name = "inheritance",
     srcs = ["inheritance.js"],
-    expected_output = [
-        "SimpleClass.java.txt",
-        "ParentClass.java.txt",
-        "Parent1Interface.java.txt",
-        "Parent2Interface.java.txt",
-        "GreatParentClass.java.txt",
-        "GreatParentInterface.java.txt",
-        "InterfaceWithStructuralType.java.txt",
-        "InterfaceWithStructuralTypeImpl.java.txt",
-    ],
+    expected_output = glob(["*.java.txt"]),
 )

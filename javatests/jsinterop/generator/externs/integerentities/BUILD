@@ -15,11 +15,7 @@ package(
 jsinterop_generator_test(
     name = "integerentities",
     srcs = ["integerentities.js"],
-    expected_output = [
-        "Foo.java.txt",
-        "Foo__Constants.java.txt",
-        "Global.java.txt",
-    ],
+    expected_output = glob(["*.java.txt"]),
     global_scope_class_name = "Global",
     integer_entities_files = ["integerentities.txt"],
     name_mapping_files = ["renaming.txt"],

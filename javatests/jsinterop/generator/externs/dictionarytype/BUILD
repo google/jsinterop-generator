@@ -15,8 +15,5 @@ package(
 jsinterop_generator_test(
     name = "dictionarytype",
     srcs = ["dictionarytype.js"],
-    expected_output = [
-        "DictionaryType.java.txt",
-        "SimpleDictionaryType.java.txt",
-    ],
+    expected_output = glob(["*.java.txt"]),
 )
