@@ -51,14 +51,17 @@ public class MyLibThirdPartyClass<T> extends ThirdPartyClass<T> {
   public ThirdParty2Class extraField;
 
   public MyLibThirdPartyClass(ThirdPartyClass.ConstructorFooUnionType foo) {
+    // This super call is here only for the code to compile; it is never executed.
     super((ThirdPartyClass.ConstructorFooUnionType) null);
   }
 
   public MyLibThirdPartyClass(String foo) {
+    // This super call is here only for the code to compile; it is never executed.
     super((ThirdPartyClass.ConstructorFooUnionType) null);
   }
 
   public MyLibThirdPartyClass(double foo) {
+    // This super call is here only for the code to compile; it is never executed.
     super((ThirdPartyClass.ConstructorFooUnionType) null);
   }
 

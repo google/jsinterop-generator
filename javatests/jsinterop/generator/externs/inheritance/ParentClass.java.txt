@@ -1,6 +1,5 @@
 package jsinterop.generator.externs.inheritance;
 
-import java.lang.String;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
@@ -9,7 +8,7 @@ public class ParentClass extends GreatParentClass {
   public double parentClassProperty;
 
   public ParentClass() {
-    // This call is only there for java compilation purpose.
+    // This super call is here only for the code to compile; it is never executed.
     super((String) null, false, 0);
   }
 

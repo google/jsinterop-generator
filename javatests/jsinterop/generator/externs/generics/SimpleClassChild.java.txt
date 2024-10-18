@@ -6,6 +6,7 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class SimpleClassChild extends SimpleClass<String> {
   public SimpleClassChild() {
+    // This super call is here only for the code to compile; it is never executed.
     super((String) null);
   }
 }

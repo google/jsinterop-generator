@@ -1,6 +1,5 @@
 package jsinterop.generator.externs.dependency;
 
-
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.generator.externs.dependency.parentthirdparty.ParentThirdPartyInterface;
@@ -12,6 +11,7 @@ public class SimpleClass extends ThirdPartyClass implements ThirdPartyInterface 
   public ThirdPartyClass field;
 
   public SimpleClass() {
+    // This super call is here only for the code to compile; it is never executed.
     super((ThirdPartyClass.ConstructorFooUnionType) null);
   }
 

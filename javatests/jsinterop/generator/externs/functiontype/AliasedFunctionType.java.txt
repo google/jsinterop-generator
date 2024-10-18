@@ -1,6 +1,5 @@
 package jsinterop.generator.externs.functiontype;
 
-import java.lang.String;
 import jsinterop.annotations.JsFunction;
 
 @JsFunction
