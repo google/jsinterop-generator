@@ -18,6 +18,7 @@ package jsinterop.generator.visitor;
 import static com.google.common.base.Preconditions.checkState;
 import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE_OBJECT;
 import static jsinterop.generator.model.PredefinedTypeReference.JS_PROPERTY_MAP;
+import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 import static jsinterop.generator.model.PredefinedTypeReference.STRING;
 
 import java.util.List;
@@ -81,16 +82,21 @@ public class ParametrizedObjectReferenceRewriter implements ModelVisitor {
 
     TypeReference keyType = actualTypeArguments.get(0);
 
-    if (STRING.getJavaTypeFqn().equals(keyType.getJavaTypeFqn())
-        || (isObjectTypeReference(typeReference.getMainType())
-            // Closure allows Object to be parametrized with one type parameter(value).
-            // In this case, the key is hardcoded to Object
-            && PredefinedTypeReference.OBJECT.getJavaTypeFqn().equals(keyType.getJavaTypeFqn()))) {
-      return;
+    if (keyType instanceof UnionTypeReference) {
+      checkKeyType(
+          isObjectOrDoubleOrString(((UnionTypeReference) keyType).getTypes()), keyType, typeName);
+    } else {
+      checkKeyType(
+          STRING.getJavaTypeFqn().equals(keyType.getJavaTypeFqn())
+              || (isObjectTypeReference(typeReference.getMainType())
+                  // Closure allows Object to be parametrized with one type parameter(value).
+                  // In this case, the key is hardcoded to Object
+                  && PredefinedTypeReference.OBJECT
+                      .getJavaTypeFqn()
+                      .equals(keyType.getJavaTypeFqn())),
+          keyType,
+          typeName);
     }
-
-    checkKeyType(keyType instanceof UnionTypeReference, keyType, typeName);
-    checkKeyType(isDoubleAndString(((UnionTypeReference) keyType).getTypes()), keyType, typeName);
   }
 
   private static boolean isJsPropertyMapReference(TypeReference reference) {
@@ -101,13 +107,16 @@ public class ParametrizedObjectReferenceRewriter implements ModelVisitor {
     return "Object".equals(reference.getJsDocAnnotationString());
   }
 
-  private static boolean isDoubleAndString(List<TypeReference> typesReferences) {
+  private static boolean isObjectOrDoubleOrString(List<TypeReference> typesReferences) {
     return typesReferences.stream()
             .map(TypeReference::getJavaTypeFqn)
             .filter(
-                t -> STRING.getJavaTypeFqn().equals(t) || DOUBLE_OBJECT.getJavaTypeFqn().equals(t))
+                t ->
+                    STRING.getJavaTypeFqn().equals(t)
+                        || DOUBLE_OBJECT.getJavaTypeFqn().equals(t)
+                        || OBJECT.getJavaTypeFqn().equals(t))
             .count()
-        == 2;
+        == typesReferences.size();
   }
 
   private static void checkKeyType(boolean condition, TypeReference keyType, String typeName) {

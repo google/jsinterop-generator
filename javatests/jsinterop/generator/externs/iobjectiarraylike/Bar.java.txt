@@ -14,6 +14,8 @@ public class Bar implements JsArrayLike<String> {
   public JsArrayLike<String> iArrayLikeField;
   public JsPropertyMap<String> iObjectField;
   public JsPropertyMap<String> templatizedObject;
+  public JsPropertyMap<Double> templatizedObjectWithStringOrNumberKeys;
+  public JsPropertyMap<Double> templatizedObjectWithStringOrSymbolKeys;
   public JsPropertyMap<Double> templatizedObjectWithTwoParameters;
 
   public native JsArrayLike<String> asIArrayLike();

@@ -72,6 +72,16 @@ Bar.prototype.templatizedObject;
 Bar.prototype.templatizedObjectWithTwoParameters;
 
 /**
+ * @type {Object<string|number, number>}
+ */
+Bar.prototype.templatizedObjectWithStringOrNumberKeys;
+
+/**
+ * @type {Object<string|symbol, number>}
+ */
+Bar.prototype.templatizedObjectWithStringOrSymbolKeys;
+
+/**
  * @interface
  * @extends {IObject<number|string, T>}
  * @extends {IArrayLike<T>}
