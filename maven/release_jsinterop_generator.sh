@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-c# The script creates a tag to mark an individual point in the repository history
+# The script creates a tag to mark an individual point in the repository history
 # of jsinterop generator (closure only) and includes a version number for jsinterop generator release.
 set -e
 
