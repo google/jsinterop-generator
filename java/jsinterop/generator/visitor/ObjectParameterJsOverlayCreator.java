@@ -17,10 +17,11 @@
 
 package jsinterop.generator.visitor;
 
+import static jsinterop.generator.model.PredefinedTypes.OBJECT;
+
 import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Parameter;
-import jsinterop.generator.model.PredefinedTypeReference;
 
 /**
  * Creates a JsOverlay method that will accept java.lang.Object as parameter and delegate to
@@ -48,7 +49,7 @@ public class ObjectParameterJsOverlayCreator extends AbstractJsOverlayMethodCrea
 
   private static Parameter toJavaLangObject(int unusedIndex, Parameter parameter) {
     if ("Object".equals(parameter.getType().getJsDocAnnotationString())) {
-      return parameter.toBuilder().setType(PredefinedTypeReference.OBJECT).build();
+      return parameter.toBuilder().setType(OBJECT.getReference()).build();
     }
     return parameter;
   }

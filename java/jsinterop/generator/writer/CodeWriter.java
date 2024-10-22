@@ -19,7 +19,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.newHashSet;
 import static jsinterop.generator.model.LiteralExpression.NULL;
-import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.OBJECT;
 
 import com.google.common.base.Splitter;
 import java.util.Collection;
@@ -202,7 +202,7 @@ public class CodeWriter {
       emit(typeReference.getTypeName());
 
       TypeReference constraint = ((TypeVariableReference) typeReference).getUpperBound();
-      if (emitConstraint && !OBJECT.getJavaTypeFqn().equals(constraint.getJavaTypeFqn())) {
+      if (emitConstraint && !constraint.isReferenceTo(OBJECT)) {
         emit(" extends ").emitTypeReference(constraint);
       }
     } else if (typeReference instanceof ParametrizedTypeReference) {

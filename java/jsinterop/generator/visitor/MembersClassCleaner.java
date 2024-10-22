@@ -20,6 +20,8 @@ package jsinterop.generator.visitor;
 import static jsinterop.generator.model.AnnotationType.JS_METHOD;
 import static jsinterop.generator.model.AnnotationType.JS_PROPERTY;
 import static jsinterop.generator.model.EntityKind.METHOD;
+import static jsinterop.generator.model.PredefinedTypes.OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.VOID;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,7 +37,6 @@ import jsinterop.generator.model.Entity;
 import jsinterop.generator.model.Field;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.ModelVisitor;
-import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
@@ -108,8 +109,8 @@ public class MembersClassCleaner implements ModelVisitor {
 
           @Override
           public boolean enterField(Field field) {
-            if (field.getType().equals(PredefinedTypeReference.VOID)) {
-              field.setType(PredefinedTypeReference.OBJECT);
+            if (field.getType().isReferenceTo(VOID)) {
+              field.setType(OBJECT.getReference());
             }
 
             return true;

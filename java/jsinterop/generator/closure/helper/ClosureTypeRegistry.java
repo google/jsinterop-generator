@@ -20,15 +20,16 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.stream.Collectors.toList;
 import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.IN_TYPE_ARGUMENTS;
 import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.REGULAR;
-import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN;
-import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN_OBJECT;
-import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE;
-import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE_OBJECT;
-import static jsinterop.generator.model.PredefinedTypeReference.JS_BIGINT;
-import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
-import static jsinterop.generator.model.PredefinedTypeReference.STRING;
-import static jsinterop.generator.model.PredefinedTypeReference.VOID;
-import static jsinterop.generator.model.PredefinedTypeReference.VOID_OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.BOOLEAN;
+import static jsinterop.generator.model.PredefinedTypes.BOOLEAN_OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.DOUBLE;
+import static jsinterop.generator.model.PredefinedTypes.DOUBLE_OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.JS_BIGINT;
+import static jsinterop.generator.model.PredefinedTypes.JS_CONSTRUCTOR_FN;
+import static jsinterop.generator.model.PredefinedTypes.OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.STRING;
+import static jsinterop.generator.model.PredefinedTypes.VOID;
+import static jsinterop.generator.model.PredefinedTypes.VOID_OBJECT;
 
 import com.google.common.collect.ImmutableList;
 import com.google.javascript.rhino.jstype.EnumElementType;
@@ -49,7 +50,7 @@ import jsinterop.generator.helper.AbstractTypeRegistry;
 import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.ParametrizedTypeReference;
-import jsinterop.generator.model.PredefinedTypeReference;
+import jsinterop.generator.model.PredefinedTypes;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeReference;
 import jsinterop.generator.model.TypeVariableReference;
@@ -123,7 +124,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseNoType(NoType type) {
-      return OBJECT;
+      return OBJECT.getReference();
     }
 
     @Override
@@ -133,17 +134,17 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseAllType() {
-      return OBJECT;
+      return OBJECT.getReference();
     }
 
     @Override
     public TypeReference caseBooleanType() {
-      return referenceContext == REGULAR ? BOOLEAN : BOOLEAN_OBJECT;
+      return (referenceContext == REGULAR ? BOOLEAN : BOOLEAN_OBJECT).getReference();
     }
 
     @Override
     public TypeReference caseNoObjectType() {
-      return OBJECT;
+      return OBJECT.getReference();
     }
 
     @Override
@@ -151,7 +152,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
       if (type.isConstructor() && type.getDisplayName() == null) {
         // We use upper bounded wildcard type because constructor function are always producers.
         return new ParametrizedTypeReference(
-            PredefinedTypeReference.JS_CONSTRUCTOR_FN,
+            JS_CONSTRUCTOR_FN.getReference(),
             ImmutableList.of(
                 WildcardTypeReference.createWildcardUpperBound(
                     resolveTypeReference(type.getTypeOfThis()))));
@@ -163,8 +164,8 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
     public TypeReference caseObjectType(ObjectType type) {
       String typeFqn = type.getNormalizedReferenceName();
 
-      if (PredefinedTypeReference.isPredefinedType(typeFqn)) {
-        return PredefinedTypeReference.getPredefinedType(typeFqn);
+      if (PredefinedTypes.isPredefinedType(typeFqn)) {
+        return PredefinedTypes.getPredefinedType(typeFqn).getReference();
       }
 
       return new JavaTypeReference(checkNotNull(getJavaType(type)));
@@ -172,7 +173,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseUnknownType() {
-      return OBJECT;
+      return OBJECT.getReference();
     }
 
     @Override
@@ -187,28 +188,28 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     @Override
     public TypeReference caseNumberType() {
-      return referenceContext == REGULAR ? DOUBLE : DOUBLE_OBJECT;
+      return (referenceContext == REGULAR ? DOUBLE : DOUBLE_OBJECT).getReference();
     }
 
     @Override
     public TypeReference caseBigIntType() {
-      return JS_BIGINT;
+      return JS_BIGINT.getReference();
     }
 
     @Override
     public TypeReference caseStringType() {
-      return STRING;
+      return STRING.getReference();
     }
 
     @Override
     public TypeReference caseSymbolType() {
       // TODO(b/73255220): add support for symbol type.
-      return OBJECT;
+      return OBJECT.getReference();
     }
 
     @Override
     public TypeReference caseVoidType() {
-      return referenceContext == REGULAR ? VOID : VOID_OBJECT;
+      return (referenceContext == REGULAR ? VOID : VOID_OBJECT).getReference();
     }
 
     @Override

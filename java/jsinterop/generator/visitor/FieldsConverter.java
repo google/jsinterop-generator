@@ -22,8 +22,8 @@ import static jsinterop.generator.helper.GeneratorUtils.toCamelUpperCase;
 import static jsinterop.generator.model.AnnotationType.DEPRECATED;
 import static jsinterop.generator.model.AnnotationType.JS_PROPERTY;
 import static jsinterop.generator.model.AnnotationType.JS_TYPE;
-import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN;
-import static jsinterop.generator.model.PredefinedTypeReference.VOID;
+import static jsinterop.generator.model.PredefinedTypes.BOOLEAN;
+import static jsinterop.generator.model.PredefinedTypes.VOID;
 
 import java.util.HashSet;
 import java.util.List;
@@ -115,12 +115,12 @@ public class FieldsConverter implements ModelVisitor {
 
     Method accessor = new Method();
 
-    String methodPrefix = setter ? "set" : BOOLEAN == fieldType ? "is" : "get";
+    String methodPrefix = setter ? "set" : fieldType.isReferenceTo(BOOLEAN) ? "is" : "get";
     accessor.setName(methodPrefix + fieldNameUpperCamelCase);
 
     if (setter) {
       accessor.addParameter(Parameter.builder().setName(fieldName).setType(fieldType).build());
-      accessor.setReturnType(VOID);
+      accessor.setReturnType(VOID.getReference());
     } else {
       accessor.setReturnType(fieldType);
     }

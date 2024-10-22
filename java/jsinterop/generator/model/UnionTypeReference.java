@@ -17,7 +17,6 @@
 package jsinterop.generator.model;
 
 import static com.google.common.collect.Lists.transform;
-import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
 
 import com.google.common.base.Joiner;
 import com.google.j2cl.common.visitor.Processor;
@@ -30,7 +29,7 @@ import java.util.stream.Collectors;
 
 /** Models a reference to a union type. */
 @Visitable
-public class UnionTypeReference implements TypeReference {
+public class UnionTypeReference extends TypeReference {
   @Visitable List<TypeReference> types;
 
   public UnionTypeReference(Collection<TypeReference> types) {
@@ -53,7 +52,7 @@ public class UnionTypeReference implements TypeReference {
 
   @Override
   public String getJavaTypeFqn() {
-    return OBJECT.getJavaTypeFqn();
+    return null;
   }
 
   @Override
@@ -63,17 +62,17 @@ public class UnionTypeReference implements TypeReference {
 
   @Override
   public String getJniSignature() {
-    return OBJECT.getJniSignature();
+    return null;
   }
 
   @Override
   public String getTypeName() {
-    return OBJECT.getTypeName();
+    return null;
   }
 
   @Override
   public String getImport() {
-    return OBJECT.getImport();
+    throw new UnsupportedOperationException();
   }
 
   public List<TypeReference> getTypes() {

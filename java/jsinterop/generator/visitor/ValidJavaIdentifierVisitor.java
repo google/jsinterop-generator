@@ -22,9 +22,9 @@ import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
 import static jsinterop.generator.model.AnnotationType.JS_PROPERTY;
 import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
-import static jsinterop.generator.model.PredefinedTypeReference.INT;
-import static jsinterop.generator.model.PredefinedTypeReference.LONG;
-import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.INT;
+import static jsinterop.generator.model.PredefinedTypes.LONG;
+import static jsinterop.generator.model.PredefinedTypes.OBJECT;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -54,7 +54,7 @@ public class ValidJavaIdentifierVisitor implements ModelVisitor {
                       + "extends int short try char final interface static void class finally long "
                       + "strictfp volatile const float native super while null true false"));
 
-  // TODO(b/67912344): add a logic driven by config file that remanes any entity.
+  // TODO(b/67912344): add a logic driven by config file that renames any entity.
   private static final ImmutableSet<String> TYPES_TO_PREFIX =
       ImmutableSet.copyOf(
           Splitter.on(' ')
@@ -73,18 +73,24 @@ public class ValidJavaIdentifierVisitor implements ModelVisitor {
       ImmutableSet.<Method>builder()
           .addAll(methods("getClass"))
           .addAll(methods("hashCode"))
-          .addAll(methods("equals", Parameter.builder().setName("o").setType(OBJECT).build()))
+          .addAll(
+              methods(
+                  "equals",
+                  Parameter.builder().setName("o").setType(OBJECT.getReference()).build()))
           .addAll(methods("toString"))
           .addAll(methods("clone"))
           .addAll(methods("notify"))
           .addAll(methods("notifyAll"))
           .addAll(methods("wait"))
-          .addAll(methods("wait", Parameter.builder().setName("timeout").setType(LONG).build()))
           .addAll(
               methods(
                   "wait",
-                  Parameter.builder().setName("timeout").setType(LONG).build(),
-                  Parameter.builder().setName("nanos").setType(INT).build()))
+                  Parameter.builder().setName("timeout").setType(LONG.getReference()).build()))
+          .addAll(
+              methods(
+                  "wait",
+                  Parameter.builder().setName("timeout").setType(LONG.getReference()).build(),
+                  Parameter.builder().setName("nanos").setType(INT.getReference()).build()))
           .addAll(methods("finalize"))
           .build();
 

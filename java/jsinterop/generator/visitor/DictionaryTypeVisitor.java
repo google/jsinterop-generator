@@ -17,9 +17,9 @@
 package jsinterop.generator.visitor;
 
 import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
-import static jsinterop.generator.model.PredefinedTypeReference.JS;
-import static jsinterop.generator.model.PredefinedTypeReference.JS_PROPERTY_MAP;
-import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.JS;
+import static jsinterop.generator.model.PredefinedTypes.JS_PROPERTY_MAP;
+import static jsinterop.generator.model.PredefinedTypes.OBJECT;
 
 import com.google.common.collect.ImmutableList;
 import jsinterop.generator.model.AbstractVisitor;
@@ -71,12 +71,12 @@ public class DictionaryTypeVisitor implements ModelVisitor {
       factory.setBody(
           new ReturnStatement(
               MethodInvocation.builder()
-                  .setInvocationTarget(new TypeQualifier(JS))
+                  .setInvocationTarget(new TypeQualifier(JS.getReference()))
                   .setMethodName("uncheckedCast")
-                  .setArgumentTypes(OBJECT)
+                  .setArgumentTypes(OBJECT.getReference())
                   .setArguments(
                       MethodInvocation.builder()
-                          .setInvocationTarget(new TypeQualifier(JS_PROPERTY_MAP))
+                          .setInvocationTarget(new TypeQualifier(JS_PROPERTY_MAP.getReference()))
                           .setMethodName("of")
                           .build())
                   .build()));

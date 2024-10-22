@@ -39,7 +39,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import jsinterop.generator.closure.helper.ClosureTypeRegistry;
 import jsinterop.generator.closure.helper.GenerationContext;
-import jsinterop.generator.model.PredefinedTypeReference;
+import jsinterop.generator.model.PredefinedTypes;
 import jsinterop.generator.model.Type;
 
 abstract class AbstractClosureVisitor {
@@ -217,7 +217,7 @@ abstract class AbstractClosureVisitor {
   }
 
   private void acceptClassOrInterface(FunctionType type) {
-    if (PredefinedTypeReference.isPredefinedType(type.getNormalizedReferenceName())) {
+    if (PredefinedTypes.isPredefinedType(type.getNormalizedReferenceName())) {
       // Don't traverse types that map to existing Java abstractions (e.g. JsPropertyMap from
       // JsInterop-base).
       return;

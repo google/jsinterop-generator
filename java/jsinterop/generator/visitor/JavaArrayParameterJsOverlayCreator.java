@@ -18,15 +18,17 @@
 package jsinterop.generator.visitor;
 
 import static com.google.common.base.Preconditions.checkState;
-import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN;
-import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE;
+import static jsinterop.generator.model.PredefinedTypes.BOOLEAN;
+import static jsinterop.generator.model.PredefinedTypes.BOOLEAN_OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.DOUBLE;
+import static jsinterop.generator.model.PredefinedTypes.DOUBLE_OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.JS_ARRAY_LIKE;
 
 import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
-import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.TypeReference;
 
 /**
@@ -63,28 +65,18 @@ public class JavaArrayParameterJsOverlayCreator extends AbstractJsOverlayMethodC
       checkState(jsArrayLikeReference.getActualTypeArguments().size() == 1);
 
       TypeReference componentType = jsArrayLikeReference.getActualTypeArguments().get(0);
-      if (componentType instanceof PredefinedTypeReference) {
-        // use primitive in array reference
-        return new ArrayTypeReference(preferPrimitive((PredefinedTypeReference) componentType));
 
+      if (componentType.isReferenceTo(DOUBLE_OBJECT)) {
+        componentType = DOUBLE.getReference();
+      } else if (componentType.isReferenceTo(BOOLEAN_OBJECT)) {
+        componentType = BOOLEAN.getReference();
       } else {
-        // Support for nested array
-        return new ArrayTypeReference(maybeConvertToArrayType(componentType));
+        componentType = maybeConvertToArrayType(componentType);
       }
+      return new ArrayTypeReference(componentType);
     }
 
     return typeReference;
-  }
-
-  private static PredefinedTypeReference preferPrimitive(PredefinedTypeReference typeReference) {
-    switch (typeReference) {
-      case DOUBLE_OBJECT:
-        return DOUBLE;
-      case BOOLEAN_OBJECT:
-        return BOOLEAN;
-      default:
-        return typeReference;
-    }
   }
 
   private static boolean isJsArrayLikeOrJsArrayReference(TypeReference typeReference) {
@@ -92,7 +84,7 @@ public class JavaArrayParameterJsOverlayCreator extends AbstractJsOverlayMethodC
       return false;
     }
     TypeReference mainType = ((ParametrizedTypeReference) typeReference).getMainType();
-    return mainType.equals(PredefinedTypeReference.JS_ARRAY_LIKE)
+    return mainType.isReferenceTo(JS_ARRAY_LIKE)
         || (mainType.getTypeDeclaration() != null
             && "Array".equals(mainType.getTypeDeclaration().getNativeFqn()));
   }

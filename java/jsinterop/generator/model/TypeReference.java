@@ -22,16 +22,16 @@ import static jsinterop.generator.model.LiteralExpression.NULL;
 import com.google.j2cl.common.visitor.Processor;
 import com.google.j2cl.common.visitor.Visitable;
 
-// TODO(b/286331740): Make this type an abstract class so that acceptInternal can be made package
-// private.
-/** Minimal contract for a class modeling a reference to a type. */
+/** A usage-site reference to a type. */
 @Visitable
-public interface TypeReference {
-  String getTypeName();
+public abstract class TypeReference {
+  public abstract String getTypeName();
 
-  String getImport();
+  public abstract String getImport();
 
-  String getComment();
+  public String getComment() {
+    return null;
+  }
 
   /**
    * Returns the representation of the type reference in jsDoc annotation format.
@@ -57,7 +57,7 @@ public interface TypeReference {
    *       (com.foo.Bar|com.foo.Foo|string)
    * </ul>
    */
-  String getJsDocAnnotationString();
+  public abstract String getJsDocAnnotationString();
 
   /**
    * Returns the java fully qualified name of the referenced type.
@@ -65,7 +65,7 @@ public interface TypeReference {
    * @see <a href="https://docs.oracle.com/javase/specs/jls/se7/html/jls-6.html#jls-6.7">fqn
    *     specification</a>
    */
-  String getJavaTypeFqn();
+  public abstract String getJavaTypeFqn();
 
   /**
    * Returns the java qualified name relative to the top level parent.
@@ -85,7 +85,7 @@ public interface TypeReference {
    *   fooInnerInnerReference.getJavaRelativeQualifiedTypeName() returns Foo.FooInner.FooInnerInner
    * </pre>
    */
-  String getJavaRelativeQualifiedTypeName();
+  public abstract String getJavaRelativeQualifiedTypeName();
 
   /**
    * Returns the java type signature of the referenced type as specified in the java specification.
@@ -94,16 +94,17 @@ public interface TypeReference {
    *     href="http://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/types.html#type_signatures">
    *     type signature specification</a>
    */
-  String getJniSignature();
+  public abstract String getJniSignature();
 
-  default TypeReference accept(Processor processor) {
+  public TypeReference accept(Processor processor) {
     return acceptInternal(processor);
   }
 
-  // Internal method: do not call directly.
-  TypeReference acceptInternal(Processor processor);
+  TypeReference acceptInternal(Processor processor) {
+    return Visitor_TypeReference.visit(processor, this);
+  }
 
-  default Expression getDefaultValue() {
+  public Expression getDefaultValue() {
     return NULL;
   }
 
@@ -111,12 +112,16 @@ public interface TypeReference {
    * Returns true if the type reference is a reference to a type that can be legally used in
    * instanceof clause
    */
-  default boolean isInstanceofAllowed() {
+  public boolean isInstanceofAllowed() {
     return true;
   }
 
-  default Type getTypeDeclaration() {
+  public Type getTypeDeclaration() {
     // by default, a type reference doesn't have access to the type declaration
     return null;
+  }
+
+  public boolean isReferenceTo(PredefinedTypes predefinedType) {
+    return false;
   }
 }

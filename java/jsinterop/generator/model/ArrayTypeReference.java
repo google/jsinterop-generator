@@ -22,7 +22,7 @@ import java.util.Objects;
 
 /** Models reference to a type Array. */
 @Visitable
-public class ArrayTypeReference implements TypeReference, DelegableTypeReference {
+public class ArrayTypeReference extends TypeReference implements DelegableTypeReference {
   @Visitable TypeReference arrayType;
 
   public ArrayTypeReference(TypeReference arrayType) {

@@ -20,7 +20,7 @@ package jsinterop.generator.model;
 import com.google.j2cl.common.visitor.Processor;
 import com.google.j2cl.common.visitor.Visitable;
 
-/** Model a reference to a Java type created from a typescript type. */
+/** Model a reference to a declared type. */
 @Visitable
 public class JavaTypeReference extends AbstractTypeReference {
   private Type typeDeclaration;

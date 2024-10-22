@@ -16,7 +16,7 @@
  */
 package jsinterop.generator.model;
 
-import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.OBJECT;
 
 import com.google.j2cl.common.visitor.Processor;
 import com.google.j2cl.common.visitor.Visitable;
@@ -29,7 +29,7 @@ public class TypeVariableReference extends AbstractTypeReference {
 
   public TypeVariableReference(String name, TypeReference upperBound) {
     this.name = name;
-    this.upperBound = upperBound != null ? upperBound : OBJECT;
+    this.upperBound = upperBound != null ? upperBound : OBJECT.getReference();
   }
 
   @Override

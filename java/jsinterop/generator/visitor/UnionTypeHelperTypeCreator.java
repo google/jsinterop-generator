@@ -23,12 +23,13 @@ import static jsinterop.generator.model.AnnotationType.JS_OVERLAY;
 import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 import static jsinterop.generator.model.EntityKind.INTERFACE;
-import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN;
-import static jsinterop.generator.model.PredefinedTypeReference.BOOLEAN_OBJECT;
-import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE;
-import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE_OBJECT;
-import static jsinterop.generator.model.PredefinedTypeReference.INT;
-import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.BOOLEAN;
+import static jsinterop.generator.model.PredefinedTypes.BOOLEAN_OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.DOUBLE;
+import static jsinterop.generator.model.PredefinedTypes.DOUBLE_OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.INT;
+import static jsinterop.generator.model.PredefinedTypes.OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.STRING;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Streams;
@@ -51,7 +52,7 @@ import jsinterop.generator.model.MethodInvocation;
 import jsinterop.generator.model.ModelVisitor;
 import jsinterop.generator.model.Parameter;
 import jsinterop.generator.model.ParametrizedTypeReference;
-import jsinterop.generator.model.PredefinedTypeReference;
+import jsinterop.generator.model.PredefinedTypes;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.ReturnStatement;
 import jsinterop.generator.model.Statement;
@@ -246,20 +247,20 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
   private static Method createInstanceOfMethod(TypeReference typeReference) {
     Method instanceOfMethod = createMethod(false);
     instanceOfMethod.setName("is" + typeToName(typeReference));
-    instanceOfMethod.setReturnType(BOOLEAN);
+    instanceOfMethod.setReturnType(BOOLEAN.getReference());
     TypeReference rightOperand = toInstanceOfType(typeReference);
 
     instanceOfMethod.setBody(
         new ReturnStatement(
             new InstanceOfExpression(
-                new CastExpression(OBJECT, LiteralExpression.THIS), rightOperand)));
+                new CastExpression(OBJECT.getReference(), LiteralExpression.THIS), rightOperand)));
     return instanceOfMethod;
   }
 
   private static TypeReference toInstanceOfType(TypeReference typeReference) {
     if (typeReference instanceof ArrayTypeReference) {
       // TODO(b/34396450): This won't work with a array created on javascript side.
-      return new ArrayTypeReference(OBJECT);
+      return new ArrayTypeReference(OBJECT.getReference());
     }
 
     // remove Type parameters
@@ -268,12 +269,12 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
     }
 
     // autoboxing primitives
-    if (typeReference == BOOLEAN) {
-      return BOOLEAN_OBJECT;
+    if (typeReference.isReferenceTo(BOOLEAN)) {
+      return BOOLEAN_OBJECT.getReference();
     }
 
-    if (typeReference == DOUBLE || typeReference == INT) {
-      return DOUBLE_OBJECT;
+    if (typeReference.isReferenceTo(DOUBLE) || typeReference.isReferenceTo(INT)) {
+      return DOUBLE_OBJECT.getReference();
     }
 
     return typeReference;
@@ -320,8 +321,9 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
     Method builderMethod = createMethod(true);
     builderMethod.setName("of");
     builderMethod.setReturnType(returnTypeReference);
-    builderMethod.addParameter(Parameter.builder().setName("o").setType(OBJECT).build());
-    builderMethod.addTypeParameter(OBJECT);
+    builderMethod.addParameter(
+        Parameter.builder().setName("o").setType(OBJECT.getReference()).build());
+    builderMethod.addTypeParameter(OBJECT.getReference());
     builderMethod.setBody(createJsCastInvocation("o", returnTypeReference));
 
     return builderMethod;
@@ -345,22 +347,22 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
 
   private static Statement createJsCastInvocation(String argumentName, TypeReference returnType) {
     String castMethodName;
-    if (returnType == PredefinedTypeReference.BOOLEAN) {
+    if (returnType.isReferenceTo(BOOLEAN)) {
       castMethodName = "asBoolean";
-    } else if (returnType == PredefinedTypeReference.DOUBLE) {
+    } else if (returnType.isReferenceTo(DOUBLE)) {
       castMethodName = "asDouble";
-    } else if (returnType == PredefinedTypeReference.INT) {
+    } else if (returnType.isReferenceTo(INT)) {
       castMethodName = "asInt";
-    } else if (returnType == PredefinedTypeReference.STRING) {
+    } else if (returnType.isReferenceTo(STRING)) {
       castMethodName = "asString";
     } else {
       castMethodName = "cast";
     }
     return new ReturnStatement(
         MethodInvocation.builder()
-            .setInvocationTarget(new TypeQualifier(PredefinedTypeReference.JS))
+            .setInvocationTarget(new TypeQualifier(PredefinedTypes.JS.getReference()))
             .setMethodName(castMethodName)
-            .setArgumentTypes(OBJECT)
+            .setArgumentTypes(OBJECT.getReference())
             .setArguments(new LiteralExpression(argumentName))
             .build());
   }

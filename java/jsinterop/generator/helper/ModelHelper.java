@@ -30,9 +30,9 @@ import static jsinterop.generator.model.AnnotationType.JS_TYPE;
 import static jsinterop.generator.model.EntityKind.ENUM;
 import static jsinterop.generator.model.EntityKind.INTERFACE;
 import static jsinterop.generator.model.EntityKind.NAMESPACE;
-import static jsinterop.generator.model.PredefinedTypeReference.JS;
-import static jsinterop.generator.model.PredefinedTypeReference.OBJECT;
-import static jsinterop.generator.model.PredefinedTypeReference.VOID;
+import static jsinterop.generator.model.PredefinedTypes.JS;
+import static jsinterop.generator.model.PredefinedTypes.OBJECT;
+import static jsinterop.generator.model.PredefinedTypes.VOID;
 
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
@@ -50,7 +50,6 @@ import jsinterop.generator.model.LiteralExpression;
 import jsinterop.generator.model.Method;
 import jsinterop.generator.model.MethodInvocation;
 import jsinterop.generator.model.Parameter;
-import jsinterop.generator.model.PredefinedTypeReference;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.ReturnStatement;
 import jsinterop.generator.model.Type;
@@ -156,9 +155,9 @@ public class ModelHelper {
     castMethod.setBody(
         new ReturnStatement(
             MethodInvocation.builder()
-                .setInvocationTarget(new TypeQualifier(JS))
+                .setInvocationTarget(new TypeQualifier(JS.getReference()))
                 .setMethodName("cast")
-                .setArgumentTypes(OBJECT)
+                .setArgumentTypes(OBJECT.getReference())
                 .setArguments(new LiteralExpression("o"))
                 .build()));
 
@@ -300,7 +299,7 @@ public class ModelHelper {
             .build();
 
     overload.setBody(
-        overload.getReturnType() == VOID
+        overload.getReturnType().isReferenceTo(VOID)
             ? new ExpressionStatement(delegation)
             : new ReturnStatement(delegation));
   }
@@ -310,9 +309,9 @@ public class ModelHelper {
     // will generate: Js.<$originalParameter.type>uncheckedCast($overloadParameter.name)
     // We need to add the local type argument to ensure to call the original method.
     return MethodInvocation.builder()
-        .setInvocationTarget(new TypeQualifier(PredefinedTypeReference.JS))
+        .setInvocationTarget(new TypeQualifier(JS.getReference()))
         .setMethodName("uncheckedCast")
-        .setArgumentTypes(OBJECT)
+        .setArgumentTypes(OBJECT.getReference())
         .setArguments(new LiteralExpression(overloadParameter.getName()))
         .setLocalTypeArguments(
             originalParameter.isVarargs()

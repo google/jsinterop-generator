@@ -18,21 +18,21 @@ package jsinterop.generator.model;
 
 /** A list of annotations we use in our JsInterop code generation. */
 public enum AnnotationType {
-  JS_ENUM(PredefinedTypeReference.JS_ENUM, true),
-  JS_TYPE(PredefinedTypeReference.JS_TYPE, true),
-  JS_PROPERTY(PredefinedTypeReference.JS_PROPERTY, false),
-  JS_METHOD(PredefinedTypeReference.JS_METHOD, false),
-  JS_PACKAGE(PredefinedTypeReference.JS_PACKAGE, false),
-  JS_FUNCTION(PredefinedTypeReference.JS_FUNCTION, false),
-  JS_OVERLAY(PredefinedTypeReference.JS_OVERLAY, false),
-  DEPRECATED(PredefinedTypeReference.DEPRECATED, false),
-  FUNCTIONAL_INTERFACE(PredefinedTypeReference.FUNCTIONAL_INTERFACE, false);
+  JS_ENUM(PredefinedTypes.JS_ENUM, true),
+  JS_TYPE(PredefinedTypes.JS_TYPE, true),
+  JS_PROPERTY(PredefinedTypes.JS_PROPERTY, false),
+  JS_METHOD(PredefinedTypes.JS_METHOD, false),
+  JS_PACKAGE(PredefinedTypes.JS_PACKAGE, false),
+  JS_FUNCTION(PredefinedTypes.JS_FUNCTION, false),
+  JS_OVERLAY(PredefinedTypes.JS_OVERLAY, false),
+  DEPRECATED(PredefinedTypes.DEPRECATED, false),
+  FUNCTIONAL_INTERFACE(PredefinedTypes.FUNCTIONAL_INTERFACE, false);
 
-  private final PredefinedTypeReference type;
+  private final TypeReference type;
   private final boolean isJsInteropTypeAnnotation;
 
-  AnnotationType(PredefinedTypeReference type, boolean isJsInteropTypeAnnotation) {
-    this.type = type;
+  AnnotationType(PredefinedTypes type, boolean isJsInteropTypeAnnotation) {
+    this.type = type.getReference();
     this.isJsInteropTypeAnnotation = isJsInteropTypeAnnotation;
   }
 

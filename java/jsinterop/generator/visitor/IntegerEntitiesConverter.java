@@ -16,8 +16,8 @@
  */
 package jsinterop.generator.visitor;
 
-import static jsinterop.generator.model.PredefinedTypeReference.DOUBLE;
-import static jsinterop.generator.model.PredefinedTypeReference.INT;
+import static jsinterop.generator.model.PredefinedTypes.DOUBLE;
+import static jsinterop.generator.model.PredefinedTypes.INT;
 
 import com.google.common.collect.ImmutableSet;
 import java.util.LinkedHashSet;
@@ -55,7 +55,7 @@ public class IntegerEntitiesConverter implements ModelVisitor {
           public TypeReference rewriteTypeReference(TypeReference typeReference) {
             if (mustBeConvertedToInt(typeReference)) {
               unusedIntegerEntities.remove(getCurrentConfigurationIdentifier());
-              return INT;
+              return INT.getReference();
             }
 
             return typeReference;
@@ -63,7 +63,7 @@ public class IntegerEntitiesConverter implements ModelVisitor {
 
           private boolean mustBeConvertedToInt(TypeReference originalTypeReference) {
             return integerEntities.contains(getCurrentConfigurationIdentifier())
-                && DOUBLE.equals(originalTypeReference);
+                && originalTypeReference.isReferenceTo(DOUBLE);
           }
 
           private String getCurrentConfigurationIdentifier() {
