@@ -8,7 +8,7 @@ _J2CL_VERSION = "20241031"
 http_archive(
     name = "com_google_j2cl",
     strip_prefix = "j2cl-%s" % _J2CL_VERSION,
-    url = "https://github.com/google/j2cl/archive/v%s.zip" % _J2CL_VERSION,:
+    url = "https://github.com/google/j2cl/archive/v%s.zip" % _J2CL_VERSION,
 )
 
 load("@com_google_j2cl//build_defs:repository.bzl", "load_j2cl_repo_deps")
