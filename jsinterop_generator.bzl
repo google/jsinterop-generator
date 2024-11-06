@@ -164,12 +164,12 @@ def _jsinterop_generator_impl(ctx):
         ctx.outputs._generated_jar.path,
         ctx.outputs._formatted_jar.path,
         ctx.executable._google_java_formatter.path,
-        ctx.executable._zip.path,
+        ctx.executable._jar.path,
     ]
 
     tools = [
         ctx.executable._google_java_formatter,
-        ctx.executable._zip,
+        ctx.executable._jar,
     ]
 
     ctx.actions.run(
@@ -210,10 +210,10 @@ _jsinterop_generator = rule(
         "gwt_module_name": attr.string(),
         "runtime_deps": attr.label_list(),
         "custom_preprocessing_pass": attr.string_list(),
-        "_zip": attr.label(
+        "_jar": attr.label(
             cfg = "exec",
             executable = True,
-            default = Label("@bazel_tools//tools/zip:zipper"),
+            default = Label("@bazel_tools//tools/jdk:jar"),
         ),
         "_google_java_formatter": attr.label(
             cfg = "exec",

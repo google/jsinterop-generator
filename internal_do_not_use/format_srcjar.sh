@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Script taking as input the jar file containing the generated java classes and
+# Script taking as input the jar file containing the generated java classes and 
 # formatting each java file with the google java formatter
 set -e
 
 generated_jar=$(pwd)/$1
 output=$(pwd)/$2
-formatter=$(pwd)/$3
-zip_tool=$4
+formatter=$3
+jar_tool=$4
 
 # if a relative path is passed, use the absolute path
-if [ "${zip_tool}" != "jar" ]; then
-  zip_tool=$(pwd)/${zip_tool}
+if [ "${jar_tool}" != "jar" ]; then
+  jar_tool=$(pwd)/${jar_tool}
 fi
 
 GENERATED_FILES_DIR=$(mktemp -d)
@@ -23,9 +23,11 @@ function format_java_code () {
 
 
 cd $GENERATED_FILES_DIR
-${zip_tool} x "${generated_jar}"
-format_java_code .
-${zip_tool} c "${output}" $(find . -print)
+${jar_tool} xf "${generated_jar}"
 cd -
+
+format_java_code ${GENERATED_FILES_DIR}
+
+${jar_tool} -cf "${output}" -C ${GENERATED_FILES_DIR} .
 
 rm -rf ${GENERATED_FILES_DIR}

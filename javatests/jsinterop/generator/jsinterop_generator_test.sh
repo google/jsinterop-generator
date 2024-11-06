@@ -8,7 +8,7 @@ readonly WORKSPACE=$(pwd)
 
 readonly GENERATED_JAR=${WORKSPACE}/$1
 readonly ORIGINAL_GOLDEN_FILES_DIR=$2
-readonly ZIP_TOOL=${WORKSPACE}/$3
+readonly JAR=${WORKSPACE}/$3
 readonly GOOGLE_JAVA_FORMAT=$4
 
 readonly GENERATED_FILES_DIR=$(mktemp -d)
@@ -42,7 +42,7 @@ list_java_files() {
 setup_test() {
   # Extract java files from the jar
   cd $GENERATED_FILES_DIR
-  "${ZIP_TOOL}" x "${GENERATED_JAR}"
+  "${JAR}" xf "${GENERATED_JAR}"
   cd -
   strip_java_comments ${GENERATED_FILES_DIR}
 
