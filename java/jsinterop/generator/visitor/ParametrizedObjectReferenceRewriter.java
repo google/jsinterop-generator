@@ -102,13 +102,11 @@ public class ParametrizedObjectReferenceRewriter implements ModelVisitor {
 
   private static boolean isObjectOrDoubleOrString(List<TypeReference> typesReferences) {
     return typesReferences.stream()
-            .filter(
-                t ->
-                    t.isReferenceTo(STRING)
-                        || t.isReferenceTo(DOUBLE_OBJECT)
-                        || t.isReferenceTo(OBJECT))
-            .count()
-        == typesReferences.size();
+        .allMatch(
+            t ->
+                t.isReferenceTo(STRING)
+                    || t.isReferenceTo(DOUBLE_OBJECT)
+                    || t.isReferenceTo(OBJECT));
   }
 
   private static void checkKeyType(boolean condition, TypeReference keyType, String typeName) {
