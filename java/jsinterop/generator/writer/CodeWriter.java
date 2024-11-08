@@ -63,7 +63,7 @@ public class CodeWriter {
 
   public CodeWriter(Type mainType) {
     this.mainType = mainType;
-    // Add main type as an import eagarly to avoid name clashes.
+    // Add main type as an import eagerly to avoid name clashes.
     addImport(new JavaTypeReference(mainType));
   }
 
