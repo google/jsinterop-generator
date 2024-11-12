@@ -18,7 +18,7 @@ public interface InterfaceWithStructuralType<U, V> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Bar2BarCallbackUnionType<U, V> {
     @JsOverlay
-    static InterfaceWithStructuralType.Bar2BarCallbackUnionType of(Object o) {
+    static <U, V> InterfaceWithStructuralType.Bar2BarCallbackUnionType<U, V> of(Object o) {
       return Js.cast(o);
     }
 
@@ -46,7 +46,7 @@ public interface InterfaceWithStructuralType<U, V> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Bar3Param1UnionType<U> {
     @JsOverlay
-    static InterfaceWithStructuralType.Bar3Param1UnionType of(Object o) {
+    static <U> InterfaceWithStructuralType.Bar3Param1UnionType<U> of(Object o) {
       return Js.cast(o);
     }
 
@@ -74,7 +74,7 @@ public interface InterfaceWithStructuralType<U, V> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface BazBaz2Type<U, V> {
     @JsOverlay
-    static InterfaceWithStructuralType.BazBaz2Type create() {
+    static <U, V> InterfaceWithStructuralType.BazBaz2Type<U, V> create() {
       return Js.uncheckedCast(JsPropertyMap.of());
     }
 
@@ -94,7 +94,7 @@ public interface InterfaceWithStructuralType<U, V> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface BazBazType<U, V> {
     @JsOverlay
-    static InterfaceWithStructuralType.BazBazType create() {
+    static <U, V> InterfaceWithStructuralType.BazBazType<U, V> create() {
       return Js.uncheckedCast(JsPropertyMap.of());
     }
 

@@ -11,7 +11,7 @@ public interface Foo<T, V> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface GetFooParentInterfaceTypeParameterUnionType<T, V> {
     @JsOverlay
-    static Foo.GetFooParentInterfaceTypeParameterUnionType of(Object o) {
+    static <T, V> Foo.GetFooParentInterfaceTypeParameterUnionType<T, V> of(Object o) {
       return Js.cast(o);
     }
 

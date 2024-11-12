@@ -14,7 +14,7 @@ public class MyLibThirdPartyClass<T> extends ThirdPartyClass<T> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface ExtraMethodBarType<T> {
     @JsOverlay
-    static MyLibThirdPartyClass.ExtraMethodBarType create() {
+    static <T> MyLibThirdPartyClass.ExtraMethodBarType<T> create() {
       return Js.uncheckedCast(JsPropertyMap.of());
     }
 
@@ -28,7 +28,7 @@ public class MyLibThirdPartyClass<T> extends ThirdPartyClass<T> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface ExtraMethodBarUnionType<T> {
     @JsOverlay
-    static MyLibThirdPartyClass.ExtraMethodBarUnionType of(Object o) {
+    static <T> MyLibThirdPartyClass.ExtraMethodBarUnionType<T> of(Object o) {
       return Js.cast(o);
     }
 

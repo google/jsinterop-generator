@@ -283,7 +283,7 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
     @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface P0UnionType<T, V> {
       @JsOverlay
-      static Child.Method4BarCallbackFn.P0UnionType of(Object o) {
+      static <T, V> Child.Method4BarCallbackFn.P0UnionType<T, V> of(Object o) {
         return Js.cast(o);
       }
 
@@ -304,7 +304,7 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Method4FooUnionType<T, V> {
     @JsOverlay
-    static Child.Method4FooUnionType of(Object o) {
+    static <T, V> Child.Method4FooUnionType<T, V> of(Object o) {
       return Js.cast(o);
     }
 

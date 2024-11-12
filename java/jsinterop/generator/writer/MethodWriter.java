@@ -73,6 +73,9 @@ public class MethodWriter {
     }
 
     codeWriter.emitGenerics(method.getTypeParameters(), true);
+    if (!method.getTypeParameters().isEmpty()) {
+      codeWriter.emit(" ");
+    }
 
     codeWriter.emitTypeReference(method.getReturnType()).emit(" ").emit(method.getName()).emit("(");
 

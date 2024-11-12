@@ -17,8 +17,6 @@
 
 package jsinterop.generator.visitor;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import jsinterop.generator.model.AbstractRewriter;
 import jsinterop.generator.model.Expression;
 import jsinterop.generator.model.Method;
@@ -45,20 +43,19 @@ public class FixTypeParametersOfReferencesToSyntheticTypes implements ModelVisit
     program.accept(
         new AbstractRewriter() {
           @Override
-          public boolean shouldProcessMethod(Method method) {
-            // We don't retrofit type parameters on static method of synthetic type.
-            if (getCurrentType().isSynthetic() && method.isStatic()) {
-              // For the time being we only generate two static methods: of() method on UnionType
-              // helper
-              // object and create method for dictionary types.
-              checkState(
-                  "of".equals(method.getName()) || "create".equals(method.getName()),
-                  "We don't expect a static method named [%s] in a synthetic type",
-                  method.getName());
-              return false;
+          public Method rewriteMethod(Method method) {
+            if (!getCurrentType().isSynthetic() || !method.isStatic()) {
+              return method;
             }
 
-            return true;
+            TypeReference returnType = method.getReturnType();
+            if (returnType instanceof ParametrizedTypeReference) {
+              ParametrizedTypeReference parametrizedTypeReference =
+                  (ParametrizedTypeReference) returnType;
+              method.setTypeParameters(parametrizedTypeReference.getActualTypeArguments());
+            }
+
+            return method;
           }
 
           @Override
