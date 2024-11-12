@@ -45,7 +45,7 @@ Bar.prototype.consumeIObjectAndIArrayLike = function(
 /**
  * @param {Object} object
  * @param {IArrayLike<string>} arrayLike
- * @param {function(new:Bar, string)} ctor
+ * @param {?function(new:Bar, string)} ctor
  * @return {undefined}
  */
 Bar.prototype.consumeObjectIArrayLikeAndCtorFn = function(
