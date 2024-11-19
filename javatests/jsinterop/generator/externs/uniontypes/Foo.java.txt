@@ -5,6 +5,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public interface Foo<T, V> {
@@ -27,8 +28,8 @@ public interface Foo<T, V> {
   }
 
   @JsProperty
-  ParentInterface<Foo.GetFooParentInterfaceTypeParameterUnionType<T, V>> getFoo();
+  @Nullable ParentInterface<Foo.GetFooParentInterfaceTypeParameterUnionType<T, V>> getFoo();
 
   @JsProperty
-  void setFoo(ParentInterface<Foo.GetFooParentInterfaceTypeParameterUnionType<T, V>> foo);
+  void setFoo(@Nullable ParentInterface<Foo.GetFooParentInterfaceTypeParameterUnionType<T, V>> foo);
 }

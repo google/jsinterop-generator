@@ -8,6 +8,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import jsinterop.generator.externs.natives.JsArray;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public interface Bar<U, T, V> {
@@ -100,12 +101,12 @@ public interface Bar<U, T, V> {
     @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface P2UnionType<T> {
       @JsOverlay
-      static <T> Bar.BarMethod5FooCallbackFn.P2UnionType<T> of(Object o) {
+      static <T> Bar.BarMethod5FooCallbackFn.@Nullable P2UnionType<T> of(@Nullable Object o) {
         return Js.cast(o);
       }
 
       @JsOverlay
-      default String asString() {
+      default @Nullable String asString() {
         return Js.asString(this);
       }
 
@@ -120,37 +121,38 @@ public interface Bar<U, T, V> {
       }
     }
 
-    void onInvoke(U p0, JsArray<U> p1, Bar.BarMethod5FooCallbackFn.P2UnionType<T> p2);
+    void onInvoke(
+        U p0, @Nullable JsArray<U> p1, Bar.BarMethod5FooCallbackFn.@Nullable P2UnionType<T> p2);
 
     @JsOverlay
-    default void onInvoke(U p0, JsArray<U> p1, String p2) {
-      onInvoke(p0, p1, Js.<Bar.BarMethod5FooCallbackFn.P2UnionType<T>>uncheckedCast(p2));
+    default void onInvoke(U p0, @Nullable JsArray<U> p1, String p2) {
+      onInvoke(p0, p1, Js.<Bar.BarMethod5FooCallbackFn.@Nullable P2UnionType<T>>uncheckedCast(p2));
     }
 
     @JsOverlay
-    default void onInvoke(U p0, JsArray<U> p1, T p2) {
-      onInvoke(p0, p1, Js.<Bar.BarMethod5FooCallbackFn.P2UnionType<T>>uncheckedCast(p2));
+    default void onInvoke(U p0, @Nullable JsArray<U> p1, T p2) {
+      onInvoke(p0, p1, Js.<Bar.BarMethod5FooCallbackFn.@Nullable P2UnionType<T>>uncheckedCast(p2));
     }
 
     @JsOverlay
-    default void onInvoke(U p0, U[] p1, Bar.BarMethod5FooCallbackFn.P2UnionType<T> p2) {
-      onInvoke(p0, Js.<JsArray<U>>uncheckedCast(p1), p2);
+    default void onInvoke(U p0, U[] p1, Bar.BarMethod5FooCallbackFn.@Nullable P2UnionType<T> p2) {
+      onInvoke(p0, Js.<@Nullable JsArray<U>>uncheckedCast(p1), p2);
     }
 
     @JsOverlay
     default void onInvoke(U p0, U[] p1, String p2) {
-      onInvoke(p0, Js.<JsArray<U>>uncheckedCast(p1), p2);
+      onInvoke(p0, Js.<@Nullable JsArray<U>>uncheckedCast(p1), p2);
     }
 
     @JsOverlay
     default void onInvoke(U p0, U[] p1, T p2) {
-      onInvoke(p0, Js.<JsArray<U>>uncheckedCast(p1), p2);
+      onInvoke(p0, Js.<@Nullable JsArray<U>>uncheckedCast(p1), p2);
     }
   }
 
   @JsFunction
   public interface BarMethod6FooCallbackFn<U, T> {
-    InterfaceWithGeneric<T> onInvoke(U p0, InterfaceWithGeneric<U> p1);
+    @Nullable InterfaceWithGeneric<T> onInvoke(U p0, @Nullable InterfaceWithGeneric<U> p1);
   }
 
   <V> V barMethod2(Bar.BarMethod2ParamType<V, T> param);
@@ -164,10 +166,10 @@ public interface Bar<U, T, V> {
   void barMethod6(Bar.BarMethod6FooCallbackFn<U, T> fooCallback);
 
   @JsProperty
-  InterfaceWithGeneric<Bar.BarFieldType<T>> getBar();
+  @Nullable InterfaceWithGeneric<Bar.BarFieldType<T>> getBar();
 
   @JsProperty
-  InterfaceWithGeneric<Double> getBar2();
+  @Nullable InterfaceWithGeneric<Double> getBar2();
 
   @JsProperty
   V getBaz();
@@ -176,10 +178,10 @@ public interface Bar<U, T, V> {
   U getFoo();
 
   @JsProperty
-  void setBar(InterfaceWithGeneric<Bar.BarFieldType<T>> bar);
+  void setBar(@Nullable InterfaceWithGeneric<Bar.BarFieldType<T>> bar);
 
   @JsProperty
-  void setBar2(InterfaceWithGeneric<Double> bar2);
+  void setBar2(@Nullable InterfaceWithGeneric<Double> bar2);
 
   @JsProperty
   void setBaz(V baz);

@@ -2,10 +2,11 @@ package jsinterop.generator.externs.modules.namespace;
 
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, name = "namespace.nestednamespace", namespace = JsPackage.GLOBAL)
 public class Nestednamespace {
-  public static NamespacedInterface staticProperty;
+  public static @Nullable NamespacedInterface staticProperty;
 
   public static native void staticFunction();
 }

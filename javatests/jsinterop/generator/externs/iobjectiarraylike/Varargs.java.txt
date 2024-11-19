@@ -5,13 +5,14 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.generator.externs.natives.JsObject;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Varargs {
-  public native void methodWithJsObjectVarargs(JsObject... var_args);
+  public native void methodWithJsObjectVarargs(@Nullable JsObject... var_args);
 
   @JsOverlay
-  public final void methodWithJsObjectVarargs(Object... var_args) {
-    methodWithJsObjectVarargs(Js.<JsObject[]>uncheckedCast(var_args));
+  public final void methodWithJsObjectVarargs(@Nullable Object... var_args) {
+    methodWithJsObjectVarargs(Js.<@Nullable JsObject[]>uncheckedCast(var_args));
   }
 }

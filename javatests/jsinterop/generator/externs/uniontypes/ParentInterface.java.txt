@@ -4,6 +4,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public interface ParentInterface<T> {
@@ -63,27 +64,27 @@ public interface ParentInterface<T> {
     }
   }
 
-  Object parentMethod(ParentInterface.ParentMethodFooUnionType foo);
+  @Nullable Object parentMethod(ParentInterface.ParentMethodFooUnionType foo);
 
   @JsOverlay
-  default Object parentMethod(String foo) {
+  default @Nullable Object parentMethod(String foo) {
     return parentMethod(Js.<ParentInterface.ParentMethodFooUnionType>uncheckedCast(foo));
   }
 
   @JsOverlay
-  default Object parentMethod(double foo) {
+  default @Nullable Object parentMethod(double foo) {
     return parentMethod(Js.<ParentInterface.ParentMethodFooUnionType>uncheckedCast(foo));
   }
 
-  Object parentMethod2(ParentInterface.ParentMethod2FooUnionType foo);
+  @Nullable Object parentMethod2(ParentInterface.ParentMethod2FooUnionType foo);
 
   @JsOverlay
-  default Object parentMethod2(String foo) {
+  default @Nullable Object parentMethod2(String foo) {
     return parentMethod2(Js.<ParentInterface.ParentMethod2FooUnionType>uncheckedCast(foo));
   }
 
   @JsOverlay
-  default Object parentMethod2(double foo) {
+  default @Nullable Object parentMethod2(double foo) {
     return parentMethod2(Js.<ParentInterface.ParentMethod2FooUnionType>uncheckedCast(foo));
   }
 }

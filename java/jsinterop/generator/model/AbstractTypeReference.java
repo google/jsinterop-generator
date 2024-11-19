@@ -24,6 +24,10 @@ import java.util.Objects;
 /** Abstract implementation of TypeReference */
 @Visitable
 public abstract class AbstractTypeReference extends TypeReference {
+  public AbstractTypeReference(boolean isNullable) {
+    super(isNullable);
+  }
+
   @Override
   public final boolean equals(Object o) {
     if (this == o) {

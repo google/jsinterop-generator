@@ -155,9 +155,9 @@ public class ModelHelper {
     castMethod.setBody(
         new ReturnStatement(
             MethodInvocation.builder()
-                .setInvocationTarget(new TypeQualifier(JS.getReference()))
+                .setInvocationTarget(new TypeQualifier(JS.getReference(false)))
                 .setMethodName("cast")
-                .setArgumentTypes(OBJECT.getReference())
+                .setArgumentTypes(OBJECT.getReference(false))
                 .setArguments(new LiteralExpression("o"))
                 .build()));
 
@@ -309,9 +309,9 @@ public class ModelHelper {
     // will generate: Js.<$originalParameter.type>uncheckedCast($overloadParameter.name)
     // We need to add the local type argument to ensure to call the original method.
     return MethodInvocation.builder()
-        .setInvocationTarget(new TypeQualifier(JS.getReference()))
+        .setInvocationTarget(new TypeQualifier(JS.getReference(false)))
         .setMethodName("uncheckedCast")
-        .setArgumentTypes(OBJECT.getReference())
+        .setArgumentTypes(OBJECT.getReference(false))
         .setArguments(new LiteralExpression(overloadParameter.getName()))
         .setLocalTypeArguments(
             originalParameter.isVarargs()

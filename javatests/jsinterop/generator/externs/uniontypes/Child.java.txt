@@ -6,6 +6,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.generator.externs.natives.JsArray;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Child implements ParentInterface<Child.ParentInterfaceTypeParameterUnionType> {
@@ -78,12 +79,12 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Method1FooUnionType {
     @JsOverlay
-    static Child.Method1FooUnionType of(Object o) {
+    static Child.@Nullable Method1FooUnionType of(@Nullable Object o) {
       return Js.cast(o);
     }
 
     @JsOverlay
-    default Child asChild() {
+    default @Nullable Child asChild() {
       return Js.cast(this);
     }
 
@@ -93,7 +94,7 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
     }
 
     @JsOverlay
-    default String asString() {
+    default @Nullable String asString() {
       return Js.asString(this);
     }
 
@@ -116,12 +117,12 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Method2FooUnionType {
     @JsOverlay
-    static Child.Method2FooUnionType of(Object o) {
+    static Child.@Nullable Method2FooUnionType of(@Nullable Object o) {
       return Js.cast(o);
     }
 
     @JsOverlay
-    default Child asChild() {
+    default @Nullable Child asChild() {
       return Js.cast(this);
     }
 
@@ -131,7 +132,7 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
     }
 
     @JsOverlay
-    default String asString() {
+    default @Nullable String asString() {
       return Js.asString(this);
     }
 
@@ -248,22 +249,22 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Method3FooUnionType {
     @JsOverlay
-    static Child.Method3FooUnionType of(Object o) {
+    static Child.@Nullable Method3FooUnionType of(@Nullable Object o) {
       return Js.cast(o);
     }
 
     @JsOverlay
-    default Foo<Child.Method3FooFooTypeParameterUnionType, String> asFoo() {
+    default @Nullable Foo<Child.Method3FooFooTypeParameterUnionType, String> asFoo() {
       return Js.cast(this);
     }
 
     @JsOverlay
-    default JsArray<Child.Method3FooArrayUnionType> asJsArray() {
+    default @Nullable JsArray<Child.Method3FooArrayUnionType> asJsArray() {
       return Js.cast(this);
     }
 
     @JsOverlay
-    default String asString() {
+    default @Nullable String asString() {
       return Js.asString(this);
     }
 
@@ -283,7 +284,7 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
     @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
     public interface P0UnionType<T, V> {
       @JsOverlay
-      static <T, V> Child.Method4BarCallbackFn.P0UnionType<T, V> of(Object o) {
+      static <T, V> Child.Method4BarCallbackFn.@Nullable P0UnionType<T, V> of(@Nullable Object o) {
         return Js.cast(o);
       }
 
@@ -298,13 +299,13 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
       }
     }
 
-    boolean onInvoke(Child.Method4BarCallbackFn.P0UnionType<T, V> p0);
+    boolean onInvoke(Child.Method4BarCallbackFn.@Nullable P0UnionType<T, V> p0);
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Method4FooUnionType<T, V> {
     @JsOverlay
-    static <T, V> Child.Method4FooUnionType<T, V> of(Object o) {
+    static <T, V> Child.@Nullable Method4FooUnionType<T, V> of(@Nullable Object o) {
       return Js.cast(o);
     }
 
@@ -322,12 +323,12 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface MethodUnionType {
     @JsOverlay
-    static Child.MethodUnionType of(Object o) {
+    static Child.@Nullable MethodUnionType of(@Nullable Object o) {
       return Js.cast(o);
     }
 
     @JsOverlay
-    default Child asChild() {
+    default @Nullable Child asChild() {
       return Js.cast(this);
     }
 
@@ -337,7 +338,7 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
     }
 
     @JsOverlay
-    default String asString() {
+    default @Nullable String asString() {
       return Js.asString(this);
     }
 
@@ -419,138 +420,141 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
 
   public Child(double foo) {}
 
-  public native Child.MethodUnionType method();
+  public native Child.@Nullable MethodUnionType method();
 
   @JsOverlay
-  public final Object method1(Child foo, Child.Method1BarUnionType bar, boolean baz) {
-    return method1(Js.<Child.Method1FooUnionType>uncheckedCast(foo), bar, baz);
+  public final @Nullable Object method1(Child foo, Child.Method1BarUnionType bar, boolean baz) {
+    return method1(Js.<Child.@Nullable Method1FooUnionType>uncheckedCast(foo), bar, baz);
   }
 
   @JsOverlay
-  public final Object method1(Child foo, String bar, boolean baz) {
+  public final @Nullable Object method1(Child foo, String bar, boolean baz) {
     return method1(
-        Js.<Child.Method1FooUnionType>uncheckedCast(foo),
+        Js.<Child.@Nullable Method1FooUnionType>uncheckedCast(foo),
         Js.<Child.Method1BarUnionType>uncheckedCast(bar),
         baz);
   }
 
   @JsOverlay
-  public final Object method1(Child foo, boolean bar, boolean baz) {
+  public final @Nullable Object method1(Child foo, boolean bar, boolean baz) {
     return method1(
-        Js.<Child.Method1FooUnionType>uncheckedCast(foo),
+        Js.<Child.@Nullable Method1FooUnionType>uncheckedCast(foo),
         Js.<Child.Method1BarUnionType>uncheckedCast(bar),
         baz);
   }
 
   @JsOverlay
-  public final Object method1(Child foo, double bar, boolean baz) {
+  public final @Nullable Object method1(Child foo, double bar, boolean baz) {
     return method1(
-        Js.<Child.Method1FooUnionType>uncheckedCast(foo),
+        Js.<Child.@Nullable Method1FooUnionType>uncheckedCast(foo),
         Js.<Child.Method1BarUnionType>uncheckedCast(bar),
         baz);
   }
 
-  public native Object method1(
-      Child.Method1FooUnionType foo, Child.Method1BarUnionType bar, boolean baz);
+  public native @Nullable Object method1(
+      Child.@Nullable Method1FooUnionType foo, Child.Method1BarUnionType bar, boolean baz);
 
   @JsOverlay
-  public final Object method1(Child.Method1FooUnionType foo, String bar, boolean baz) {
+  public final @Nullable Object method1(
+      Child.@Nullable Method1FooUnionType foo, String bar, boolean baz) {
     return method1(foo, Js.<Child.Method1BarUnionType>uncheckedCast(bar), baz);
   }
 
   @JsOverlay
-  public final Object method1(Child.Method1FooUnionType foo, boolean bar, boolean baz) {
+  public final @Nullable Object method1(
+      Child.@Nullable Method1FooUnionType foo, boolean bar, boolean baz) {
     return method1(foo, Js.<Child.Method1BarUnionType>uncheckedCast(bar), baz);
   }
 
   @JsOverlay
-  public final Object method1(Child.Method1FooUnionType foo, double bar, boolean baz) {
+  public final @Nullable Object method1(
+      Child.@Nullable Method1FooUnionType foo, double bar, boolean baz) {
     return method1(foo, Js.<Child.Method1BarUnionType>uncheckedCast(bar), baz);
   }
 
   @JsOverlay
-  public final Object method1(String foo, Child.Method1BarUnionType bar, boolean baz) {
-    return method1(Js.<Child.Method1FooUnionType>uncheckedCast(foo), bar, baz);
+  public final @Nullable Object method1(String foo, Child.Method1BarUnionType bar, boolean baz) {
+    return method1(Js.<Child.@Nullable Method1FooUnionType>uncheckedCast(foo), bar, baz);
   }
 
   @JsOverlay
-  public final Object method1(String foo, String bar, boolean baz) {
+  public final @Nullable Object method1(String foo, String bar, boolean baz) {
     return method1(
-        Js.<Child.Method1FooUnionType>uncheckedCast(foo),
+        Js.<Child.@Nullable Method1FooUnionType>uncheckedCast(foo),
         Js.<Child.Method1BarUnionType>uncheckedCast(bar),
         baz);
   }
 
   @JsOverlay
-  public final Object method1(String foo, boolean bar, boolean baz) {
+  public final @Nullable Object method1(String foo, boolean bar, boolean baz) {
     return method1(
-        Js.<Child.Method1FooUnionType>uncheckedCast(foo),
+        Js.<Child.@Nullable Method1FooUnionType>uncheckedCast(foo),
         Js.<Child.Method1BarUnionType>uncheckedCast(bar),
         baz);
   }
 
   @JsOverlay
-  public final Object method1(String foo, double bar, boolean baz) {
+  public final @Nullable Object method1(String foo, double bar, boolean baz) {
     return method1(
-        Js.<Child.Method1FooUnionType>uncheckedCast(foo),
+        Js.<Child.@Nullable Method1FooUnionType>uncheckedCast(foo),
         Js.<Child.Method1BarUnionType>uncheckedCast(bar),
         baz);
   }
 
   @JsOverlay
-  public final Object method1(double foo, Child.Method1BarUnionType bar, boolean baz) {
-    return method1(Js.<Child.Method1FooUnionType>uncheckedCast(foo), bar, baz);
+  public final @Nullable Object method1(double foo, Child.Method1BarUnionType bar, boolean baz) {
+    return method1(Js.<Child.@Nullable Method1FooUnionType>uncheckedCast(foo), bar, baz);
   }
 
   @JsOverlay
-  public final Object method1(double foo, String bar, boolean baz) {
+  public final @Nullable Object method1(double foo, String bar, boolean baz) {
     return method1(
-        Js.<Child.Method1FooUnionType>uncheckedCast(foo),
+        Js.<Child.@Nullable Method1FooUnionType>uncheckedCast(foo),
         Js.<Child.Method1BarUnionType>uncheckedCast(bar),
         baz);
   }
 
   @JsOverlay
-  public final Object method1(double foo, boolean bar, boolean baz) {
+  public final @Nullable Object method1(double foo, boolean bar, boolean baz) {
     return method1(
-        Js.<Child.Method1FooUnionType>uncheckedCast(foo),
+        Js.<Child.@Nullable Method1FooUnionType>uncheckedCast(foo),
         Js.<Child.Method1BarUnionType>uncheckedCast(bar),
         baz);
   }
 
   @JsOverlay
-  public final Object method1(double foo, double bar, boolean baz) {
+  public final @Nullable Object method1(double foo, double bar, boolean baz) {
     return method1(
-        Js.<Child.Method1FooUnionType>uncheckedCast(foo),
+        Js.<Child.@Nullable Method1FooUnionType>uncheckedCast(foo),
         Js.<Child.Method1BarUnionType>uncheckedCast(bar),
         baz);
   }
 
   @JsOverlay
   public final Child.Method2UnionType method2(Child foo) {
-    return method2(Js.<Child.Method2FooUnionType>uncheckedCast(foo));
+    return method2(Js.<Child.@Nullable Method2FooUnionType>uncheckedCast(foo));
   }
 
-  public native Child.Method2UnionType method2(Child.Method2FooUnionType foo);
+  public native Child.Method2UnionType method2(Child.@Nullable Method2FooUnionType foo);
 
   @JsOverlay
   public final Child.Method2UnionType method2(String foo) {
-    return method2(Js.<Child.Method2FooUnionType>uncheckedCast(foo));
+    return method2(Js.<Child.@Nullable Method2FooUnionType>uncheckedCast(foo));
   }
 
   @JsOverlay
   public final Child.Method2UnionType method2(double foo) {
-    return method2(Js.<Child.Method2FooUnionType>uncheckedCast(foo));
+    return method2(Js.<Child.@Nullable Method2FooUnionType>uncheckedCast(foo));
   }
 
   @JsOverlay
   public final void method3(Foo<Child.Method3FooFooTypeParameterUnionType, String> foo) {
-    method3(Js.<Child.Method3FooUnionType>uncheckedCast(foo));
+    method3(Js.<Child.@Nullable Method3FooUnionType>uncheckedCast(foo));
   }
 
   @JsOverlay
   public final void method3(JsArray<Child.Method3FooArrayUnionType> foo) {
-    method3(Js.<Child.Method3FooUnionType>uncheckedCast(foo));
+    method3(Js.<Child.@Nullable Method3FooUnionType>uncheckedCast(foo));
   }
 
   @JsOverlay
@@ -558,67 +562,69 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
     method3(Js.<JsArray<Child.Method3FooArrayUnionType>>uncheckedCast(foo));
   }
 
-  public native void method3(Child.Method3FooUnionType foo);
+  public native void method3(Child.@Nullable Method3FooUnionType foo);
 
   @JsOverlay
   public final void method3(String foo) {
-    method3(Js.<Child.Method3FooUnionType>uncheckedCast(foo));
+    method3(Js.<Child.@Nullable Method3FooUnionType>uncheckedCast(foo));
   }
 
   public native <T, V> V method4(
-      Child.Method4FooUnionType<T, V> foo,
+      Child.@Nullable Method4FooUnionType<T, V> foo,
       Child.Method4BarCallbackFn<? super T, ? super V> barCallback);
 
-  public native Object parentMethod(ParentInterface.ParentMethodFooUnionType foo);
+  public native @Nullable Object parentMethod(ParentInterface.ParentMethodFooUnionType foo);
 
-  public native Object parentMethod2(
+  public native @Nullable Object parentMethod2(
       ParentInterface.ParentMethod2FooUnionType foo, Child.ParentMethod2BarUnionType bar);
 
   @JsOverlay
-  public final Object parentMethod2(ParentInterface.ParentMethod2FooUnionType foo, String bar) {
+  public final @Nullable Object parentMethod2(
+      ParentInterface.ParentMethod2FooUnionType foo, String bar) {
     return parentMethod2(foo, Js.<Child.ParentMethod2BarUnionType>uncheckedCast(bar));
   }
 
   @JsOverlay
-  public final Object parentMethod2(ParentInterface.ParentMethod2FooUnionType foo, boolean bar) {
+  public final @Nullable Object parentMethod2(
+      ParentInterface.ParentMethod2FooUnionType foo, boolean bar) {
     return parentMethod2(foo, Js.<Child.ParentMethod2BarUnionType>uncheckedCast(bar));
   }
 
-  public native Object parentMethod2(ParentInterface.ParentMethod2FooUnionType foo);
+  public native @Nullable Object parentMethod2(ParentInterface.ParentMethod2FooUnionType foo);
 
   @JsOverlay
-  public final Object parentMethod2(String foo, Child.ParentMethod2BarUnionType bar) {
+  public final @Nullable Object parentMethod2(String foo, Child.ParentMethod2BarUnionType bar) {
     return parentMethod2(Js.<ParentInterface.ParentMethod2FooUnionType>uncheckedCast(foo), bar);
   }
 
   @JsOverlay
-  public final Object parentMethod2(String foo, String bar) {
+  public final @Nullable Object parentMethod2(String foo, String bar) {
     return parentMethod2(
         Js.<ParentInterface.ParentMethod2FooUnionType>uncheckedCast(foo),
         Js.<Child.ParentMethod2BarUnionType>uncheckedCast(bar));
   }
 
   @JsOverlay
-  public final Object parentMethod2(String foo, boolean bar) {
+  public final @Nullable Object parentMethod2(String foo, boolean bar) {
     return parentMethod2(
         Js.<ParentInterface.ParentMethod2FooUnionType>uncheckedCast(foo),
         Js.<Child.ParentMethod2BarUnionType>uncheckedCast(bar));
   }
 
   @JsOverlay
-  public final Object parentMethod2(double foo, Child.ParentMethod2BarUnionType bar) {
+  public final @Nullable Object parentMethod2(double foo, Child.ParentMethod2BarUnionType bar) {
     return parentMethod2(Js.<ParentInterface.ParentMethod2FooUnionType>uncheckedCast(foo), bar);
   }
 
   @JsOverlay
-  public final Object parentMethod2(double foo, String bar) {
+  public final @Nullable Object parentMethod2(double foo, String bar) {
     return parentMethod2(
         Js.<ParentInterface.ParentMethod2FooUnionType>uncheckedCast(foo),
         Js.<Child.ParentMethod2BarUnionType>uncheckedCast(bar));
   }
 
   @JsOverlay
-  public final Object parentMethod2(double foo, boolean bar) {
+  public final @Nullable Object parentMethod2(double foo, boolean bar) {
     return parentMethod2(
         Js.<ParentInterface.ParentMethod2FooUnionType>uncheckedCast(foo),
         Js.<Child.ParentMethod2BarUnionType>uncheckedCast(bar));

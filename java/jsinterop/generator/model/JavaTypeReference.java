@@ -27,6 +27,11 @@ public class JavaTypeReference extends AbstractTypeReference {
   public String comment;
 
   public JavaTypeReference(Type typeDeclaration) {
+    this(typeDeclaration, false);
+  }
+
+  public JavaTypeReference(Type typeDeclaration, boolean isNullable) {
+    super(isNullable);
     this.typeDeclaration = typeDeclaration;
   }
 
@@ -63,6 +68,16 @@ public class JavaTypeReference extends AbstractTypeReference {
   @Override
   public String getJniSignature() {
     return "L" + typeDeclaration.getJavaFqn().replace('.', '/') + ";";
+  }
+
+  @Override
+  public TypeReference toNonNullableTypeReference() {
+    return new JavaTypeReference(this.typeDeclaration, false);
+  }
+
+  @Override
+  public TypeReference toNullableTypeReference() {
+    return new JavaTypeReference(this.typeDeclaration, true);
   }
 
   @Override

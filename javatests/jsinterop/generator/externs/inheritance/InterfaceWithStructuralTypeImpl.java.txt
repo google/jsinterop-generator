@@ -7,6 +7,7 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class InterfaceWithStructuralTypeImpl<V, U> implements InterfaceWithStructuralType<V, U> {
@@ -137,7 +138,8 @@ public class InterfaceWithStructuralTypeImpl<V, U> implements InterfaceWithStruc
 
   public native void bar2(InterfaceWithStructuralType.Bar2BarCallbackUnionType<V, U> bar);
 
-  public native <U> void bar3(InterfaceWithStructuralType.Bar3Param1UnionType<U> param1, U param2);
+  public native <U> void bar3(
+      InterfaceWithStructuralType.@Nullable Bar3Param1UnionType<U> param1, U param2);
 
   public native InterfaceWithStructuralTypeImpl.Bar4UnionType bar4(
       InterfaceWithStructuralTypeImpl.Bar4Param1UnionType param1,

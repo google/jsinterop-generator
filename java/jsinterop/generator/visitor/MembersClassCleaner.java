@@ -110,7 +110,7 @@ public class MembersClassCleaner implements ModelVisitor {
           @Override
           public boolean enterField(Field field) {
             if (field.getType().isReferenceTo(VOID)) {
-              field.setType(OBJECT.getReference());
+              field.setType(OBJECT.getReference(false));
             }
 
             return true;

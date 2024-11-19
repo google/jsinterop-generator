@@ -59,6 +59,7 @@ import jsinterop.generator.model.Statement;
 import jsinterop.generator.model.Type;
 import jsinterop.generator.model.TypeQualifier;
 import jsinterop.generator.model.TypeReference;
+import jsinterop.generator.model.TypeVariableReference;
 import jsinterop.generator.model.UnionTypeReference;
 
 /**
@@ -163,7 +164,8 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
 
           @Override
           public TypeReference rewriteUnionTypeReference(UnionTypeReference typeReference) {
-            return new JavaTypeReference(createUnionTypeHelperType(typeReference));
+            return new JavaTypeReference(
+                createUnionTypeHelperType(typeReference), typeReference.isNullable());
           }
 
           @Override
@@ -205,10 +207,13 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
                     .build());
 
             // add a HelperType.of(Object)
-            helperType.addMethod(createOfMethod(helperType));
+            boolean isNullable = unionTypeReference.isNullable();
+            helperType.addMethod(createOfMethod(helperType, isNullable));
 
             // create all asXXX methods
-            unionTypeReference.getTypes().forEach(t -> helperType.addMethod(createAsMethod(t)));
+            unionTypeReference
+                .getTypes()
+                .forEach(t -> helperType.addMethod(createAsMethod(t, isNullable)));
 
             // create all isXXX methods
             unionTypeReference.getTypes().stream()
@@ -247,37 +252,38 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
   private static Method createInstanceOfMethod(TypeReference typeReference) {
     Method instanceOfMethod = createMethod(false);
     instanceOfMethod.setName("is" + typeToName(typeReference));
-    instanceOfMethod.setReturnType(BOOLEAN.getReference());
+    instanceOfMethod.setReturnType(BOOLEAN.getReference(false));
     TypeReference rightOperand = toInstanceOfType(typeReference);
 
     instanceOfMethod.setBody(
         new ReturnStatement(
             new InstanceOfExpression(
-                new CastExpression(OBJECT.getReference(), LiteralExpression.THIS), rightOperand)));
+                new CastExpression(OBJECT.getReference(false), LiteralExpression.THIS),
+                rightOperand)));
     return instanceOfMethod;
   }
 
   private static TypeReference toInstanceOfType(TypeReference typeReference) {
     if (typeReference instanceof ArrayTypeReference) {
       // TODO(b/34396450): This won't work with a array created on javascript side.
-      return new ArrayTypeReference(OBJECT.getReference());
+      return new ArrayTypeReference(OBJECT.getReference(false));
     }
 
     // remove Type parameters
     if (typeReference instanceof ParametrizedTypeReference) {
-      return ((ParametrizedTypeReference) typeReference).getMainType();
+      return ((ParametrizedTypeReference) typeReference).getMainType().toNonNullableTypeReference();
     }
 
     // autoboxing primitives
     if (typeReference.isReferenceTo(BOOLEAN)) {
-      return BOOLEAN_OBJECT.getReference();
+      return BOOLEAN_OBJECT.getReference(false);
     }
 
     if (typeReference.isReferenceTo(DOUBLE) || typeReference.isReferenceTo(INT)) {
-      return DOUBLE_OBJECT.getReference();
+      return DOUBLE_OBJECT.getReference(false);
     }
 
-    return typeReference;
+    return typeReference.toNonNullableTypeReference();
   }
 
   /**
@@ -292,9 +298,16 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
    *   }
    * </pre>
    */
-  private static Method createAsMethod(TypeReference typeReference) {
+  private static Method createAsMethod(TypeReference typeReference, boolean isNullable) {
     Method castMethod = createMethod(false);
     castMethod.setName("as" + typeToName(typeReference));
+
+    if (isNullable
+        && !PredefinedTypes.isPrimitiveTypeReference(typeReference)
+        && !(typeReference instanceof TypeVariableReference)) {
+      typeReference = typeReference.toNullableTypeReference();
+    }
+
     castMethod.setReturnType(typeReference);
     castMethod.setBody(createJsCastInvocation("this", typeReference));
 
@@ -316,14 +329,15 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
    * could potentially want to cast type BarOrFoo or BarOrBaz etc. to BarOrBazOrFoo and we may not
    * know these types.
    */
-  private static Method createOfMethod(Type helperType) {
-    TypeReference returnTypeReference = new JavaTypeReference(helperType);
+  private static Method createOfMethod(Type helperType, boolean isNullable) {
+    TypeReference returnTypeReference = new JavaTypeReference(helperType, isNullable);
+    TypeReference parameterTypeReference = OBJECT.getReference(isNullable);
     Method builderMethod = createMethod(true);
     builderMethod.setName("of");
     builderMethod.setReturnType(returnTypeReference);
     builderMethod.addParameter(
-        Parameter.builder().setName("o").setType(OBJECT.getReference()).build());
-    builderMethod.addTypeParameter(OBJECT.getReference());
+        Parameter.builder().setName("o").setType(parameterTypeReference).build());
+    builderMethod.addTypeParameter(parameterTypeReference);
     builderMethod.setBody(createJsCastInvocation("o", returnTypeReference));
 
     return builderMethod;
@@ -360,9 +374,9 @@ public class UnionTypeHelperTypeCreator implements ModelVisitor {
     }
     return new ReturnStatement(
         MethodInvocation.builder()
-            .setInvocationTarget(new TypeQualifier(PredefinedTypes.JS.getReference()))
+            .setInvocationTarget(new TypeQualifier(PredefinedTypes.JS.getReference(false)))
             .setMethodName(castMethodName)
-            .setArgumentTypes(OBJECT.getReference())
+            .setArgumentTypes(OBJECT.getReference(false))
             .setArguments(new LiteralExpression(argumentName))
             .build());
   }

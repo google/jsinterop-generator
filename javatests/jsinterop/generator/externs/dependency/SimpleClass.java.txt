@@ -5,17 +5,18 @@ import jsinterop.annotations.JsType;
 import jsinterop.generator.externs.dependency.parentthirdparty.ParentThirdPartyInterface;
 import jsinterop.generator.externs.dependency.thirdparty.ThirdPartyClass;
 import jsinterop.generator.externs.dependency.thirdparty.ThirdPartyInterface;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class SimpleClass extends ThirdPartyClass implements ThirdPartyInterface {
-  public ThirdPartyClass field;
+  public @Nullable ThirdPartyClass field;
 
   public SimpleClass() {
     // This super call is here only for the code to compile; it is never executed.
     super((ThirdPartyClass.ConstructorFooUnionType) null);
   }
 
-  public native ThirdPartyClass method(ThirdPartyInterface foo);
+  public native @Nullable ThirdPartyClass method(@Nullable ThirdPartyInterface foo);
 
   public native void parentThirdpartyMethod(
       ParentThirdPartyInterface.ParentThirdpartyMethodFooType foo);

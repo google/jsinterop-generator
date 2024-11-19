@@ -4,6 +4,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, name = "goog.global", namespace = JsPackage.GLOBAL)
 public class Global {
@@ -35,15 +36,15 @@ public class Global {
     }
   }
 
-  public static native Object foo(Global.FooFooUnionType foo);
+  public static native @Nullable Object foo(Global.FooFooUnionType foo);
 
   @JsOverlay
-  public static final Object foo(String foo) {
+  public static final @Nullable Object foo(String foo) {
     return foo(Js.<Global.FooFooUnionType>uncheckedCast(foo));
   }
 
   @JsOverlay
-  public static final Object foo(double foo) {
+  public static final @Nullable Object foo(double foo) {
     return foo(Js.<Global.FooFooUnionType>uncheckedCast(foo));
   }
 }

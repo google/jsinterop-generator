@@ -7,6 +7,7 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public interface InterfaceWithStructuralType<U, V> {
@@ -46,12 +47,12 @@ public interface InterfaceWithStructuralType<U, V> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface Bar3Param1UnionType<U> {
     @JsOverlay
-    static <U> InterfaceWithStructuralType.Bar3Param1UnionType<U> of(Object o) {
+    static <U> InterfaceWithStructuralType.@Nullable Bar3Param1UnionType<U> of(@Nullable Object o) {
       return Js.cast(o);
     }
 
     @JsOverlay
-    default String asString() {
+    default @Nullable String asString() {
       return Js.asString(this);
     }
 
@@ -152,16 +153,20 @@ public interface InterfaceWithStructuralType<U, V> {
     bar2(Js.<InterfaceWithStructuralType.Bar2BarCallbackUnionType<U, V>>uncheckedCast(barCallback));
   }
 
-  <U> void bar3(InterfaceWithStructuralType.Bar3Param1UnionType<U> param1, U param2);
+  <U> void bar3(InterfaceWithStructuralType.@Nullable Bar3Param1UnionType<U> param1, U param2);
 
   @JsOverlay
   default <U> void bar3(String param1, U param2) {
-    bar3(Js.<InterfaceWithStructuralType.Bar3Param1UnionType<U>>uncheckedCast(param1), param2);
+    bar3(
+        Js.<InterfaceWithStructuralType.@Nullable Bar3Param1UnionType<U>>uncheckedCast(param1),
+        param2);
   }
 
   @JsOverlay
   default <U> void bar3(U param1, U param2) {
-    bar3(Js.<InterfaceWithStructuralType.Bar3Param1UnionType<U>>uncheckedCast(param1), param2);
+    bar3(
+        Js.<InterfaceWithStructuralType.@Nullable Bar3Param1UnionType<U>>uncheckedCast(param1),
+        param2);
   }
 
   V baz(

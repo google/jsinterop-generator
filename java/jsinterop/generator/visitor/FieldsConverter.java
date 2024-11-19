@@ -120,7 +120,7 @@ public class FieldsConverter implements ModelVisitor {
 
     if (setter) {
       accessor.addParameter(Parameter.builder().setName(fieldName).setType(fieldType).build());
-      accessor.setReturnType(VOID.getReference());
+      accessor.setReturnType(VOID.getReference(false));
     } else {
       accessor.setReturnType(fieldType);
     }

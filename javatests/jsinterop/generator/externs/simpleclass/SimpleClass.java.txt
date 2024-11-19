@@ -7,6 +7,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.generator.externs.natives.JsArray;
 import jsinterop.generator.externs.natives.JsObject;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class SimpleClass {
@@ -48,10 +49,10 @@ public class SimpleClass {
   public static final String staticReadonlyProperty = SimpleClass__Constants.staticReadonlyProperty;
 
   @JsMethod(name = "clone")
-  public static native Object clone__STATIC();
+  public static native @Nullable Object clone__STATIC();
 
   @JsMethod(name = "equals")
-  public static native boolean equals__STATIC(Object other);
+  public static native boolean equals__STATIC(@Nullable Object other);
 
   @JsMethod(name = "getClass")
   public static native String getClass__STATIC();
@@ -77,26 +78,26 @@ public class SimpleClass {
 
   @Deprecated public String deprecatedProperty;
   public String fooProperty;
-  public JsArray<JsArray<JsArray<String>>> fooProperty2;
+  public @Nullable JsArray<JsArray<JsArray<String>>> fooProperty2;
   public boolean readonlyProperty;
-  public SimpleClass thisType;
+  public @Nullable SimpleClass thisType;
 
   public SimpleClass() {}
 
   public SimpleClass(String foo) {}
 
   @JsMethod(name = "clone")
-  public native Object clone_();
+  public native @Nullable Object clone_();
 
   @Deprecated
   public native boolean deprecatedMethod(
-      String bar, SimpleClass.DeprecatedMethodFooUnionType foo, JsObject baz);
+      String bar, SimpleClass.DeprecatedMethodFooUnionType foo, @Nullable JsObject baz);
 
   @JsOverlay
   @Deprecated
   public final boolean deprecatedMethod(
-      String bar, SimpleClass.DeprecatedMethodFooUnionType foo, Object baz) {
-    return deprecatedMethod(bar, foo, Js.<JsObject>uncheckedCast(baz));
+      String bar, SimpleClass.DeprecatedMethodFooUnionType foo, @Nullable Object baz) {
+    return deprecatedMethod(bar, foo, Js.<@Nullable JsObject>uncheckedCast(baz));
   }
 
   @Deprecated
@@ -104,15 +105,15 @@ public class SimpleClass {
 
   @JsOverlay
   @Deprecated
-  public final boolean deprecatedMethod(String bar, String foo, JsObject baz) {
+  public final boolean deprecatedMethod(String bar, String foo, @Nullable JsObject baz) {
     return deprecatedMethod(
         bar, Js.<SimpleClass.DeprecatedMethodFooUnionType>uncheckedCast(foo), baz);
   }
 
   @JsOverlay
   @Deprecated
-  public final boolean deprecatedMethod(String bar, String foo, Object baz) {
-    return deprecatedMethod(bar, foo, Js.<JsObject>uncheckedCast(baz));
+  public final boolean deprecatedMethod(String bar, String foo, @Nullable Object baz) {
+    return deprecatedMethod(bar, foo, Js.<@Nullable JsObject>uncheckedCast(baz));
   }
 
   @JsOverlay
@@ -123,15 +124,15 @@ public class SimpleClass {
 
   @JsOverlay
   @Deprecated
-  public final boolean deprecatedMethod(String bar, double foo, JsObject baz) {
+  public final boolean deprecatedMethod(String bar, double foo, @Nullable JsObject baz) {
     return deprecatedMethod(
         bar, Js.<SimpleClass.DeprecatedMethodFooUnionType>uncheckedCast(foo), baz);
   }
 
   @JsOverlay
   @Deprecated
-  public final boolean deprecatedMethod(String bar, double foo, Object baz) {
-    return deprecatedMethod(bar, foo, Js.<JsObject>uncheckedCast(baz));
+  public final boolean deprecatedMethod(String bar, double foo, @Nullable Object baz) {
+    return deprecatedMethod(bar, foo, Js.<@Nullable JsObject>uncheckedCast(baz));
   }
 
   @JsOverlay
@@ -141,13 +142,13 @@ public class SimpleClass {
   }
 
   @JsMethod(name = "equals")
-  public native boolean equals_(Object other);
+  public native boolean equals_(@Nullable Object other);
 
-  public native boolean fooMethod(String foo, String bar, JsObject baz);
+  public native boolean fooMethod(String foo, String bar, @Nullable JsObject baz);
 
   @JsOverlay
-  public final boolean fooMethod(String foo, String bar, Object baz) {
-    return fooMethod(foo, bar, Js.<JsObject>uncheckedCast(baz));
+  public final boolean fooMethod(String foo, String bar, @Nullable Object baz) {
+    return fooMethod(foo, bar, Js.<@Nullable JsObject>uncheckedCast(baz));
   }
 
   public native boolean fooMethod(String foo, String bar);

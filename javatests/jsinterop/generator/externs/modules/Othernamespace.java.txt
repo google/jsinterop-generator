@@ -7,6 +7,7 @@ import jsinterop.base.Js;
 import jsinterop.generator.externs.modules.namespace.NamespacedFunctionType;
 import jsinterop.generator.externs.modules.namespace.NamespacedTypeDefOfRecord;
 import jsinterop.generator.externs.modules.namespace.nestednamespace.InterfaceFromNestedNamespace;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, name = "othernamespace", namespace = JsPackage.GLOBAL)
 public class Othernamespace {
@@ -41,5 +42,5 @@ public class Othernamespace {
   public static NamespacedFunctionType namespacedFunctionTypeRef;
   public static NamespacedTypeDefOfRecord namespacedTypeDefOfRecordRef;
   public static Othernamespace.NamespacedUnionTypeRefUnionType namespacedUnionTypeRef;
-  public static InterfaceFromNestedNamespace property;
+  public static @Nullable InterfaceFromNestedNamespace property;
 }

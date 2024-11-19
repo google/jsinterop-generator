@@ -9,6 +9,7 @@ import jsinterop.base.Js;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 import jsinterop.generator.externs.natives.JsArray;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, name = "goog.global", namespace = JsPackage.GLOBAL)
 public class Global {
@@ -29,7 +30,7 @@ public class Global {
 
   @JsFunction
   public interface Method2FooCallbackFn {
-    Object onInvoke(String p0);
+    @Nullable Object onInvoke(String p0);
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
@@ -72,7 +73,7 @@ public class Global {
 
   @JsFunction
   public interface Method4FooCallbackFn {
-    Object onInvoke();
+    @Nullable Object onInvoke();
   }
 
   @JsFunction
@@ -155,7 +156,7 @@ public class Global {
   }
 
   public static AliasedFunctionType bar;
-  public static JsArray<Global.BazFn> baz;
+  public static @Nullable JsArray<Global.BazFn> baz;
   public static Global.FooFn foo;
   public static JsConstructorFn<? extends SimpleClass> simpleClassCtor;
 

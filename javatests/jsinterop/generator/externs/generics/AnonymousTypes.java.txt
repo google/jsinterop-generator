@@ -7,6 +7,7 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class AnonymousTypes<T> {
@@ -52,7 +53,7 @@ public class AnonymousTypes<T> {
 
   @JsFunction
   public interface FunctionTypeRedefiningThisCallbackFn {
-    Object onInvoke(String p0);
+    @Nullable Object onInvoke(String p0);
   }
 
   @JsFunction
@@ -88,12 +89,12 @@ public class AnonymousTypes<T> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface UnionTypeFooUnionType<T> {
     @JsOverlay
-    static <T> AnonymousTypes.UnionTypeFooUnionType<T> of(Object o) {
+    static <T> AnonymousTypes.@Nullable UnionTypeFooUnionType<T> of(@Nullable Object o) {
       return Js.cast(o);
     }
 
     @JsOverlay
-    default String asString() {
+    default @Nullable String asString() {
       return Js.asString(this);
     }
 
@@ -108,7 +109,8 @@ public class AnonymousTypes<T> {
     }
   }
 
-  public static native <Z> void bar(InterfaceWithGeneric<AnonymousTypes.BarFooType<Z>> foo);
+  public static native <Z> void bar(
+      @Nullable InterfaceWithGeneric<AnonymousTypes.BarFooType<Z>> foo);
 
   public native <V, U> void foo(AnonymousTypes.FooFooType<V, U, T> foo);
 
@@ -125,13 +127,13 @@ public class AnonymousTypes<T> {
 
   @JsOverlay
   public final void unionType(String foo) {
-    unionType(Js.<AnonymousTypes.UnionTypeFooUnionType<T>>uncheckedCast(foo));
+    unionType(Js.<AnonymousTypes.@Nullable UnionTypeFooUnionType<T>>uncheckedCast(foo));
   }
 
   @JsOverlay
   public final void unionType(T foo) {
-    unionType(Js.<AnonymousTypes.UnionTypeFooUnionType<T>>uncheckedCast(foo));
+    unionType(Js.<AnonymousTypes.@Nullable UnionTypeFooUnionType<T>>uncheckedCast(foo));
   }
 
-  public native void unionType(AnonymousTypes.UnionTypeFooUnionType<T> foo);
+  public native void unionType(AnonymousTypes.@Nullable UnionTypeFooUnionType<T> foo);
 }

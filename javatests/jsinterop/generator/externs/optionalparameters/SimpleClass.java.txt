@@ -2,6 +2,7 @@ package jsinterop.generator.externs.optionalparameters;
 
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class SimpleClass {
@@ -17,5 +18,5 @@ public class SimpleClass {
 
   public native void optionalParameterWithVarArgs();
 
-  public native void optionalParameterWithVarArgs(String foo, Object... bar);
+  public native void optionalParameterWithVarArgs(String foo, @Nullable Object... bar);
 }

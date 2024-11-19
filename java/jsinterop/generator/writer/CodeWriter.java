@@ -18,6 +18,7 @@ package jsinterop.generator.writer;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.newHashSet;
+import static jsinterop.generator.model.AnnotationType.NULLABLE;
 import static jsinterop.generator.model.LiteralExpression.NULL;
 import static jsinterop.generator.model.PredefinedTypes.OBJECT;
 
@@ -123,10 +124,10 @@ public class CodeWriter {
 
     if (typeReferences.hasNext()) {
       emit(start);
-      emitTypeReference(typeReferences.next(), emitConstraint);
+      emitTypeReference(typeReferences.next(), emitConstraint, /* emitNullable= */ true);
       while (typeReferences.hasNext()) {
         emit(", ");
-        emitTypeReference(typeReferences.next(), emitConstraint);
+        emitTypeReference(typeReferences.next(), emitConstraint, /* emitNullable= */ true);
       }
       emit(end);
     }
@@ -189,10 +190,15 @@ public class CodeWriter {
   }
 
   public CodeWriter emitTypeReference(TypeReference type) {
-    return emitTypeReference(type, false);
+    return emitTypeReference(type, false, true);
   }
 
   public CodeWriter emitTypeReference(TypeReference typeReference, boolean emitConstraint) {
+    return emitTypeReference(typeReference, emitConstraint, true);
+  }
+
+  public CodeWriter emitTypeReference(
+      TypeReference typeReference, boolean emitConstraint, boolean emitNullable) {
     emitSingleLineComment(typeReference.getComment());
 
     if (typeReference instanceof ArrayTypeReference) {
@@ -208,8 +214,7 @@ public class CodeWriter {
     } else if (typeReference instanceof ParametrizedTypeReference) {
       ParametrizedTypeReference parametrizedTypeReference =
           (ParametrizedTypeReference) typeReference;
-
-      emitTypeReference(parametrizedTypeReference.getMainType());
+      emitTypeReference(parametrizedTypeReference.getMainType(), emitConstraint, emitNullable);
 
       if (!parametrizedTypeReference.getActualTypeArguments().isEmpty()) {
         emitGenerics(parametrizedTypeReference.getActualTypeArguments(), emitConstraint);
@@ -225,11 +230,31 @@ public class CodeWriter {
     } else {
       // Due to a bug in javac with import of inner type of inner type, we don't create import for
       // inner types.
-      if (addImport(getTopLevelParentTypeReference(typeReference))) {
-        emit(typeReference.getJavaRelativeQualifiedTypeName());
-      } else {
-        emit(typeReference.getJavaTypeFqn());
+      boolean importAdded = addImport(getTopLevelParentTypeReference(typeReference));
+
+      String qualifiedTypeName =
+          importAdded
+              ? typeReference.getJavaRelativeQualifiedTypeName()
+              : typeReference.getJavaTypeFqn();
+      int lastDot = qualifiedTypeName.lastIndexOf('.');
+      String simpleName = qualifiedTypeName.substring(lastDot + 1);
+      String topLevelParentQualifiedName =
+          lastDot > 0 ? qualifiedTypeName.substring(0, lastDot) : "";
+
+      if (!topLevelParentQualifiedName.isEmpty()) {
+        // Type annotations on qualified names have to be applied to the simple name of the type.
+        // Ex: com.foo.Bar.@Nullable Foo
+        emit(topLevelParentQualifiedName).emit(".");
       }
+
+      emitNullableAnnotation(typeReference, emitNullable).emit(simpleName);
+    }
+    return this;
+  }
+
+  private CodeWriter emitNullableAnnotation(TypeReference typeReference, boolean emitNullable) {
+    if (emitNullable && typeReference.isNullable()) {
+      emit("@").emitTypeReference(NULLABLE.getType()).emit(" ");
     }
     return this;
   }

@@ -262,7 +262,8 @@ public class WildcardTypeCreator implements ModelVisitor {
       }
     }
 
-    return new ParametrizedTypeReference(new JavaTypeReference(jsFunctionType), newTypeArguments);
+    return new ParametrizedTypeReference(
+        new JavaTypeReference(jsFunctionType, typeReference.isNullable()), newTypeArguments);
   }
 
   private static boolean isGenericJsFunctionTypeReference(ParametrizedTypeReference typeReference) {

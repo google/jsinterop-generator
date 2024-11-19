@@ -76,7 +76,7 @@ public class ValidJavaIdentifierVisitor implements ModelVisitor {
           .addAll(
               methods(
                   "equals",
-                  Parameter.builder().setName("o").setType(OBJECT.getReference()).build()))
+                  Parameter.builder().setName("o").setType(OBJECT.getReference(false)).build()))
           .addAll(methods("toString"))
           .addAll(methods("clone"))
           .addAll(methods("notify"))
@@ -85,12 +85,12 @@ public class ValidJavaIdentifierVisitor implements ModelVisitor {
           .addAll(
               methods(
                   "wait",
-                  Parameter.builder().setName("timeout").setType(LONG.getReference()).build()))
+                  Parameter.builder().setName("timeout").setType(LONG.getReference(false)).build()))
           .addAll(
               methods(
                   "wait",
-                  Parameter.builder().setName("timeout").setType(LONG.getReference()).build(),
-                  Parameter.builder().setName("nanos").setType(INT.getReference()).build()))
+                  Parameter.builder().setName("timeout").setType(LONG.getReference(false)).build(),
+                  Parameter.builder().setName("nanos").setType(INT.getReference(false)).build()))
           .addAll(methods("finalize"))
           .build();
 

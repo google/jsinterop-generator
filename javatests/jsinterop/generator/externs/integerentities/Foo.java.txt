@@ -5,6 +5,7 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Foo {
@@ -54,14 +55,14 @@ public class Foo {
   public native void methodWithOptionalParameter(int param1);
 
   @JsOverlay
-  public final Object union(String unionParam) {
+  public final @Nullable Object union(String unionParam) {
     return union(Js.<Foo.UnionUnionParamUnionType>uncheckedCast(unionParam));
   }
 
-  public native Object union(Foo.UnionUnionParamUnionType unionParam);
+  public native @Nullable Object union(Foo.UnionUnionParamUnionType unionParam);
 
   @JsOverlay
-  public final Object union(int unionParam) {
+  public final @Nullable Object union(int unionParam) {
     return union(Js.<Foo.UnionUnionParamUnionType>uncheckedCast(unionParam));
   }
 }

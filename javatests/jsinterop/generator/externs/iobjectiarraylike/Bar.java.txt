@@ -8,78 +8,95 @@ import jsinterop.base.JsArrayLike;
 import jsinterop.base.JsConstructorFn;
 import jsinterop.base.JsPropertyMap;
 import jsinterop.generator.externs.natives.JsObject;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Bar implements JsArrayLike<String> {
-  public JsArrayLike<String> iArrayLikeField;
-  public JsPropertyMap<String> iObjectField;
-  public JsPropertyMap<String> templatizedObject;
-  public JsPropertyMap<Double> templatizedObjectWithStringOrNumberKeys;
-  public JsPropertyMap<Double> templatizedObjectWithStringOrSymbolKeys;
-  public JsPropertyMap<Double> templatizedObjectWithTwoParameters;
+  public @Nullable JsArrayLike<String> iArrayLikeField;
+  public @Nullable JsPropertyMap<String> iObjectField;
+  public @Nullable JsPropertyMap<String> templatizedObject;
+  public @Nullable JsPropertyMap<Double> templatizedObjectWithStringOrNumberKeys;
+  public @Nullable JsPropertyMap<Double> templatizedObjectWithStringOrSymbolKeys;
+  public @Nullable JsPropertyMap<Double> templatizedObjectWithTwoParameters;
 
-  public native JsArrayLike<String> asIArrayLike();
+  public native @Nullable JsArrayLike<String> asIArrayLike();
 
-  public native JsPropertyMap<String> asIObject();
+  public native @Nullable JsPropertyMap<String> asIObject();
 
   public native void consumeIObjectAndIArrayLike(
-      JsPropertyMap<String> object,
-      JsArrayLike<String> arrayLike,
-      JsArrayLike<JsArrayLike<String>> doubleArrayLike);
+      @Nullable JsPropertyMap<String> object,
+      @Nullable JsArrayLike<String> arrayLike,
+      @Nullable JsArrayLike<JsArrayLike<String>> doubleArrayLike);
 
   @JsOverlay
   public final void consumeIObjectAndIArrayLike(
-      JsPropertyMap<String> object, String[] arrayLike, String[][] doubleArrayLike) {
+      @Nullable JsPropertyMap<String> object,
+      @Nullable String[] arrayLike,
+      @Nullable String[][] doubleArrayLike) {
     consumeIObjectAndIArrayLike(
         object,
-        Js.<JsArrayLike<String>>uncheckedCast(arrayLike),
-        Js.<JsArrayLike<JsArrayLike<String>>>uncheckedCast(doubleArrayLike));
+        Js.<@Nullable JsArrayLike<String>>uncheckedCast(arrayLike),
+        Js.<@Nullable JsArrayLike<JsArrayLike<String>>>uncheckedCast(doubleArrayLike));
   }
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      JsObject object, JsArrayLike<String> arrayLike, Class<? extends Bar> ctor) {
+      @Nullable JsObject object,
+      @Nullable JsArrayLike<String> arrayLike,
+      @Nullable Class<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(object, arrayLike, Js.asConstructorFn(ctor));
   }
 
   public native void consumeObjectIArrayLikeAndCtorFn(
-      JsObject object, JsArrayLike<String> arrayLike, JsConstructorFn<? extends Bar> ctor);
+      @Nullable JsObject object,
+      @Nullable JsArrayLike<String> arrayLike,
+      @Nullable JsConstructorFn<? extends Bar> ctor);
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      JsObject object, String[] arrayLike, Class<? extends Bar> ctor) {
+      @Nullable JsObject object,
+      @Nullable String[] arrayLike,
+      @Nullable Class<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(
-        object, Js.<JsArrayLike<String>>uncheckedCast(arrayLike), ctor);
+        object, Js.<@Nullable JsArrayLike<String>>uncheckedCast(arrayLike), ctor);
   }
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      JsObject object, String[] arrayLike, JsConstructorFn<? extends Bar> ctor) {
+      @Nullable JsObject object,
+      @Nullable String[] arrayLike,
+      @Nullable JsConstructorFn<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(
-        object, Js.<JsArrayLike<String>>uncheckedCast(arrayLike), ctor);
+        object, Js.<@Nullable JsArrayLike<String>>uncheckedCast(arrayLike), ctor);
   }
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      Object object, JsArrayLike<String> arrayLike, Class<? extends Bar> ctor) {
-    consumeObjectIArrayLikeAndCtorFn(Js.<JsObject>uncheckedCast(object), arrayLike, ctor);
+      @Nullable Object object,
+      @Nullable JsArrayLike<String> arrayLike,
+      @Nullable Class<? extends Bar> ctor) {
+    consumeObjectIArrayLikeAndCtorFn(Js.<@Nullable JsObject>uncheckedCast(object), arrayLike, ctor);
   }
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      Object object, JsArrayLike<String> arrayLike, JsConstructorFn<? extends Bar> ctor) {
-    consumeObjectIArrayLikeAndCtorFn(Js.<JsObject>uncheckedCast(object), arrayLike, ctor);
+      @Nullable Object object,
+      @Nullable JsArrayLike<String> arrayLike,
+      @Nullable JsConstructorFn<? extends Bar> ctor) {
+    consumeObjectIArrayLikeAndCtorFn(Js.<@Nullable JsObject>uncheckedCast(object), arrayLike, ctor);
   }
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      Object object, String[] arrayLike, Class<? extends Bar> ctor) {
-    consumeObjectIArrayLikeAndCtorFn(Js.<JsObject>uncheckedCast(object), arrayLike, ctor);
+      @Nullable Object object, @Nullable String[] arrayLike, @Nullable Class<? extends Bar> ctor) {
+    consumeObjectIArrayLikeAndCtorFn(Js.<@Nullable JsObject>uncheckedCast(object), arrayLike, ctor);
   }
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      Object object, String[] arrayLike, JsConstructorFn<? extends Bar> ctor) {
-    consumeObjectIArrayLikeAndCtorFn(Js.<JsObject>uncheckedCast(object), arrayLike, ctor);
+      @Nullable Object object,
+      @Nullable String[] arrayLike,
+      @Nullable JsConstructorFn<? extends Bar> ctor) {
+    consumeObjectIArrayLikeAndCtorFn(Js.<@Nullable JsObject>uncheckedCast(object), arrayLike, ctor);
   }
 }

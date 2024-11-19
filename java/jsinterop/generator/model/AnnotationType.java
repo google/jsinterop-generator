@@ -26,13 +26,14 @@ public enum AnnotationType {
   JS_FUNCTION(PredefinedTypes.JS_FUNCTION, false),
   JS_OVERLAY(PredefinedTypes.JS_OVERLAY, false),
   DEPRECATED(PredefinedTypes.DEPRECATED, false),
+  NULLABLE(PredefinedTypes.NULLABLE, false),
   FUNCTIONAL_INTERFACE(PredefinedTypes.FUNCTIONAL_INTERFACE, false);
 
   private final TypeReference type;
   private final boolean isJsInteropTypeAnnotation;
 
   AnnotationType(PredefinedTypes type, boolean isJsInteropTypeAnnotation) {
-    this.type = type.getReference();
+    this.type = type.getReference(false);
     this.isJsInteropTypeAnnotation = isJsInteropTypeAnnotation;
   }
 

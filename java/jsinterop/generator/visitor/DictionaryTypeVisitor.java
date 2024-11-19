@@ -71,12 +71,13 @@ public class DictionaryTypeVisitor implements ModelVisitor {
       factory.setBody(
           new ReturnStatement(
               MethodInvocation.builder()
-                  .setInvocationTarget(new TypeQualifier(JS.getReference()))
+                  .setInvocationTarget(new TypeQualifier(JS.getReference(false)))
                   .setMethodName("uncheckedCast")
-                  .setArgumentTypes(OBJECT.getReference())
+                  .setArgumentTypes(OBJECT.getReference(false))
                   .setArguments(
                       MethodInvocation.builder()
-                          .setInvocationTarget(new TypeQualifier(JS_PROPERTY_MAP.getReference()))
+                          .setInvocationTarget(
+                              new TypeQualifier(JS_PROPERTY_MAP.getReference(false)))
                           .setMethodName("of")
                           .build())
                   .build()));

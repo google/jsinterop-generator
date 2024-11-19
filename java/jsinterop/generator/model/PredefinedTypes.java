@@ -23,6 +23,7 @@ import static jsinterop.generator.model.LiteralExpression.FALSE;
 import static jsinterop.generator.model.LiteralExpression.NULL;
 import static jsinterop.generator.model.LiteralExpression.ZERO;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.function.Function;
@@ -41,6 +42,7 @@ public enum PredefinedTypes {
   STRING("java.lang.String", "string"),
   CLASS("java.lang.Class", null),
   DEPRECATED("java.lang.Deprecated", "deprecated"),
+  NULLABLE("org.jspecify.annotations.Nullable", null),
   JS_ENUM("jsinterop.annotations.JsEnum", null),
   JS_TYPE("jsinterop.annotations.JsType", null),
   JS_PROPERTY("jsinterop.annotations.JsProperty", null),
@@ -117,15 +119,27 @@ public enum PredefinedTypes {
     this.isNativeJsTypeInterface = isNativeJsTypeInterface;
   }
 
-  public TypeReference getReference() {
-    return new PredefinedTypeReference(this);
+  public static boolean isPrimitiveTypeReference(TypeReference typeReference) {
+    return (typeReference instanceof PredefinedTypeReference)
+        && ((PredefinedTypeReference) typeReference).predefinedType.isPrimitive();
+  }
+
+  private boolean isPrimitive() {
+    return typeImport == null;
+  }
+
+  public TypeReference getReference(boolean isNullable) {
+    return new PredefinedTypeReference(this, isNullable);
   }
 
   private static class PredefinedTypeReference extends TypeReference {
     private final PredefinedTypes predefinedType;
 
-    private PredefinedTypeReference(PredefinedTypes predefinedType) {
+    private PredefinedTypeReference(PredefinedTypes predefinedType, boolean isNullable) {
+      super(isNullable);
       this.predefinedType = predefinedType;
+      // Nullable reference to a primitive type is not allowed.
+      Preconditions.checkState(!isNullable || !predefinedType.isPrimitive());
     }
 
     @Override
@@ -156,6 +170,16 @@ public enum PredefinedTypes {
     @Override
     public String getJniSignature() {
       return predefinedType.typeSignature;
+    }
+
+    @Override
+    public TypeReference toNonNullableTypeReference() {
+      return new PredefinedTypeReference(this.predefinedType, false);
+    }
+
+    @Override
+    public TypeReference toNullableTypeReference() {
+      return new PredefinedTypeReference(this.predefinedType, true);
     }
 
     @Override

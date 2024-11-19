@@ -28,13 +28,28 @@ public class TypeVariableReference extends AbstractTypeReference {
   private final String name;
 
   public TypeVariableReference(String name, TypeReference upperBound) {
+    this(name, upperBound, false);
+  }
+
+  public TypeVariableReference(String name, TypeReference upperBound, boolean isNullable) {
+    super(isNullable);
     this.name = name;
-    this.upperBound = upperBound != null ? upperBound : OBJECT.getReference();
+    this.upperBound = upperBound != null ? upperBound : OBJECT.getReference(false);
   }
 
   @Override
   public String getTypeName() {
     return name;
+  }
+
+  @Override
+  public TypeReference toNonNullableTypeReference() {
+    return new TypeVariableReference(this.name, this.upperBound, false);
+  }
+
+  @Override
+  public TypeReference toNullableTypeReference() {
+    return new TypeVariableReference(this.name, this.upperBound, true);
   }
 
   @Override

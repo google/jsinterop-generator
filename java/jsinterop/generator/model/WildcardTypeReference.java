@@ -60,6 +60,12 @@ public class WildcardTypeReference extends TypeReference {
   private TypeReference lowerBound;
 
   private WildcardTypeReference(TypeReference upperBound, TypeReference lowerBound) {
+    this(upperBound, lowerBound, false);
+  }
+
+  private WildcardTypeReference(
+      TypeReference upperBound, TypeReference lowerBound, boolean isNullable) {
+    super(isNullable);
     this.upperBound = upperBound;
     this.lowerBound = lowerBound;
   }
@@ -83,12 +89,22 @@ public class WildcardTypeReference extends TypeReference {
   public TypeReference getBound() {
     return (lowerBound != null)
         ? lowerBound
-        : (upperBound != null) ? upperBound : OBJECT.getReference();
+        : (upperBound != null) ? upperBound : OBJECT.getReference(false);
   }
 
   @Override
   public String getTypeName() {
     return getBound().getTypeName();
+  }
+
+  @Override
+  public TypeReference toNonNullableTypeReference() {
+    return new WildcardTypeReference(this.upperBound, this.lowerBound, false);
+  }
+
+  @Override
+  public TypeReference toNullableTypeReference() {
+    return new WildcardTypeReference(this.upperBound, this.lowerBound, true);
   }
 
   @Override

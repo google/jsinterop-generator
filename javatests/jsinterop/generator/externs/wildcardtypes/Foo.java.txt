@@ -2,10 +2,11 @@ package jsinterop.generator.externs.wildcardtypes;
 
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Foo<T> {
-  public native void bar(Bar<? super String, Double, T> bar);
+  public native void bar(@Nullable Bar<? super String, Double, T> bar);
 
-  public native void foo(Bar<? super String, Double, ? extends T> foo);
+  public native void foo(@Nullable Bar<? super String, Double, ? extends T> foo);
 }

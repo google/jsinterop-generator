@@ -33,6 +33,11 @@ public class UnionTypeReference extends TypeReference {
   @Visitable List<TypeReference> types;
 
   public UnionTypeReference(Collection<TypeReference> types) {
+    this(types, false);
+  }
+
+  public UnionTypeReference(Collection<TypeReference> types, boolean isNullable) {
+    super(isNullable);
     setTypes(types);
   }
 
@@ -63,6 +68,16 @@ public class UnionTypeReference extends TypeReference {
   @Override
   public String getJniSignature() {
     return null;
+  }
+
+  @Override
+  public TypeReference toNonNullableTypeReference() {
+    return new UnionTypeReference(this.getTypes(), false);
+  }
+
+  @Override
+  public TypeReference toNullableTypeReference() {
+    return new UnionTypeReference(this.getTypes(), true);
   }
 
   @Override

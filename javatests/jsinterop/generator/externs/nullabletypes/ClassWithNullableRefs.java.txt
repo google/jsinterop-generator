@@ -7,13 +7,15 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class ClassWithNullableRefs {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface AnonymousUnionTypeWithNullUnionType {
     @JsOverlay
-    static ClassWithNullableRefs.AnonymousUnionTypeWithNullUnionType of(Object o) {
+    static ClassWithNullableRefs.@Nullable AnonymousUnionTypeWithNullUnionType of(
+        @Nullable Object o) {
       return Js.cast(o);
     }
 
@@ -23,7 +25,7 @@ public class ClassWithNullableRefs {
     }
 
     @JsOverlay
-    default String asString() {
+    default @Nullable String asString() {
       return Js.asString(this);
     }
 
@@ -66,7 +68,8 @@ public class ClassWithNullableRefs {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface NullableAnonymousUnionTypeRef2UnionType {
     @JsOverlay
-    static ClassWithNullableRefs.NullableAnonymousUnionTypeRef2UnionType of(Object o) {
+    static ClassWithNullableRefs.@Nullable NullableAnonymousUnionTypeRef2UnionType of(
+        @Nullable Object o) {
       return Js.cast(o);
     }
 
@@ -76,7 +79,7 @@ public class ClassWithNullableRefs {
     }
 
     @JsOverlay
-    default String asString() {
+    default @Nullable String asString() {
       return Js.asString(this);
     }
 
@@ -94,7 +97,8 @@ public class ClassWithNullableRefs {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface NullableAnonymousUnionTypeRefUnionType {
     @JsOverlay
-    static ClassWithNullableRefs.NullableAnonymousUnionTypeRefUnionType of(Object o) {
+    static ClassWithNullableRefs.@Nullable NullableAnonymousUnionTypeRefUnionType of(
+        @Nullable Object o) {
       return Js.cast(o);
     }
 
@@ -104,7 +108,7 @@ public class ClassWithNullableRefs {
     }
 
     @JsOverlay
-    default String asString() {
+    default @Nullable String asString() {
       return Js.asString(this);
     }
 
@@ -122,7 +126,7 @@ public class ClassWithNullableRefs {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface NullableUnionTypeRefUnionType {
     @JsOverlay
-    static ClassWithNullableRefs.NullableUnionTypeRefUnionType of(Object o) {
+    static ClassWithNullableRefs.@Nullable NullableUnionTypeRefUnionType of(@Nullable Object o) {
       return Js.cast(o);
     }
 
@@ -132,7 +136,7 @@ public class ClassWithNullableRefs {
     }
 
     @JsOverlay
-    default String asString() {
+    default @Nullable String asString() {
       return Js.asString(this);
     }
 
@@ -150,7 +154,7 @@ public class ClassWithNullableRefs {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface UnionTypeWithNullRefUnionType {
     @JsOverlay
-    static ClassWithNullableRefs.UnionTypeWithNullRefUnionType of(Object o) {
+    static ClassWithNullableRefs.@Nullable UnionTypeWithNullRefUnionType of(@Nullable Object o) {
       return Js.cast(o);
     }
 
@@ -160,7 +164,7 @@ public class ClassWithNullableRefs {
     }
 
     @JsOverlay
-    default String asString() {
+    default @Nullable String asString() {
       return Js.asString(this);
     }
 
@@ -175,22 +179,26 @@ public class ClassWithNullableRefs {
     }
   }
 
-  public ClassWithNullableRefs.AnonymousUnionTypeWithNullUnionType anonymousUnionTypeWithNull;
-  public ClassWithNullableRefs.NullableAnonymousFunctionTypeRefFn nullableAnonymousFunctionTypeRef;
-  public ClassWithNullableRefs.NullableAnonymousRecordRefFieldType nullableAnonymousRecordRef;
-  public ClassWithNullableRefs.NullableAnonymousUnionTypeRefUnionType nullableAnonymousUnionTypeRef;
-  public ClassWithNullableRefs.NullableAnonymousUnionTypeRef2UnionType
+  public ClassWithNullableRefs.@Nullable AnonymousUnionTypeWithNullUnionType
+      anonymousUnionTypeWithNull;
+  public ClassWithNullableRefs.@Nullable NullableAnonymousFunctionTypeRefFn
+      nullableAnonymousFunctionTypeRef;
+  public ClassWithNullableRefs.@Nullable NullableAnonymousRecordRefFieldType
+      nullableAnonymousRecordRef;
+  public ClassWithNullableRefs.@Nullable NullableAnonymousUnionTypeRefUnionType
+      nullableAnonymousUnionTypeRef;
+  public ClassWithNullableRefs.@Nullable NullableAnonymousUnionTypeRef2UnionType
       nullableAnonymousUnionTypeRef2;
-  public SimpleEnum nullableEnumRef;
-  public NullableFunctionType nullableFunctionTypeRef;
-  public SimpleInterface nullableInterfaceRef;
-  public double nullableNumber;
-  public SimpleRecord nullableRecordRef;
-  public String nullableString;
-  public NullableTypeDefOfRecord nullableTypeDefOfRecordRef;
-  public ClassWithNullableRefs.NullableUnionTypeRefUnionType nullableUnionTypeRef;
-  public SimpleClass simpleClassRef;
-  public ClassWithNullableRefs.UnionTypeWithNullRefUnionType unionTypeWithNullRef;
+  public @Nullable SimpleEnum nullableEnumRef;
+  public @Nullable NullableFunctionType nullableFunctionTypeRef;
+  public @Nullable SimpleInterface nullableInterfaceRef;
+  public @Nullable Double nullableNumber;
+  public @Nullable SimpleRecord nullableRecordRef;
+  public @Nullable String nullableString;
+  public @Nullable NullableTypeDefOfRecord nullableTypeDefOfRecordRef;
+  public ClassWithNullableRefs.@Nullable NullableUnionTypeRefUnionType nullableUnionTypeRef;
+  public @Nullable SimpleClass simpleClassRef;
+  public ClassWithNullableRefs.@Nullable UnionTypeWithNullRefUnionType unionTypeWithNullRef;
 
-  public native SimpleRecord methodWithNullableParam(SimpleInterface foo);
+  public native @Nullable SimpleRecord methodWithNullableParam(@Nullable SimpleInterface foo);
 }

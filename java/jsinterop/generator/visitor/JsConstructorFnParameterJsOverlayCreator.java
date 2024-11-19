@@ -71,7 +71,7 @@ public class JsConstructorFnParameterJsOverlayCreator extends AbstractJsOverlayM
       return originalParameter.toBuilder()
           .setType(
               new ParametrizedTypeReference(
-                  CLASS.getReference(),
+                  CLASS.getReference(originalParameter.getType().isNullable()),
                   ((ParametrizedTypeReference) originalParameter.getType())
                       .getActualTypeArguments()))
           .build();
@@ -89,7 +89,7 @@ public class JsConstructorFnParameterJsOverlayCreator extends AbstractJsOverlayM
     // will generate: Js.asConstructorFn(parameter)
     // We need to add the local type argument to ensure to call the original method.
     return MethodInvocation.builder()
-        .setInvocationTarget(new TypeQualifier(JS.getReference()))
+        .setInvocationTarget(new TypeQualifier(JS.getReference(false)))
         .setMethodName("asConstructorFn")
         .setArgumentTypes(overloadParameter.getType())
         .setArguments(new LiteralExpression(overloadParameter.getName()))

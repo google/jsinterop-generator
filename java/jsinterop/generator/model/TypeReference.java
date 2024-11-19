@@ -25,6 +25,23 @@ import com.google.j2cl.common.visitor.Visitable;
 /** A usage-site reference to a type. */
 @Visitable
 public abstract class TypeReference {
+
+  private final boolean isNullable;
+
+  protected TypeReference(boolean isNullable) {
+    this.isNullable = isNullable;
+  }
+
+  public boolean isNullable() {
+    return isNullable;
+  }
+
+  /** Returns the non nullable version of the referenced type. */
+  public abstract TypeReference toNonNullableTypeReference();
+
+  /** Returns the nullable version of the referenced type. */
+  public abstract TypeReference toNullableTypeReference();
+
   public abstract String getTypeName();
 
   public abstract String getImport();

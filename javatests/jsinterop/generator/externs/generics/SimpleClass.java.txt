@@ -2,14 +2,15 @@ package jsinterop.generator.externs.generics;
 
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class SimpleClass<T> {
-  public static native <V> V foo(SimpleClass obj);
+  public static native <V> V foo(@Nullable SimpleClass obj);
 
   public SimpleClass(T value) {}
 
-  public native SimpleClass<T> chainableMethodWithThis(SimpleClass<T> param);
+  public native @Nullable SimpleClass<T> chainableMethodWithThis(@Nullable SimpleClass<T> param);
 
   public native <V> V foo();
 }

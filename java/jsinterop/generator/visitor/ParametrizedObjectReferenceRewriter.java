@@ -59,7 +59,7 @@ public class ParametrizedObjectReferenceRewriter implements ModelVisitor {
               validateIObjectOrParametrizedObjectReference(parametrizedTypeReference);
 
               return new ParametrizedTypeReference(
-                  JS_PROPERTY_MAP.getReference(),
+                  JS_PROPERTY_MAP.getReference(mainTypeReference.isNullable()),
                   parametrizedTypeReference.getActualTypeArguments().subList(1, 2));
             }
 

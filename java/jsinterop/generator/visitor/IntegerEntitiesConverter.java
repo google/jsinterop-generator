@@ -17,6 +17,7 @@
 package jsinterop.generator.visitor;
 
 import static jsinterop.generator.model.PredefinedTypes.DOUBLE;
+import static jsinterop.generator.model.PredefinedTypes.DOUBLE_OBJECT;
 import static jsinterop.generator.model.PredefinedTypes.INT;
 
 import com.google.common.collect.ImmutableSet;
@@ -26,6 +27,7 @@ import java.util.Set;
 import jsinterop.generator.helper.Problems;
 import jsinterop.generator.model.AbstractRewriter;
 import jsinterop.generator.model.ModelVisitor;
+import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.Program;
 import jsinterop.generator.model.TypeReference;
 
@@ -50,12 +52,19 @@ public class IntegerEntitiesConverter implements ModelVisitor {
 
     program.accept(
         new AbstractRewriter() {
+          @Override
+          public boolean shouldProcessParametrizedTypeReference(
+              ParametrizedTypeReference parametrizedTypeReference) {
+            // don't process parametrized type reference because we don't want to convert its type
+            // arguments to int.
+            return false;
+          }
 
           @Override
           public TypeReference rewriteTypeReference(TypeReference typeReference) {
             if (mustBeConvertedToInt(typeReference)) {
               unusedIntegerEntities.remove(getCurrentConfigurationIdentifier());
-              return INT.getReference();
+              return INT.getReference(false);
             }
 
             return typeReference;
@@ -63,7 +72,8 @@ public class IntegerEntitiesConverter implements ModelVisitor {
 
           private boolean mustBeConvertedToInt(TypeReference originalTypeReference) {
             return integerEntities.contains(getCurrentConfigurationIdentifier())
-                && originalTypeReference.isReferenceTo(DOUBLE);
+                && (originalTypeReference.isReferenceTo(DOUBLE)
+                    || originalTypeReference.isReferenceTo(DOUBLE_OBJECT));
           }
 
           private String getCurrentConfigurationIdentifier() {

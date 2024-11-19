@@ -49,7 +49,9 @@ public class ObjectParameterJsOverlayCreator extends AbstractJsOverlayMethodCrea
 
   private static Parameter toJavaLangObject(int unusedIndex, Parameter parameter) {
     if ("Object".equals(parameter.getType().getJsDocAnnotationString())) {
-      return parameter.toBuilder().setType(OBJECT.getReference()).build();
+      return parameter.toBuilder()
+          .setType(OBJECT.getReference(parameter.getType().isNullable()))
+          .build();
     }
     return parameter;
   }
