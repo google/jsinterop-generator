@@ -39,6 +39,15 @@ function SimpleInterface() {}
  */
 ThirdPartyClass.prototype.extraField;
 
+/**
+ * @type {?namespace1.InterfaceWithConflictingName}
+ */
+ThirdPartyClass.prototype.extraField2;
+
+/**
+ * @type {?namespace2.InterfaceWithConflictingName}
+ */
+ThirdPartyClass.prototype.extraField3;
 
 // TODO(b/35681242): reenable the test with local parameter when the bug is
 // fixed

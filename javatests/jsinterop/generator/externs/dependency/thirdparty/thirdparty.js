@@ -28,3 +28,13 @@ function ThirdPartyClass(foo) {}
  * @return {string}
  */
 function thirdparty(callback) {}
+
+/**
+ * @const
+ */
+var namespace1 = {};
+
+/**
+ * @interface
+ */
+namespace1.InterfaceWithConflictingName = function() {};

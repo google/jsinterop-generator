@@ -7,6 +7,7 @@ import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import jsinterop.generator.externs.dependency.thirdparty.ThirdPartyClass;
+import jsinterop.generator.externs.dependency.thirdparty.namespace1.InterfaceWithConflictingName;
 import jsinterop.generator.externs.dependency.thirdparty2.ThirdParty2Class;
 import org.jspecify.annotations.Nullable;
 
@@ -50,6 +51,10 @@ public class MyLibThirdPartyClass<T> extends ThirdPartyClass<T> {
   }
 
   public @Nullable ThirdParty2Class extraField;
+  public @Nullable InterfaceWithConflictingName extraField2;
+  public jsinterop.generator.externs.dependency.thirdparty2.namespace2.@Nullable
+      InterfaceWithConflictingName
+      extraField3;
 
   public MyLibThirdPartyClass(ThirdPartyClass.ConstructorFooUnionType foo) {
     // This super call is here only for the code to compile; it is never executed.

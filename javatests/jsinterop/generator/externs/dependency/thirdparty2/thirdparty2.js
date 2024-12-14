@@ -30,3 +30,13 @@ ThirdPartyClass.prototype.extraMethod2 = function() {};
  * @return {string}
  */
 function thirdparty2() {}
+
+/**
+ * @const
+ */
+var namespace2 = {};
+
+/**
+ * @interface
+ */
+namespace2.InterfaceWithConflictingName = function() {};
