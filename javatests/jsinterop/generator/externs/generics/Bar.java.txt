@@ -142,17 +142,17 @@ public interface Bar<
     }
 
     @JsOverlay
-    default void onInvoke(U p0, @Nullable U[] p1, Bar.BarMethod5FooCallbackFn.P2UnionType<T> p2) {
+    default void onInvoke(U p0, U @Nullable [] p1, Bar.BarMethod5FooCallbackFn.P2UnionType<T> p2) {
       onInvoke(p0, Js.<@Nullable JsArray<U>>uncheckedCast(p1), p2);
     }
 
     @JsOverlay
-    default void onInvoke(U p0, @Nullable U[] p1, String p2) {
+    default void onInvoke(U p0, U @Nullable [] p1, String p2) {
       onInvoke(p0, Js.<@Nullable JsArray<U>>uncheckedCast(p1), p2);
     }
 
     @JsOverlay
-    default void onInvoke(U p0, @Nullable U[] p1, T p2) {
+    default void onInvoke(U p0, U @Nullable [] p1, T p2) {
       onInvoke(p0, Js.<@Nullable JsArray<U>>uncheckedCast(p1), p2);
     }
   }

@@ -270,7 +270,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
         checkState(templateKeys.size() == 1, templateKeys);
         TypeReference mainTypeReference = resolveTypeReference(templateKeys.get(0));
 
-        return new ArrayTypeReference(mainTypeReference);
+        return new ArrayTypeReference(mainTypeReference, isNullable);
       } else {
         return createParametrizedTypeReference(jsType, templateKeys);
       }

@@ -7,6 +7,7 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import jsinterop.generator.externs.natives.JsArray;
 import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
@@ -199,6 +200,31 @@ public class ClassWithNullableRefs {
   public ClassWithNullableRefs.@Nullable NullableUnionTypeRefUnionType nullableUnionTypeRef;
   public @Nullable SimpleClass simpleClassRef;
   public ClassWithNullableRefs.@Nullable UnionTypeWithNullRefUnionType unionTypeWithNullRef;
+
+  public native @Nullable Object methodWithArrayOfNullableElementParam(
+      JsArray<@Nullable String> foo);
+
+  @JsOverlay
+  public final @Nullable Object methodWithArrayOfNullableElementParam(@Nullable String[] foo) {
+    return methodWithArrayOfNullableElementParam(Js.<JsArray<@Nullable String>>uncheckedCast(foo));
+  }
+
+  public native @Nullable Object methodWithNullableArrayOfNullableElementParam(
+      @Nullable JsArray<@Nullable String> foo);
+
+  @JsOverlay
+  public final @Nullable Object methodWithNullableArrayOfNullableElementParam(
+      @Nullable String @Nullable [] foo) {
+    return methodWithNullableArrayOfNullableElementParam(
+        Js.<@Nullable JsArray<@Nullable String>>uncheckedCast(foo));
+  }
+
+  public native @Nullable Object methodWithNullableArrayParam(@Nullable JsArray<String> foo);
+
+  @JsOverlay
+  public final @Nullable Object methodWithNullableArrayParam(String @Nullable [] foo) {
+    return methodWithNullableArrayParam(Js.<@Nullable JsArray<String>>uncheckedCast(foo));
+  }
 
   public native @Nullable SimpleRecord methodWithNullableParam(@Nullable SimpleInterface foo);
 }

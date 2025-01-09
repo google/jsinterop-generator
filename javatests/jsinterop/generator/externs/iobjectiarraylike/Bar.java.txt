@@ -31,8 +31,8 @@ public class Bar implements JsArrayLike<String> {
   @JsOverlay
   public final void consumeIObjectAndIArrayLike(
       @Nullable JsPropertyMap<String> object,
-      @Nullable String[] arrayLike,
-      @Nullable String[][] doubleArrayLike) {
+      String @Nullable [] arrayLike,
+      String @Nullable [] @Nullable [] doubleArrayLike) {
     consumeIObjectAndIArrayLike(
         object,
         Js.<@Nullable JsArrayLike<String>>uncheckedCast(arrayLike),
@@ -55,7 +55,7 @@ public class Bar implements JsArrayLike<String> {
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
       @Nullable JsObject object,
-      @Nullable String[] arrayLike,
+      String @Nullable [] arrayLike,
       @Nullable Class<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(
         object, Js.<@Nullable JsArrayLike<String>>uncheckedCast(arrayLike), ctor);
@@ -64,7 +64,7 @@ public class Bar implements JsArrayLike<String> {
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
       @Nullable JsObject object,
-      @Nullable String[] arrayLike,
+      String @Nullable [] arrayLike,
       @Nullable JsConstructorFn<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(
         object, Js.<@Nullable JsArrayLike<String>>uncheckedCast(arrayLike), ctor);
@@ -88,14 +88,14 @@ public class Bar implements JsArrayLike<String> {
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
-      @Nullable Object object, @Nullable String[] arrayLike, @Nullable Class<? extends Bar> ctor) {
+      @Nullable Object object, String @Nullable [] arrayLike, @Nullable Class<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(Js.<@Nullable JsObject>uncheckedCast(object), arrayLike, ctor);
   }
 
   @JsOverlay
   public final void consumeObjectIArrayLikeAndCtorFn(
       @Nullable Object object,
-      @Nullable String[] arrayLike,
+      String @Nullable [] arrayLike,
       @Nullable JsConstructorFn<? extends Bar> ctor) {
     consumeObjectIArrayLikeAndCtorFn(Js.<@Nullable JsObject>uncheckedCast(object), arrayLike, ctor);
   }

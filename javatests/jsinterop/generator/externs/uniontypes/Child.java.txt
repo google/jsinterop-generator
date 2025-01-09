@@ -560,7 +560,7 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   }
 
   @JsOverlay
-  public final void method3(Child.Method3FooArrayUnionType[] foo) {
+  public final void method3(Child.@Nullable Method3FooArrayUnionType[] foo) {
     method3(Js.<JsArray<Child.@Nullable Method3FooArrayUnionType>>uncheckedCast(foo));
   }
 

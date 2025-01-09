@@ -61,25 +61,20 @@ public class JavaArrayParameterJsOverlayCreator extends AbstractJsOverlayMethodC
 
   private static TypeReference maybeConvertToArrayType(TypeReference typeReference) {
     if (isJsArrayLikeOrJsArrayReference(typeReference)) {
-      boolean isNullable = typeReference.isNullable();
       ParametrizedTypeReference jsArrayLikeReference = (ParametrizedTypeReference) typeReference;
       checkState(jsArrayLikeReference.getActualTypeArguments().size() == 1);
 
-      TypeReference componentType = jsArrayLikeReference.getActualTypeArguments().get(0);
-      // set the correct nullability
-      componentType =
-          isNullable
-              ? componentType.toNullableTypeReference()
-              : componentType.toNonNullableTypeReference();
+      TypeReference elementType = jsArrayLikeReference.getActualTypeArguments().get(0);
+      boolean isElementTypeNullable = elementType.isNullable();
 
-      if (componentType.isReferenceTo(DOUBLE_OBJECT) && !isNullable) {
-        componentType = DOUBLE.getReference(false);
-      } else if (componentType.isReferenceTo(BOOLEAN_OBJECT) && !isNullable) {
-        componentType = BOOLEAN.getReference(false);
+      if (elementType.isReferenceTo(DOUBLE_OBJECT) && !isElementTypeNullable) {
+        elementType = DOUBLE.getReference(false);
+      } else if (elementType.isReferenceTo(BOOLEAN_OBJECT) && !isElementTypeNullable) {
+        elementType = BOOLEAN.getReference(false);
       } else {
-        componentType = maybeConvertToArrayType(componentType);
+        elementType = maybeConvertToArrayType(elementType);
       }
-      return new ArrayTypeReference(componentType);
+      return new ArrayTypeReference(elementType, typeReference.isNullable());
     }
 
     return typeReference;

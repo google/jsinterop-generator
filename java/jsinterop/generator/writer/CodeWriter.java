@@ -213,6 +213,7 @@ public class CodeWriter {
 
     if (typeReference instanceof ArrayTypeReference) {
       emitTypeReference(((ArrayTypeReference) typeReference).getArrayType());
+      emitNullableAnnotation(typeReference, emitNullable);
       emit("[]");
     } else if (typeReference instanceof TypeVariableReference) {
       emitNullableAnnotation(typeReference, emitNullable);

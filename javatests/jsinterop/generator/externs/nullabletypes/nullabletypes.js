@@ -93,6 +93,24 @@ ClassWithNullableRefs.prototype.nullableEnumRef;
 ClassWithNullableRefs.prototype.methodWithNullableParam = function(foo) {};
 
 /**
+ * @param {?Array<string>} foo
+ */
+ClassWithNullableRefs.prototype.methodWithNullableArrayParam = function(foo) {};
+
+
+/**
+ * @param {!Array<?string>} foo
+ */
+ClassWithNullableRefs.prototype.methodWithArrayOfNullableElementParam =
+    function(foo) {};
+
+/**
+ * @param {?Array<?string>} foo
+ */
+ClassWithNullableRefs.prototype.methodWithNullableArrayOfNullableElementParam =
+    function(foo) {};
+
+/**
  * @type {?string|number}
  */
 ClassWithNullableRefs.prototype.nullableAnonymousUnionTypeRef;

@@ -14,4 +14,5 @@ jsinterop_generator_test(
     expected_output = glob([
         "*.java.txt",
     ]),
+    deps = ["//javatests/jsinterop/generator/externs/natives"],
 )

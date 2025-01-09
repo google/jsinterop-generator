@@ -26,23 +26,22 @@ public class ArrayTypeReference extends TypeReference implements DelegableTypeRe
   @Visitable TypeReference arrayType;
 
   public ArrayTypeReference(TypeReference arrayType) {
-    super(false);
+    this(arrayType, false);
+  }
+
+  public ArrayTypeReference(TypeReference arrayType, boolean isNullable) {
+    super(isNullable);
     this.arrayType = arrayType;
   }
 
   @Override
-  public boolean isNullable() {
-    return arrayType.isNullable();
-  }
-
-  @Override
   public TypeReference toNonNullableTypeReference() {
-    return new ArrayTypeReference(this.arrayType.toNonNullableTypeReference());
+    return new ArrayTypeReference(this.arrayType, false);
   }
 
   @Override
   public TypeReference toNullableTypeReference() {
-    return new ArrayTypeReference(this.arrayType.toNullableTypeReference());
+    return new ArrayTypeReference(this.arrayType, true);
   }
 
   @Override
