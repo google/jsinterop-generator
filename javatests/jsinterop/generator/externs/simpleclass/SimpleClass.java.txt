@@ -78,7 +78,7 @@ public class SimpleClass {
 
   @Deprecated public String deprecatedProperty;
   public String fooProperty;
-  public @Nullable JsArray<JsArray<JsArray<String>>> fooProperty2;
+  public @Nullable JsArray<@Nullable JsArray<@Nullable JsArray<String>>> fooProperty2;
   public boolean readonlyProperty;
   public @Nullable SimpleClass thisType;
 

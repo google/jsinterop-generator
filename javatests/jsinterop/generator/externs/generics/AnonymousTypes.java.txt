@@ -10,11 +10,11 @@ import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public class AnonymousTypes<T> {
+public class AnonymousTypes<T extends @Nullable Object> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface BarFooType<Z> {
+  public interface BarFooType<Z extends @Nullable Object> {
     @JsOverlay
-    static <Z> AnonymousTypes.BarFooType<Z> create() {
+    static <Z extends @Nullable Object> AnonymousTypes.BarFooType<Z> create() {
       return Js.uncheckedCast(JsPropertyMap.of());
     }
 
@@ -26,9 +26,11 @@ public class AnonymousTypes<T> {
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface FooFooType<V, U, T> {
+  public interface FooFooType<
+      V extends @Nullable Object, U extends @Nullable Object, T extends @Nullable Object> {
     @JsOverlay
-    static <V, U, T> AnonymousTypes.FooFooType<V, U, T> create() {
+    static <V extends @Nullable Object, U extends @Nullable Object, T extends @Nullable Object>
+        AnonymousTypes.FooFooType<V, U, T> create() {
       return Js.uncheckedCast(JsPropertyMap.of());
     }
 
@@ -57,19 +59,19 @@ public class AnonymousTypes<T> {
   }
 
   @JsFunction
-  public interface FunctionTypeWithGenericInParameterFooCallbackFn<T> {
+  public interface FunctionTypeWithGenericInParameterFooCallbackFn<T extends @Nullable Object> {
     boolean onInvoke(T p0);
   }
 
   @JsFunction
-  public interface FunctionTypeWithGenericInReturnTypeFooFn<T> {
+  public interface FunctionTypeWithGenericInReturnTypeFooFn<T extends @Nullable Object> {
     T onInvoke(boolean p0);
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface TypeLiteralFooType<T> {
+  public interface TypeLiteralFooType<T extends @Nullable Object> {
     @JsOverlay
-    static <T> AnonymousTypes.TypeLiteralFooType<T> create() {
+    static <T extends @Nullable Object> AnonymousTypes.TypeLiteralFooType<T> create() {
       return Js.uncheckedCast(JsPropertyMap.of());
     }
 
@@ -87,14 +89,14 @@ public class AnonymousTypes<T> {
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface UnionTypeFooUnionType<T> {
+  public interface UnionTypeFooUnionType<T extends @Nullable Object> {
     @JsOverlay
-    static <T> AnonymousTypes.@Nullable UnionTypeFooUnionType<T> of(@Nullable Object o) {
+    static <T extends @Nullable Object> AnonymousTypes.UnionTypeFooUnionType<T> of(Object o) {
       return Js.cast(o);
     }
 
     @JsOverlay
-    default @Nullable String asString() {
+    default String asString() {
       return Js.asString(this);
     }
 
@@ -109,15 +111,16 @@ public class AnonymousTypes<T> {
     }
   }
 
-  public static native <Z> void bar(
+  public static native <Z extends @Nullable Object> void bar(
       @Nullable InterfaceWithGeneric<AnonymousTypes.BarFooType<Z>> foo);
 
-  public native <V, U> void foo(AnonymousTypes.FooFooType<V, U, T> foo);
+  public native <V extends @Nullable Object, U extends @Nullable Object> void foo(
+      AnonymousTypes.FooFooType<V, U, T> foo);
 
   public native void functionTypeRedefiningThis(
       AnonymousTypes.FunctionTypeRedefiningThisCallbackFn callback);
 
-  public native <T> void functionTypeWithGenericInParameter(
+  public native <T extends @Nullable Object> void functionTypeWithGenericInParameter(
       AnonymousTypes.FunctionTypeWithGenericInParameterFooCallbackFn<? super T> fooCallback);
 
   public native void functionTypeWithGenericInReturnType(
@@ -127,13 +130,13 @@ public class AnonymousTypes<T> {
 
   @JsOverlay
   public final void unionType(String foo) {
-    unionType(Js.<AnonymousTypes.@Nullable UnionTypeFooUnionType<T>>uncheckedCast(foo));
+    unionType(Js.<AnonymousTypes.UnionTypeFooUnionType<T>>uncheckedCast(foo));
   }
 
   @JsOverlay
   public final void unionType(T foo) {
-    unionType(Js.<AnonymousTypes.@Nullable UnionTypeFooUnionType<T>>uncheckedCast(foo));
+    unionType(Js.<AnonymousTypes.UnionTypeFooUnionType<T>>uncheckedCast(foo));
   }
 
-  public native void unionType(AnonymousTypes.@Nullable UnionTypeFooUnionType<T> foo);
+  public native void unionType(AnonymousTypes.UnionTypeFooUnionType<T> foo);
 }

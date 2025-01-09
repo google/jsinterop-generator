@@ -20,7 +20,6 @@ import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.newHashSet;
 import static jsinterop.generator.model.AnnotationType.NULLABLE;
 import static jsinterop.generator.model.LiteralExpression.NULL;
-import static jsinterop.generator.model.PredefinedTypes.OBJECT;
 
 import com.google.common.base.Splitter;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -216,10 +215,10 @@ public class CodeWriter {
       emitTypeReference(((ArrayTypeReference) typeReference).getArrayType());
       emit("[]");
     } else if (typeReference instanceof TypeVariableReference) {
+      emitNullableAnnotation(typeReference, emitNullable);
       emit(typeReference.getTypeName());
-
       TypeReference constraint = ((TypeVariableReference) typeReference).getUpperBound();
-      if (emitConstraint && !constraint.isReferenceTo(OBJECT)) {
+      if (emitConstraint) {
         emit(" extends ").emitTypeReference(constraint);
       }
     } else if (typeReference instanceof ParametrizedTypeReference) {

@@ -34,7 +34,7 @@ public class TypeVariableReference extends AbstractTypeReference {
   public TypeVariableReference(String name, TypeReference upperBound, boolean isNullable) {
     super(isNullable);
     this.name = name;
-    this.upperBound = upperBound != null ? upperBound : OBJECT.getReference(false);
+    this.upperBound = upperBound != null ? upperBound : OBJECT.getReference(true);
   }
 
   @Override

@@ -17,7 +17,7 @@ package jsinterop.generator.closure.helper;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static java.util.stream.Collectors.toList;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.IN_TYPE_ARGUMENTS;
 import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.REGULAR;
 import static jsinterop.generator.model.PredefinedTypes.BOOLEAN;
@@ -89,8 +89,19 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
   }
 
   public TypeReference createTypeReference(JSType jsType, ReferenceContext referenceContext) {
-    return new TypeReferenceCreator(referenceContext, jsType.isNullable())
+    return new TypeReferenceCreator(referenceContext, isNullable(jsType))
         .resolveTypeReference(jsType);
+  }
+
+  private static boolean isNullable(JSType jsType) {
+    if (jsType instanceof UnionType) {
+      return jsType.toMaybeUnionType().getAlternates().stream()
+          .anyMatch(ClosureTypeRegistry::isNullable);
+    }
+    return jsType.isNullable()
+        // TemplateType.isNullable() always returns true but a template type should only be
+        // considered as nullable if they are marked as nullable:  `?T` (seen as T|null)
+        && !(jsType instanceof TemplateType);
   }
 
   /**
@@ -118,7 +129,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
     }
 
     private List<TypeReference> resolveTypeReferences(List<? extends JSType> types) {
-      return types.stream().map(this::resolveTypeReference).collect(toList());
+      return types.stream().map(this::resolveTypeReference).collect(toImmutableList());
     }
 
     @Override
@@ -238,7 +249,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
         return createMethodDefiningTypeReferenceFrom(templateType);
       }
 
-      return new TypeVariableReference(templateType.getReferenceName(), null, false);
+      return new TypeVariableReference(templateType.getReferenceName(), null, isNullable);
     }
 
     private TypeReference createMethodDefiningTypeReferenceFrom(TemplateType templateType) {
@@ -267,11 +278,11 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
 
     private ParametrizedTypeReference createParametrizedTypeReference(
         JSType referencedType, List<? extends JSType> templatesTypes) {
-      TypeReference templatizedType = resolveTypeReference(referencedType);
-
-      List<TypeReference> templates =
-          new TypeReferenceCreator(IN_TYPE_ARGUMENTS, false).resolveTypeReferences(templatesTypes);
-      return new ParametrizedTypeReference(templatizedType, templates);
+      return new ParametrizedTypeReference(
+          resolveTypeReference(referencedType),
+          templatesTypes.stream()
+              .map(t -> createTypeReference(t, IN_TYPE_ARGUMENTS))
+              .collect(toImmutableList()));
     }
   }
 }

@@ -10,16 +10,19 @@ import jsinterop.base.JsPropertyMap;
 import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public interface InterfaceWithStructuralType<U, V> {
+public interface InterfaceWithStructuralType<
+    U extends @Nullable Object, V extends @Nullable Object> {
   @JsFunction
-  public interface Bar2BarCallbackFn<U, V> {
+  public interface Bar2BarCallbackFn<U extends @Nullable Object, V extends @Nullable Object> {
     U onInvoke(V p0);
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface Bar2BarCallbackUnionType<U, V> {
+  public interface Bar2BarCallbackUnionType<
+      U extends @Nullable Object, V extends @Nullable Object> {
     @JsOverlay
-    static <U, V> InterfaceWithStructuralType.Bar2BarCallbackUnionType<U, V> of(Object o) {
+    static <U extends @Nullable Object, V extends @Nullable Object>
+        InterfaceWithStructuralType.Bar2BarCallbackUnionType<U, V> of(Object o) {
       return Js.cast(o);
     }
 
@@ -45,14 +48,15 @@ public interface InterfaceWithStructuralType<U, V> {
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface Bar3Param1UnionType<U> {
+  public interface Bar3Param1UnionType<U extends @Nullable Object> {
     @JsOverlay
-    static <U> InterfaceWithStructuralType.@Nullable Bar3Param1UnionType<U> of(@Nullable Object o) {
+    static <U extends @Nullable Object> InterfaceWithStructuralType.Bar3Param1UnionType<U> of(
+        Object o) {
       return Js.cast(o);
     }
 
     @JsOverlay
-    default @Nullable String asString() {
+    default String asString() {
       return Js.asString(this);
     }
 
@@ -73,9 +77,10 @@ public interface InterfaceWithStructuralType<U, V> {
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface BazBaz2Type<U, V> {
+  public interface BazBaz2Type<U extends @Nullable Object, V extends @Nullable Object> {
     @JsOverlay
-    static <U, V> InterfaceWithStructuralType.BazBaz2Type<U, V> create() {
+    static <U extends @Nullable Object, V extends @Nullable Object>
+        InterfaceWithStructuralType.BazBaz2Type<U, V> create() {
       return Js.uncheckedCast(JsPropertyMap.of());
     }
 
@@ -93,9 +98,10 @@ public interface InterfaceWithStructuralType<U, V> {
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface BazBazType<U, V> {
+  public interface BazBazType<U extends @Nullable Object, V extends @Nullable Object> {
     @JsOverlay
-    static <U, V> InterfaceWithStructuralType.BazBazType<U, V> create() {
+    static <U extends @Nullable Object, V extends @Nullable Object>
+        InterfaceWithStructuralType.BazBazType<U, V> create() {
       return Js.uncheckedCast(JsPropertyMap.of());
     }
 
@@ -153,20 +159,17 @@ public interface InterfaceWithStructuralType<U, V> {
     bar2(Js.<InterfaceWithStructuralType.Bar2BarCallbackUnionType<U, V>>uncheckedCast(barCallback));
   }
 
-  <U> void bar3(InterfaceWithStructuralType.@Nullable Bar3Param1UnionType<U> param1, U param2);
+  <U extends @Nullable Object> void bar3(
+      InterfaceWithStructuralType.Bar3Param1UnionType<U> param1, U param2);
 
   @JsOverlay
-  default <U> void bar3(String param1, U param2) {
-    bar3(
-        Js.<InterfaceWithStructuralType.@Nullable Bar3Param1UnionType<U>>uncheckedCast(param1),
-        param2);
+  default <U extends @Nullable Object> void bar3(String param1, U param2) {
+    bar3(Js.<InterfaceWithStructuralType.Bar3Param1UnionType<U>>uncheckedCast(param1), param2);
   }
 
   @JsOverlay
-  default <U> void bar3(U param1, U param2) {
-    bar3(
-        Js.<InterfaceWithStructuralType.@Nullable Bar3Param1UnionType<U>>uncheckedCast(param1),
-        param2);
+  default <U extends @Nullable Object> void bar3(U param1, U param2) {
+    bar3(Js.<InterfaceWithStructuralType.Bar3Param1UnionType<U>>uncheckedCast(param1), param2);
   }
 
   V baz(

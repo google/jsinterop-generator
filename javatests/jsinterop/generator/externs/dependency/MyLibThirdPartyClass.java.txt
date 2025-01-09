@@ -12,11 +12,11 @@ import jsinterop.generator.externs.dependency.thirdparty2.ThirdParty2Class;
 import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, name = "ThirdPartyClass", namespace = JsPackage.GLOBAL)
-public class MyLibThirdPartyClass<T> extends ThirdPartyClass<T> {
+public class MyLibThirdPartyClass<T extends @Nullable Object> extends ThirdPartyClass<T> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface ExtraMethodBarType<T> {
+  public interface ExtraMethodBarType<T extends @Nullable Object> {
     @JsOverlay
-    static <T> MyLibThirdPartyClass.ExtraMethodBarType<T> create() {
+    static <T extends @Nullable Object> MyLibThirdPartyClass.ExtraMethodBarType<T> create() {
       return Js.uncheckedCast(JsPropertyMap.of());
     }
 
@@ -28,14 +28,15 @@ public class MyLibThirdPartyClass<T> extends ThirdPartyClass<T> {
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface ExtraMethodBarUnionType<T> {
+  public interface ExtraMethodBarUnionType<T extends @Nullable Object> {
     @JsOverlay
-    static <T> MyLibThirdPartyClass.@Nullable ExtraMethodBarUnionType<T> of(@Nullable Object o) {
+    static <T extends @Nullable Object> MyLibThirdPartyClass.ExtraMethodBarUnionType<T> of(
+        Object o) {
       return Js.cast(o);
     }
 
     @JsOverlay
-    default MyLibThirdPartyClass.@Nullable ExtraMethodBarType<T> asExtraMethodBarType() {
+    default MyLibThirdPartyClass.ExtraMethodBarType<T> asExtraMethodBarType() {
       return Js.cast(this);
     }
 
@@ -73,16 +74,13 @@ public class MyLibThirdPartyClass<T> extends ThirdPartyClass<T> {
 
   @JsOverlay
   public final void extraMethod(T foo, MyLibThirdPartyClass.ExtraMethodBarType<T> bar) {
-    extraMethod(
-        foo, Js.<MyLibThirdPartyClass.@Nullable ExtraMethodBarUnionType<T>>uncheckedCast(bar));
+    extraMethod(foo, Js.<MyLibThirdPartyClass.ExtraMethodBarUnionType<T>>uncheckedCast(bar));
   }
 
-  public native void extraMethod(
-      T foo, MyLibThirdPartyClass.@Nullable ExtraMethodBarUnionType<T> bar);
+  public native void extraMethod(T foo, MyLibThirdPartyClass.ExtraMethodBarUnionType<T> bar);
 
   @JsOverlay
   public final void extraMethod(T foo, T bar) {
-    extraMethod(
-        foo, Js.<MyLibThirdPartyClass.@Nullable ExtraMethodBarUnionType<T>>uncheckedCast(bar));
+    extraMethod(foo, Js.<MyLibThirdPartyClass.ExtraMethodBarUnionType<T>>uncheckedCast(bar));
   }
 }

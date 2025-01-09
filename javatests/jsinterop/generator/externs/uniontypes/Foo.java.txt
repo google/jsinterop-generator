@@ -8,11 +8,13 @@ import jsinterop.base.Js;
 import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public interface Foo<T, V> {
+public interface Foo<T extends @Nullable Object, V extends @Nullable Object> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface GetFooParentInterfaceTypeParameterUnionType<T, V> {
+  public interface GetFooParentInterfaceTypeParameterUnionType<
+      T extends @Nullable Object, V extends @Nullable Object> {
     @JsOverlay
-    static <T, V> Foo.GetFooParentInterfaceTypeParameterUnionType<T, V> of(Object o) {
+    static <T extends @Nullable Object, V extends @Nullable Object>
+        Foo.GetFooParentInterfaceTypeParameterUnionType<T, V> of(Object o) {
       return Js.cast(o);
     }
 

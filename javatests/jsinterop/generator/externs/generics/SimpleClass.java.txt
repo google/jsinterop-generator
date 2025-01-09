@@ -5,12 +5,12 @@ import jsinterop.annotations.JsType;
 import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public class SimpleClass<T> {
-  public static native <V> V foo(@Nullable SimpleClass obj);
+public class SimpleClass<T extends @Nullable Object> {
+  public static native <V extends @Nullable Object> V foo(@Nullable SimpleClass obj);
 
   public SimpleClass(T value) {}
 
-  public native @Nullable SimpleClass<T> chainableMethodWithThis(@Nullable SimpleClass<T> param);
+  public native SimpleClass<T> chainableMethodWithThis(SimpleClass<T> param);
 
-  public native <V> V foo();
+  public native <V extends @Nullable Object> V foo();
 }

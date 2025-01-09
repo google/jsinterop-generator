@@ -5,7 +5,7 @@ import jsinterop.annotations.JsType;
 import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public class Foo<T> {
+public class Foo<T extends @Nullable Object> {
   public native void bar(@Nullable Bar<? super String, Double, T> bar);
 
   public native void foo(@Nullable Bar<? super String, Double, ? extends T> foo);

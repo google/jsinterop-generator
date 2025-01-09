@@ -11,13 +11,14 @@ import jsinterop.generator.externs.natives.JsArray;
 import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public interface Bar<U, T, V> {
+public interface Bar<
+    U extends @Nullable Object, T extends @Nullable Object, V extends @Nullable Object> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface BarFieldType<T> {
+  public interface BarFieldType<T extends @Nullable Object> {
     @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-    public interface FooFieldType<T> {
+    public interface FooFieldType<T extends @Nullable Object> {
       @JsOverlay
-      static <T> Bar.BarFieldType.FooFieldType<T> create() {
+      static <T extends @Nullable Object> Bar.BarFieldType.FooFieldType<T> create() {
         return Js.uncheckedCast(JsPropertyMap.of());
       }
 
@@ -29,7 +30,7 @@ public interface Bar<U, T, V> {
     }
 
     @JsOverlay
-    static <T> Bar.BarFieldType<T> create() {
+    static <T extends @Nullable Object> Bar.BarFieldType<T> create() {
       return Js.uncheckedCast(JsPropertyMap.of());
     }
 
@@ -41,9 +42,10 @@ public interface Bar<U, T, V> {
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-  public interface BarMethod2ParamType<V, T> {
+  public interface BarMethod2ParamType<V extends @Nullable Object, T extends @Nullable Object> {
     @JsOverlay
-    static <V, T> Bar.BarMethod2ParamType<V, T> create() {
+    static <V extends @Nullable Object, T extends @Nullable Object>
+        Bar.BarMethod2ParamType<V, T> create() {
       return Js.uncheckedCast(JsPropertyMap.of());
     }
 
@@ -61,11 +63,17 @@ public interface Bar<U, T, V> {
   }
 
   @JsFunction
-  public interface BarMethod3FooCallbackFn<Z, Y, T, V> {
+  public interface BarMethod3FooCallbackFn<
+      Z extends @Nullable Object,
+      Y extends @Nullable Object,
+      T extends @Nullable Object,
+      V extends @Nullable Object> {
     @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-    public interface ReturnType<Z, Y, T> {
+    public interface ReturnType<
+        Z extends @Nullable Object, Y extends @Nullable Object, T extends @Nullable Object> {
       @JsOverlay
-      static <Z, Y, T> Bar.BarMethod3FooCallbackFn.ReturnType<Z, Y, T> create() {
+      static <Z extends @Nullable Object, Y extends @Nullable Object, T extends @Nullable Object>
+          Bar.BarMethod3FooCallbackFn.ReturnType<Z, Y, T> create() {
         return Js.uncheckedCast(JsPropertyMap.of());
       }
 
@@ -92,21 +100,21 @@ public interface Bar<U, T, V> {
   }
 
   @JsFunction
-  public interface BarMethod4FooCallbackFn<U> {
+  public interface BarMethod4FooCallbackFn<U extends @Nullable Object> {
     U onInvoke(U p0);
   }
 
   @JsFunction
-  public interface BarMethod5FooCallbackFn<U, T> {
+  public interface BarMethod5FooCallbackFn<U extends @Nullable Object, T extends @Nullable Object> {
     @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
-    public interface P2UnionType<T> {
+    public interface P2UnionType<T extends @Nullable Object> {
       @JsOverlay
-      static <T> Bar.BarMethod5FooCallbackFn.@Nullable P2UnionType<T> of(@Nullable Object o) {
+      static <T extends @Nullable Object> Bar.BarMethod5FooCallbackFn.P2UnionType<T> of(Object o) {
         return Js.cast(o);
       }
 
       @JsOverlay
-      default @Nullable String asString() {
+      default String asString() {
         return Js.asString(this);
       }
 
@@ -121,43 +129,43 @@ public interface Bar<U, T, V> {
       }
     }
 
-    void onInvoke(
-        U p0, @Nullable JsArray<U> p1, Bar.BarMethod5FooCallbackFn.@Nullable P2UnionType<T> p2);
+    void onInvoke(U p0, @Nullable JsArray<U> p1, Bar.BarMethod5FooCallbackFn.P2UnionType<T> p2);
 
     @JsOverlay
     default void onInvoke(U p0, @Nullable JsArray<U> p1, String p2) {
-      onInvoke(p0, p1, Js.<Bar.BarMethod5FooCallbackFn.@Nullable P2UnionType<T>>uncheckedCast(p2));
+      onInvoke(p0, p1, Js.<Bar.BarMethod5FooCallbackFn.P2UnionType<T>>uncheckedCast(p2));
     }
 
     @JsOverlay
     default void onInvoke(U p0, @Nullable JsArray<U> p1, T p2) {
-      onInvoke(p0, p1, Js.<Bar.BarMethod5FooCallbackFn.@Nullable P2UnionType<T>>uncheckedCast(p2));
+      onInvoke(p0, p1, Js.<Bar.BarMethod5FooCallbackFn.P2UnionType<T>>uncheckedCast(p2));
     }
 
     @JsOverlay
-    default void onInvoke(U p0, U[] p1, Bar.BarMethod5FooCallbackFn.@Nullable P2UnionType<T> p2) {
+    default void onInvoke(U p0, @Nullable U[] p1, Bar.BarMethod5FooCallbackFn.P2UnionType<T> p2) {
       onInvoke(p0, Js.<@Nullable JsArray<U>>uncheckedCast(p1), p2);
     }
 
     @JsOverlay
-    default void onInvoke(U p0, U[] p1, String p2) {
+    default void onInvoke(U p0, @Nullable U[] p1, String p2) {
       onInvoke(p0, Js.<@Nullable JsArray<U>>uncheckedCast(p1), p2);
     }
 
     @JsOverlay
-    default void onInvoke(U p0, U[] p1, T p2) {
+    default void onInvoke(U p0, @Nullable U[] p1, T p2) {
       onInvoke(p0, Js.<@Nullable JsArray<U>>uncheckedCast(p1), p2);
     }
   }
 
   @JsFunction
-  public interface BarMethod6FooCallbackFn<U, T> {
+  public interface BarMethod6FooCallbackFn<U extends @Nullable Object, T extends @Nullable Object> {
     @Nullable InterfaceWithGeneric<T> onInvoke(U p0, @Nullable InterfaceWithGeneric<U> p1);
   }
 
-  <V> V barMethod2(Bar.BarMethod2ParamType<V, T> param);
+  <V extends @Nullable Object> V barMethod2(Bar.BarMethod2ParamType<V, T> param);
 
-  <Z, Y> void barMethod3(Bar.BarMethod3FooCallbackFn<Z, Y, T, ? super V> fooCallback);
+  <Z extends @Nullable Object, Y extends @Nullable Object> void barMethod3(
+      Bar.BarMethod3FooCallbackFn<Z, Y, T, ? super V> fooCallback);
 
   void barMethod4(Bar.BarMethod4FooCallbackFn<U> fooCallback);
 

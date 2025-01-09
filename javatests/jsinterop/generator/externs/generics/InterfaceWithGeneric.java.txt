@@ -3,16 +3,35 @@ package jsinterop.generator.externs.generics;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public interface InterfaceWithGeneric<T> {
+public interface InterfaceWithGeneric<T extends @Nullable Object> {
   @JsProperty
   T getFoo();
+
+  @JsProperty
+  @Nullable T getNullabeFoo();
 
   void method(T foo);
 
   T method2();
 
+  void methodWithNullableParam(@Nullable T foo);
+
+  @Nullable T methodWithNullableReturn();
+
+  void methodWithOptionalNullableParam();
+
+  void methodWithOptionalNullableParam(@Nullable T foo);
+
+  void methodWithOptionalParam();
+
+  void methodWithOptionalParam(T foo);
+
   @JsProperty
   void setFoo(T foo);
+
+  @JsProperty
+  void setNullabeFoo(@Nullable T nullabeFoo);
 }

@@ -7,7 +7,7 @@ import jsinterop.base.Js;
 import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public interface ParentInterface<T> {
+public interface ParentInterface<T extends @Nullable Object> {
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface ParentMethod2FooUnionType {
     @JsOverlay

@@ -26,7 +26,7 @@ public class Bar implements JsArrayLike<String> {
   public native void consumeIObjectAndIArrayLike(
       @Nullable JsPropertyMap<String> object,
       @Nullable JsArrayLike<String> arrayLike,
-      @Nullable JsArrayLike<JsArrayLike<String>> doubleArrayLike);
+      @Nullable JsArrayLike<@Nullable JsArrayLike<String>> doubleArrayLike);
 
   @JsOverlay
   public final void consumeIObjectAndIArrayLike(
@@ -36,7 +36,7 @@ public class Bar implements JsArrayLike<String> {
     consumeIObjectAndIArrayLike(
         object,
         Js.<@Nullable JsArrayLike<String>>uncheckedCast(arrayLike),
-        Js.<@Nullable JsArrayLike<JsArrayLike<String>>>uncheckedCast(doubleArrayLike));
+        Js.<@Nullable JsArrayLike<@Nullable JsArrayLike<String>>>uncheckedCast(doubleArrayLike));
   }
 
   @JsOverlay

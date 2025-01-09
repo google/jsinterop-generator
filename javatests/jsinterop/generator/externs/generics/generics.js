@@ -21,15 +21,44 @@ function InterfaceWithGeneric() {}
 InterfaceWithGeneric.prototype.foo;
 
 /**
+ * @type {?T}
+ */
+InterfaceWithGeneric.prototype.nullabeFoo;
+
+/**
  * @param {T} foo
  * @return {undefined}
  */
 InterfaceWithGeneric.prototype.method = function(foo) {};
 
 /**
+ * @param {T=} foo
+ * @return {undefined}
+ */
+InterfaceWithGeneric.prototype.methodWithOptionalParam = function(foo) {};
+
+/**
+ * @param {?T} foo
+ * @return {undefined}
+ */
+InterfaceWithGeneric.prototype.methodWithNullableParam = function(foo) {};
+
+/**
+ * @param {?T=} foo
+ * @return {undefined}
+ */
+InterfaceWithGeneric.prototype.methodWithOptionalNullableParam = function(
+    foo) {};
+
+/**
  * @return {T}
  */
 InterfaceWithGeneric.prototype.method2 = function() {};
+
+/**
+ * @return {?T}
+ */
+InterfaceWithGeneric.prototype.methodWithNullableReturn = function() {};
 
 /**
  * @record

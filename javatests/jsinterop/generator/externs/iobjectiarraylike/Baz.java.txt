@@ -4,6 +4,7 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.JsArrayLike;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public interface Baz<T> extends JsArrayLike<T>, JsPropertyMap<T> {}
+public interface Baz<T extends @Nullable Object> extends JsArrayLike<T>, JsPropertyMap<T> {}

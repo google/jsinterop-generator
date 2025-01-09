@@ -2,8 +2,11 @@ package jsinterop.generator.externs.generics;
 
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public interface BarChild<U, T, V> extends Bar<U, T, V> {
+public interface BarChild<
+        U extends @Nullable Object, T extends @Nullable Object, V extends @Nullable Object>
+    extends Bar<U, T, V> {
   T methodWithThis(U u, V v);
 }

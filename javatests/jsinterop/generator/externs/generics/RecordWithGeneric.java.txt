@@ -6,11 +6,12 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
-public interface RecordWithGeneric<T> {
+public interface RecordWithGeneric<T extends @Nullable Object> {
   @JsOverlay
-  static <T> RecordWithGeneric<T> create() {
+  static <T extends @Nullable Object> RecordWithGeneric<T> create() {
     return Js.uncheckedCast(JsPropertyMap.of());
   }
 

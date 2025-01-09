@@ -7,5 +7,5 @@ import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public interface ExtendInterfaceWithGeneric extends InterfaceWithGeneric<Double> {
-  void bar(@Nullable InterfaceWithGeneric<JsArray<Boolean>> param);
+  void bar(@Nullable InterfaceWithGeneric<@Nullable JsArray<Boolean>> param);
 }

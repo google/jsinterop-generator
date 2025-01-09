@@ -3,12 +3,15 @@ package jsinterop.generator.externs.wildcardtypes;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
+import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 @FunctionalInterface
-public interface Bar<U, T, V> {
+public interface Bar<
+    U extends @Nullable Object, T extends @Nullable Object, V extends @Nullable Object> {
   @JsFunction
-  public interface BarCallbackFn<U, T, V> {
+  public interface BarCallbackFn<
+      U extends @Nullable Object, T extends @Nullable Object, V extends @Nullable Object> {
     void onInvoke(U p0, T p1, V p2);
   }
 
