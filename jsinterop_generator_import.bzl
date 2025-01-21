@@ -38,6 +38,7 @@ def jsinterop_generator_import(
         types_mapping_files = [],
         gwt_module_name = None,
         gwt_xml = None,
+        enable_jspecify_support = False,
         visibility = None):
     _jsinterop_generator_import(
         name = JS_INTEROP_RULE_NAME_PATTERN % name,
@@ -52,6 +53,7 @@ def jsinterop_generator_import(
         "deps": [
             Label("@com_google_j2cl//:jsinterop-annotations"),
             Label("@com_google_jsinterop_base//:jsinterop-base"),
+            Label("//third_party:jspecify_annotations"),
         ],
         "visibility": visibility,
     }
@@ -72,5 +74,7 @@ def jsinterop_generator_import(
         deps = [
             Label("@com_google_j2cl//:jsinterop-annotations-j2cl"),
             Label("@com_google_jsinterop_base//:jsinterop-base-j2cl"),
+            Label("//third_party:jspecify_annotations-j2cl"),
         ],
+        experimental_enable_jspecify_support_do_not_enable_without_jspecify_static_checking_or_you_might_cause_an_outage = enable_jspecify_support,
     )
