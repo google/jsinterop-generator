@@ -67,6 +67,11 @@ java_library(
 )
 
 alias(
+    name = "error_prone_annotations",
+    actual = "@com_google_errorprone_error_prone_annotations",
+)
+
+alias(
     name = "jspecify_annotations",
     actual = "@org_jspecify",
     visibility = [
