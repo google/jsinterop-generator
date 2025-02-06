@@ -12,8 +12,8 @@ java_library(
     name = "helper",
     srcs = glob(["*.java"]),
     visibility = [
-        "//:__subpackages__",
-        "@com_google_elemental2//java/elemental2:__subpackages__",
+        # Do not use. Temporary visible to workaround https://github.com/bazelbuild/bazel/issues/25214.
+        "//visibility:public",
     ],
     deps = [
         "//java/jsinterop/generator/model",
