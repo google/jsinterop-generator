@@ -60,8 +60,8 @@ alias(
     name = "jspecify_annotations",
     actual = "@google_bazel_common//third_party/java/jspecify_annotations",
     visibility = [
-        "//:__subpackages__",
-        "@com_google_elemental2//:__subpackages__",
+        # Do not use. Temporary visible to workaround https://github.com/bazelbuild/bazel/issues/25214.
+        "//visibility:public",
     ],
 )
 
@@ -69,7 +69,7 @@ j2cl_import(
     name = "jspecify_annotations-j2cl",
     jar = "@google_bazel_common//third_party/java/jspecify_annotations",
     visibility = [
-        "//:__subpackages__",
-        "@com_google_elemental2//:__subpackages__",
+        # Do not use. Temporary visible to workaround https://github.com/bazelbuild/bazel/issues/25214.
+        "//visibility:public",
     ],
 )
