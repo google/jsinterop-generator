@@ -43,28 +43,44 @@ public class UnionTypeMethodParameterHandler extends AbstractJsOverlayMethodCrea
     List<Method> overloadingMethods = new ArrayList<>();
 
     // Create overloading methods if union types are used in method's parameters.
-    List<List<TypeReference>> decomposedTypeParameters =
-        method
-            .getParameters()
-            .stream()
-            .map(parameter -> decomposeUnionTypes(parameter.getType()))
-            .collect(Collectors.toList());
-
-    List<List<TypeReference>> typesReferencesPermutations =
-        cartesianProduct(decomposedTypeParameters);
-
-    // Create one new method by permutation
-    for (List<TypeReference> parameterTypes : typesReferencesPermutations) {
-      Method overloadingMethod =
-          ModelHelper.createDelegatingOverlayMethod(
-              method,
-              (i, p) -> p.toBuilder().setType(parameterTypes.get(i)).build(),
-              ModelHelper::callUncheckedCast);
-
-      if (overloadingMethod != null) {
-        overloadingMethods.add(overloadingMethod);
+    boolean hasVarargUnion = false;
+    for (Parameter parameter : method.getParameters()) {
+      if (parameter.isVarargs() && parameter.getType() instanceof UnionTypeReference) {
+        hasVarargUnion = true;
+        // Create a method overload without varargs.
+        Method nonVarargOverload = Method.from(method);
+        Parameter lastParameter = nonVarargOverload.getParameters().get(nonVarargOverload.getParameters().size() - 1);
+        lastParameter.toBuilder().setVarargs(false);
+        overloadingMethods.add(nonVarargOverload);
+        break;
       }
     }
+
+    if (!hasVarargUnion) {
+      List<List<TypeReference>> decomposedTypeParameters =
+          method
+              .getParameters()
+              .stream()
+              .map(parameter -> decomposeUnionTypes(parameter.getType()))
+              .collect(Collectors.toList());
+
+      List<List<TypeReference>> typesReferencesPermutations =
+          cartesianProduct(decomposedTypeParameters);
+
+      // Create one new method by permutation
+      for (List<TypeReference> parameterTypes : typesReferencesPermutations) {
+        Method overloadingMethod =
+            ModelHelper.createDelegatingOverlayMethod(
+                method,
+                (i, p) -> p.toBuilder().setType(parameterTypes.get(i)).build(),
+                ModelHelper::callUncheckedCast);
+
+        if (overloadingMethod != null) {
+          overloadingMethods.add(overloadingMethod);
+        }
+      }
+    }
+
 
     // Check if the overloading methods don't collide together. That happens when several generics
     // are involved in the union type, several overloading methods have the same signature after

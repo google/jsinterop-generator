@@ -1,0 +1,14 @@
+package jsinterop.generator.externs.varargunion;
+
+import jsinterop.annotations.JsType;
+
+@JsType(isNative = true)
+public class Foo {
+  public native void method(String... x);
+
+  public native void method(String x);
+
+  public native void method(double... x);
+
+  public native void method(double x);
+}
