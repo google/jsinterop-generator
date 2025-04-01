@@ -361,6 +361,44 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface MethodWithVarargsOfUnionTypeVarargsUnionType {
+    @JsOverlay
+    static Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType of(@Nullable Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default @Nullable Child asChild() {
+      return Js.cast(this);
+    }
+
+    @JsOverlay
+    default double asDouble() {
+      return Js.asDouble(this);
+    }
+
+    @JsOverlay
+    default @Nullable String asString() {
+      return Js.asString(this);
+    }
+
+    @JsOverlay
+    default boolean isChild() {
+      return (Object) this instanceof Child;
+    }
+
+    @JsOverlay
+    default boolean isDouble() {
+      return (Object) this instanceof Double;
+    }
+
+    @JsOverlay
+    default boolean isString() {
+      return (Object) this instanceof String;
+    }
+  }
+
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface ParentInterfaceTypeParameterUnionType {
     @JsOverlay
     static Child.ParentInterfaceTypeParameterUnionType of(Object o) {
@@ -574,6 +612,30 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   public native <T extends @Nullable Object, V extends @Nullable Object> V method4(
       Child.Method4FooUnionType<T, V> foo,
       Child.Method4BarCallbackFn<? super T, ? super V> barCallback);
+
+  @JsOverlay
+  public final void methodWithVarargsOfUnionType(String foo, Child... varargs) {
+    methodWithVarargsOfUnionType(
+        foo,
+        Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
+  }
+
+  public native void methodWithVarargsOfUnionType(
+      String foo, Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType... varargs);
+
+  @JsOverlay
+  public final void methodWithVarargsOfUnionType(String foo, String... varargs) {
+    methodWithVarargsOfUnionType(
+        foo,
+        Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
+  }
+
+  @JsOverlay
+  public final void methodWithVarargsOfUnionType(String foo, double... varargs) {
+    methodWithVarargsOfUnionType(
+        foo,
+        Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
+  }
 
   public native @Nullable Object parentMethod(ParentInterface.ParentMethodFooUnionType foo);
 

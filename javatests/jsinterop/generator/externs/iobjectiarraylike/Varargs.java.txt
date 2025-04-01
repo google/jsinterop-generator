@@ -15,4 +15,15 @@ public class Varargs {
   public final void methodWithJsObjectVarargs(@Nullable Object... var_args) {
     methodWithJsObjectVarargs(Js.<@Nullable JsObject[]>uncheckedCast(var_args));
   }
+
+  public native void methodWithNotOnlyJsObjectVarargs(
+      @Nullable JsObject obj, @Nullable JsObject... var_args);
+
+  @JsOverlay
+  public final void methodWithNotOnlyJsObjectVarargs(
+      @Nullable Object obj, @Nullable Object... var_args) {
+    methodWithNotOnlyJsObjectVarargs(
+        Js.<@Nullable JsObject>uncheckedCast(obj),
+        Js.<@Nullable JsObject[]>uncheckedCast(var_args));
+  }
 }

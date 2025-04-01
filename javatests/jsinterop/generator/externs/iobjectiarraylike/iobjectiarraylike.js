@@ -98,3 +98,10 @@ function Varargs() {}
  * @return {void}
  */
 Varargs.prototype.methodWithJsObjectVarargs = function(var_args) {};
+
+/**
+ * @param {Object} obj
+ * @param {...Object} var_args
+ * @return {void}
+ */
+Varargs.prototype.methodWithNotOnlyJsObjectVarargs = function(obj, var_args) {};

@@ -32,6 +32,8 @@ public interface SimpleInterface {
   @JsProperty
   boolean isReadonlyProperty();
 
+  void methodWithNonAmbiguousVarargs(String... var_args);
+
   @Deprecated
   @JsProperty
   void setDeprecatedProperty(String deprecatedProperty);

@@ -219,6 +219,12 @@ SimpleInterface.prototype.deprecatedMethod = function(bar, foo, opt_baz) {};
 
 
 /**
+ * @param {...string} var_args
+ * @return {void}
+ */
+SimpleInterface.prototype.methodWithNonAmbiguousVarargs = function(var_args) {};
+
+/**
  * @record
  */
 function SimpleStructuralInterface() {}
