@@ -361,6 +361,34 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   }
 
   @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
+  public interface MethodWithVarargsOfUnionTypeNumberOrStringUnionType {
+    @JsOverlay
+    static Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType of(Object o) {
+      return Js.cast(o);
+    }
+
+    @JsOverlay
+    default double asDouble() {
+      return Js.asDouble(this);
+    }
+
+    @JsOverlay
+    default String asString() {
+      return Js.asString(this);
+    }
+
+    @JsOverlay
+    default boolean isDouble() {
+      return (Object) this instanceof Double;
+    }
+
+    @JsOverlay
+    default boolean isString() {
+      return (Object) this instanceof String;
+    }
+  }
+
+  @JsType(isNative = true, name = "?", namespace = JsPackage.GLOBAL)
   public interface MethodWithVarargsOfUnionTypeVarargsUnionType {
     @JsOverlay
     static Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType of(@Nullable Object o) {
@@ -614,26 +642,90 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
       Child.Method4BarCallbackFn<? super T, ? super V> barCallback);
 
   @JsOverlay
-  public final void methodWithVarargsOfUnionType(String foo, Child... varargs) {
+  public final void methodWithVarargsOfUnionType(
+      Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType numberOrString, Child... varargs) {
     methodWithVarargsOfUnionType(
-        foo,
+        numberOrString,
         Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
   }
 
   public native void methodWithVarargsOfUnionType(
-      String foo, Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType... varargs);
+      Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType numberOrString,
+      Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType... varargs);
 
   @JsOverlay
-  public final void methodWithVarargsOfUnionType(String foo, String... varargs) {
+  public final void methodWithVarargsOfUnionType(
+      Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType numberOrString, String... varargs) {
     methodWithVarargsOfUnionType(
-        foo,
+        numberOrString,
         Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
   }
 
   @JsOverlay
-  public final void methodWithVarargsOfUnionType(String foo, double... varargs) {
+  public final void methodWithVarargsOfUnionType(
+      Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType numberOrString, double... varargs) {
     methodWithVarargsOfUnionType(
-        foo,
+        numberOrString,
+        Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
+  }
+
+  @JsOverlay
+  public final void methodWithVarargsOfUnionType(String numberOrString, Child... varargs) {
+    methodWithVarargsOfUnionType(
+        Js.<Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType>uncheckedCast(numberOrString),
+        Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
+  }
+
+  @JsOverlay
+  public final void methodWithVarargsOfUnionType(
+      String numberOrString,
+      Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType... varargs) {
+    methodWithVarargsOfUnionType(
+        Js.<Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType>uncheckedCast(numberOrString),
+        varargs);
+  }
+
+  @JsOverlay
+  public final void methodWithVarargsOfUnionType(String numberOrString, String... varargs) {
+    methodWithVarargsOfUnionType(
+        Js.<Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType>uncheckedCast(numberOrString),
+        Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
+  }
+
+  @JsOverlay
+  public final void methodWithVarargsOfUnionType(String numberOrString, double... varargs) {
+    methodWithVarargsOfUnionType(
+        Js.<Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType>uncheckedCast(numberOrString),
+        Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
+  }
+
+  @JsOverlay
+  public final void methodWithVarargsOfUnionType(double numberOrString, Child... varargs) {
+    methodWithVarargsOfUnionType(
+        Js.<Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType>uncheckedCast(numberOrString),
+        Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
+  }
+
+  @JsOverlay
+  public final void methodWithVarargsOfUnionType(
+      double numberOrString,
+      Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType... varargs) {
+    methodWithVarargsOfUnionType(
+        Js.<Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType>uncheckedCast(numberOrString),
+        varargs);
+  }
+
+  @JsOverlay
+  public final void methodWithVarargsOfUnionType(double numberOrString, String... varargs) {
+    methodWithVarargsOfUnionType(
+        Js.<Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType>uncheckedCast(numberOrString),
+        Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
+  }
+
+  @JsOverlay
+  public final void methodWithVarargsOfUnionType(double numberOrString, double... varargs) {
+    methodWithVarargsOfUnionType(
+        Js.<Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType>uncheckedCast(numberOrString),
         Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
   }
 

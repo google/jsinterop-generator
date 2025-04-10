@@ -77,11 +77,11 @@ Child.prototype.method3 = function(foo) {};
 Child.prototype.method4 = function(foo, barCallback) {};
 
 /**
- * @param {string} foo
+ * @param {string|number} numberOrString
  * @param {...(string|number|Child)} varargs
  * @return {undefined}
  */
-Child.prototype.methodWithVarargsOfUnionType = function(foo, varargs) {};
+Child.prototype.methodWithVarargsOfUnionType = function(numberOrString, varargs) {};
 
 /**
  * @interface
