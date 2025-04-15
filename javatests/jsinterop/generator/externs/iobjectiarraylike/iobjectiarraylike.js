@@ -92,16 +92,16 @@ function Baz() {}
 /** @constructor */
 function Varargs() {}
 
-// Test a union type in a varargs position.
-/**
- * @param {...Object} var_args
- * @return {void}
- */
-Varargs.prototype.methodWithJsObjectVarargs = function(var_args) {};
-
 /**
  * @param {Object} obj
  * @param {...Object} var_args
  * @return {void}
  */
-Varargs.prototype.methodWithNotOnlyJsObjectVarargs = function(obj, var_args) {};
+Varargs.prototype.methodWithJsObjectVarargs = function(obj, var_args) {};
+
+/**
+ * @param {Object} object
+ * @param {...IArrayLike<string>} var_args
+ * @return {void}
+ */
+Varargs.prototype.methodWithIArrayLikeVarargs = function(object, var_args) {};

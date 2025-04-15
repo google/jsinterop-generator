@@ -4,25 +4,40 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
+import jsinterop.base.JsArrayLike;
 import jsinterop.generator.externs.natives.JsObject;
 import org.jspecify.annotations.Nullable;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class Varargs {
-  public native void methodWithJsObjectVarargs(@Nullable JsObject... var_args);
+  public native void methodWithIArrayLikeVarargs(
+      @Nullable JsObject object, @Nullable JsArrayLike<String>... var_args);
 
   @JsOverlay
-  public final void methodWithJsObjectVarargs(@Nullable Object... var_args) {
-    methodWithJsObjectVarargs(Js.<@Nullable JsObject[]>uncheckedCast(var_args));
+  public final void methodWithIArrayLikeVarargs(
+      @Nullable JsObject object, String @Nullable []... var_args) {
+    methodWithIArrayLikeVarargs(
+        object, Js.<@Nullable JsArrayLike<String>[]>uncheckedCast(var_args));
   }
 
-  public native void methodWithNotOnlyJsObjectVarargs(
+  @JsOverlay
+  public final void methodWithIArrayLikeVarargs(
+      @Nullable Object object, @Nullable JsArrayLike<String>... var_args) {
+    methodWithIArrayLikeVarargs(Js.<@Nullable JsObject>uncheckedCast(object), var_args);
+  }
+
+  @JsOverlay
+  public final void methodWithIArrayLikeVarargs(
+      @Nullable Object object, String @Nullable []... var_args) {
+    methodWithIArrayLikeVarargs(Js.<@Nullable JsObject>uncheckedCast(object), var_args);
+  }
+
+  public native void methodWithJsObjectVarargs(
       @Nullable JsObject obj, @Nullable JsObject... var_args);
 
   @JsOverlay
-  public final void methodWithNotOnlyJsObjectVarargs(
-      @Nullable Object obj, @Nullable Object... var_args) {
-    methodWithNotOnlyJsObjectVarargs(
+  public final void methodWithJsObjectVarargs(@Nullable Object obj, @Nullable Object... var_args) {
+    methodWithJsObjectVarargs(
         Js.<@Nullable JsObject>uncheckedCast(obj),
         Js.<@Nullable JsObject[]>uncheckedCast(var_args));
   }
