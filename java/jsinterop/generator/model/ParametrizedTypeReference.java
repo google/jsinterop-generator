@@ -126,6 +126,11 @@ public class ParametrizedTypeReference extends AbstractTypeReference
   }
 
   @Override
+  public boolean isReferenceTo(PredefinedTypes predefinedType) {
+    return mainType.isReferenceTo(predefinedType);
+  }
+
+  @Override
   public String toString() {
     return getMainType().getTypeName() + "<" + Joiner.on(", ").join(getActualTypeArguments()) + ">";
   }
