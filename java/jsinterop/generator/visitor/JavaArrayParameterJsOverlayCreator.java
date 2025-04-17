@@ -22,7 +22,6 @@ import static jsinterop.generator.model.PredefinedTypes.BOOLEAN;
 import static jsinterop.generator.model.PredefinedTypes.BOOLEAN_OBJECT;
 import static jsinterop.generator.model.PredefinedTypes.DOUBLE;
 import static jsinterop.generator.model.PredefinedTypes.DOUBLE_OBJECT;
-import static jsinterop.generator.model.PredefinedTypes.JS_ARRAY_LIKE;
 
 import jsinterop.generator.helper.ModelHelper;
 import jsinterop.generator.model.ArrayTypeReference;
@@ -50,7 +49,7 @@ public class JavaArrayParameterJsOverlayCreator extends AbstractJsOverlayMethodC
   }
 
   private static Parameter toJavaArray(int unusedParameterIndex, Parameter originalParameter) {
-    if (isJsArrayLikeOrJsArrayReference(originalParameter.getType())) {
+    if (TypeReferenceUtils.isJsArrayLikeOrJsArrayTypeReference(originalParameter.getType())) {
       TypeReference arrayTypeReference = maybeConvertToArrayType(originalParameter.getType());
 
       return originalParameter.toBuilder().setType(arrayTypeReference).build();
@@ -60,7 +59,7 @@ public class JavaArrayParameterJsOverlayCreator extends AbstractJsOverlayMethodC
   }
 
   private static TypeReference maybeConvertToArrayType(TypeReference typeReference) {
-    if (isJsArrayLikeOrJsArrayReference(typeReference)) {
+    if (TypeReferenceUtils.isJsArrayLikeOrJsArrayTypeReference(typeReference)) {
       ParametrizedTypeReference jsArrayLikeReference = (ParametrizedTypeReference) typeReference;
       checkState(jsArrayLikeReference.getActualTypeArguments().size() == 1);
 
@@ -78,15 +77,5 @@ public class JavaArrayParameterJsOverlayCreator extends AbstractJsOverlayMethodC
     }
 
     return typeReference;
-  }
-
-  private static boolean isJsArrayLikeOrJsArrayReference(TypeReference typeReference) {
-    if (!(typeReference instanceof ParametrizedTypeReference)) {
-      return false;
-    }
-    TypeReference mainType = ((ParametrizedTypeReference) typeReference).getMainType();
-    return mainType.isReferenceTo(JS_ARRAY_LIKE)
-        || (mainType.getTypeDeclaration() != null
-            && "Array".equals(mainType.getTypeDeclaration().getNativeFqn()));
   }
 }

@@ -23,6 +23,7 @@ import static jsinterop.generator.model.EntityKind.CONSTRUCTOR;
 import static jsinterop.generator.model.EntityKind.METHOD;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Iterables;
 import com.google.j2cl.common.visitor.Context;
 import com.google.j2cl.common.visitor.Processor;
 import com.google.j2cl.common.visitor.Visitable;
@@ -124,6 +125,10 @@ public class Method extends Entity implements HasTypeParameters {
 
   public boolean isDefault() {
     return isDefault;
+  }
+
+  public boolean hasVarargsParameter() {
+    return !parameters.isEmpty() && Iterables.getLast(parameters).isVarargs();
   }
 
   public String getJniSignatureWithoutReturn() {

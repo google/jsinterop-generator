@@ -669,6 +669,9 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
         Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
   }
 
+  public native void methodWithVarargsOfUnionType(
+      Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType numberOrString);
+
   @JsOverlay
   public final void methodWithVarargsOfUnionType(String numberOrString, Child... varargs) {
     methodWithVarargsOfUnionType(
@@ -700,6 +703,13 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
   }
 
   @JsOverlay
+  public final void methodWithVarargsOfUnionType(String numberOrString) {
+    methodWithVarargsOfUnionType(
+        Js.<Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType>uncheckedCast(
+            numberOrString));
+  }
+
+  @JsOverlay
   public final void methodWithVarargsOfUnionType(double numberOrString, Child... varargs) {
     methodWithVarargsOfUnionType(
         Js.<Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType>uncheckedCast(numberOrString),
@@ -727,6 +737,13 @@ public class Child implements ParentInterface<Child.ParentInterfaceTypeParameter
     methodWithVarargsOfUnionType(
         Js.<Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType>uncheckedCast(numberOrString),
         Js.<Child.@Nullable MethodWithVarargsOfUnionTypeVarargsUnionType[]>uncheckedCast(varargs));
+  }
+
+  @JsOverlay
+  public final void methodWithVarargsOfUnionType(double numberOrString) {
+    methodWithVarargsOfUnionType(
+        Js.<Child.MethodWithVarargsOfUnionTypeNumberOrStringUnionType>uncheckedCast(
+            numberOrString));
   }
 
   public native @Nullable Object parentMethod(ParentInterface.ParentMethodFooUnionType foo);

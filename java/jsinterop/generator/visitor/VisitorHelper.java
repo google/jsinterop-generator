@@ -48,6 +48,8 @@ public final class VisitorHelper {
 
     new ConstantRewriter().applyTo(program);
 
+    new ResolveVarargsAmbiguity().applyTo(program);
+
     new UnionTypeMethodParameterHandler().applyTo(program);
 
     UnionTypeHelperTypeCreator unionTypeHelperTypeCreator = new UnionTypeHelperTypeCreator();
@@ -75,6 +77,7 @@ public final class VisitorHelper {
         break;
       }
     }
+
     DuplicatedTypesUnifier duplicatedTypesUnifier = new DuplicatedTypesUnifier();
     duplicatedTypesUnifier.applyTo(program);
 

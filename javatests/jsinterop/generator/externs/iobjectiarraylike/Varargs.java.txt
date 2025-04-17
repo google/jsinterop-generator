@@ -20,6 +20,8 @@ public class Varargs {
         object, Js.<@Nullable JsArrayLike<String>[]>uncheckedCast(var_args));
   }
 
+  public native void methodWithIArrayLikeVarargs(@Nullable JsObject object);
+
   @JsOverlay
   public final void methodWithIArrayLikeVarargs(
       @Nullable Object object, @Nullable JsArrayLike<String>... var_args) {
@@ -32,13 +34,25 @@ public class Varargs {
     methodWithIArrayLikeVarargs(Js.<@Nullable JsObject>uncheckedCast(object), var_args);
   }
 
+  @JsOverlay
+  public final void methodWithIArrayLikeVarargs(@Nullable Object object) {
+    methodWithIArrayLikeVarargs(Js.<@Nullable JsObject>uncheckedCast(object));
+  }
+
   public native void methodWithJsObjectVarargs(
       @Nullable JsObject obj, @Nullable JsObject... var_args);
+
+  public native void methodWithJsObjectVarargs(@Nullable JsObject obj);
 
   @JsOverlay
   public final void methodWithJsObjectVarargs(@Nullable Object obj, @Nullable Object... var_args) {
     methodWithJsObjectVarargs(
         Js.<@Nullable JsObject>uncheckedCast(obj),
         Js.<@Nullable JsObject[]>uncheckedCast(var_args));
+  }
+
+  @JsOverlay
+  public final void methodWithJsObjectVarargs(@Nullable Object obj) {
+    methodWithJsObjectVarargs(Js.<@Nullable JsObject>uncheckedCast(obj));
   }
 }
