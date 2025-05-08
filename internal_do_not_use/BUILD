@@ -1,6 +1,8 @@
 # Description:
 #   Build rules in this directory are used by our tooling and build rules
 
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
 package(
     default_applicable_licenses = ["//:license"],
     default_visibility = ["//visibility:public"],
