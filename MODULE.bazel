@@ -3,10 +3,10 @@ module(
     bazel_compatibility = [">=7.4.1"],
 )
 
-bazel_dep(name = "com_google_j2cl")
+bazel_dep(name = "j2cl", repo_name = "com_google_j2cl")
 
 archive_override(
-    module_name = "com_google_j2cl",
+    module_name = "j2cl",
     strip_prefix = "j2cl-master",
     urls = ["https://github.com/google/j2cl/archive/master.zip"],
 )
