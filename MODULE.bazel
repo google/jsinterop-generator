@@ -4,8 +4,9 @@ module(
     repo_name = "com_google_jsinterop_generator",
 )
 
-bazel_dep(name = "j2cl", repo_name = "com_google_j2cl")
+bazel_dep(name = "j2cl", repo_name = "com_google_j2cl", version = "20250630")
 
+# Use head j2cl for testing purposes.
 archive_override(
     module_name = "j2cl",
     strip_prefix = "j2cl-master",
