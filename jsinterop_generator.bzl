@@ -133,8 +133,7 @@ def _jsinterop_generator_impl(ctx):
     deps_files = _get_generator_files(ctx.attr.deps)
     types_mapping_file = ctx.actions.declare_file("%s_types" % ctx.attr.name)
 
-    if ctx.attr.conversion_mode == "closure":
-        _closure_impl(srcs, deps_files, types_mapping_file, ctx)
+    _closure_impl(srcs, deps_files, types_mapping_file, ctx)
 
     # generate the gwt.xml file by concatenating dependencies gwt inherits files
     gwt_xml_file = ctx.outputs._gwt_xml_file
@@ -206,7 +205,6 @@ _jsinterop_generator = rule(
         "integer_entities_files": attr.label_list(allow_files = True),
         "wildcard_types_files": attr.label_list(allow_files = True),
         "debug": attr.bool(),
-        "conversion_mode": attr.string(),
         "gwt_module_name": attr.string(),
         "runtime_deps": attr.label_list(),
         "custom_preprocessing_pass": attr.string_list(),
@@ -258,7 +256,6 @@ def jsinterop_generator(
         package_prefix = None,
         generate_j2cl_library = True,
         generate_gwt_library = True,
-        conversion_mode = "closure",
         generate_j2cl_build_test = None,
         externs_deps = None,  # Auto-populated from srcs by default.
         runtime_deps = [],
@@ -292,22 +289,18 @@ def jsinterop_generator(
         if not package_prefix:
             package_prefix = _get_java_package(native.package_name())
 
-        if conversion_mode == "closure":
-            if externs_deps == None:
-                # Pass the extern files present in the srcs as deps of the j2cl_library
-                externs_deps = srcs
+        if externs_deps == None:
+            # Pass the extern files present in the srcs as deps of the j2cl_library
+            externs_deps = srcs
 
-            if externs_deps:
-                externs_lib_name = "%s-externs" % name
-                closure_js_library(
-                    name = externs_lib_name,
-                    srcs = externs_deps,
-                    testonly = testonly,
-                )
-                deps_j2cl.append(":%s" % externs_lib_name)
-
-        else:
-            fail("Unknown conversion mode")
+        if externs_deps:
+            externs_lib_name = "%s-externs" % name
+            closure_js_library(
+                name = externs_lib_name,
+                srcs = externs_deps,
+                testonly = testonly,
+            )
+            deps_j2cl.append(":%s" % externs_lib_name)
 
         if not extension_type_prefix:
             extension_type_prefix = name[0].upper() + name[1:]
@@ -329,7 +322,6 @@ def jsinterop_generator(
             wildcard_types_files = wildcard_types_files,
             # TODO(dramaix): replace it by a blaze flag
             debug = False,
-            conversion_mode = conversion_mode,
             gwt_module_name = gwt_module_name,
             runtime_deps = runtime_deps,
             custom_preprocessing_pass = custom_preprocessing_pass,

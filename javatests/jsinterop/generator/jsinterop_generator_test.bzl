@@ -23,15 +23,10 @@ def jsinterop_generator_test(
         global_scope_class_name = None,
         name_mapping_files = [],
         deps = [],
-        conversion_mode = "closure",
         j2cl_test_externs_list = None,
         integer_entities_files = [],
         wildcard_types_files = [],
         generate_j2cl_build_test = None):
-    if conversion_mode != "closure":
-        # TODO(b/121201145): Migrate the typescript generator app to J2CL
-        return
-
     jsinterop_generator_name = "%s__jsinterop_generator" % name
     generator_output = ":%s__internal_src_generated.srcjar" % jsinterop_generator_name
     jsinterop_generator(
@@ -41,7 +36,6 @@ def jsinterop_generator_test(
         global_scope_class_name = global_scope_class_name,
         name_mapping_files = name_mapping_files,
         deps = deps,
-        conversion_mode = conversion_mode,
         externs_deps = j2cl_test_externs_list,
         integer_entities_files = integer_entities_files,
         wildcard_types_files = wildcard_types_files,

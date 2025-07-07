@@ -67,10 +67,7 @@ public abstract class AbstractTypeRegistry<T> {
 
     globalType = type;
 
-    // TODO(b/34278243): Clean that up for typescript when bug is fixed.
-    if (nativeTypeKey != null) {
-      registerJavaTypeByKey(nativeTypeKey, type);
-    }
+    registerJavaTypeByKey(nativeTypeKey, type);
   }
 
   public boolean containsExtensionType(Type parent) {
@@ -84,10 +81,10 @@ public abstract class AbstractTypeRegistry<T> {
   }
 
   /**
-   * In typescript and closure, a source type definition file can add API to a type that is defined
-   * by a dependency. We model that by creating a class extending the original third party class.
-   * This method create a link between the original class <code>parent</code> and the new extension
-   * point <code>child</code>.
+   * In closure, a source type definition file can add API to a type that is defined by a
+   * dependency. We model that by creating a class extending the original third party class. This
+   * method create a link between the original class <code>parent</code> and the new extension point
+   * <code>child</code>.
    */
   public void registerExtensionType(Type parent, Type child) {
     Type previousExtensionType = extensionTypesByParent.put(parent, child);
