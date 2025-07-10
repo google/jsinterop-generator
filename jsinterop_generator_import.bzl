@@ -9,8 +9,6 @@ load("@rules_java//java:defs.bzl", "java_library")
 load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
 load(":jsinterop_generator.bzl", "JS_INTEROP_RULE_NAME_PATTERN", "JsInteropGeneratorInfo")
 
-_is_bazel = not hasattr(native, "genmpm")  # this_is_bazel
-
 def _jsinterop_generator_import_impl(ctx):
     # expose files and properties used when the target is used as dependency
     return [
@@ -47,25 +45,17 @@ def jsinterop_generator_import(
         gwt_module_name = gwt_module_name,
     )
 
-    java_library_args = {
-        "name": name,
-        "srcs": srcs,
-        "deps": [
+    java_library(
+        name = name,
+        srcs = srcs,
+        deps = [
             Label("@com_google_j2cl//:jsinterop-annotations"),
             Label("@com_google_jsinterop_base//:jsinterop-base"),
             Label("//third_party:jspecify_annotations"),
         ],
-        "visibility": visibility,
-    }
-
-    if gwt_xml:
-        # bazel doesn't support constraint and gwtxml attributes
-        if _is_bazel:
-            java_library_args["resources"] = [gwt_xml]
-        else:
-            java_library_args["gwtxml"] = gwt_xml
-            java_library_args["constraints"] = ["gwt", "public"]
-    java_library(**java_library_args)
+        resources = [gwt_xml] if gwt_xml else [],
+        visibility = visibility,
+    )
 
     j2cl_library(
         name = "%s-j2cl" % name,

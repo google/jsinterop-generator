@@ -35,8 +35,6 @@ load("@rules_java//java:defs.bzl", "java_library")
 load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 
-_is_bazel = not hasattr(native, "genmpm")  # this_is_bazel
-
 JS_INTEROP_RULE_NAME_PATTERN = "%s__internal_src_generated"
 
 JsInteropGeneratorInfo = provider()
@@ -370,23 +368,15 @@ def jsinterop_generator(
         )
 
     if generate_gwt_library:
-        java_library_args = {
-            "name": name,
-            "srcs": generated_jars,
-            "deps": deps_java,
-            "exports": exports_java,
-            "visibility": visibility,
-            "testonly": testonly,
-        }
-
-        # bazel doesn't support constraint and gwtxml attributes
-        if _is_bazel:
-            if gwt_xml_file:
-                java_library_args["resources"] = [gwt_xml_file]
-        else:
-            java_library_args["gwtxml"] = gwt_xml_file
-            java_library_args["constraints"] = ["gwt", "public"]
-        java_library(**java_library_args)
+        java_library(
+            name = name,
+            srcs = generated_jars,
+            deps = deps_java,
+            exports = exports_java,
+            resources = [gwt_xml_file] if gwt_xml_file else [],
+            visibility = visibility,
+            testonly = testonly,
+        )
 
     _extract_srcjar(
         name = name + "_generated_files",
