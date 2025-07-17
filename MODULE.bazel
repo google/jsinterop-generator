@@ -1,6 +1,5 @@
 module(
     name = "jsinterop_generator",
-    bazel_compatibility = [">=8.0.1"],
     repo_name = "com_google_jsinterop_generator",
 )
 
