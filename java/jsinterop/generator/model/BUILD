@@ -20,6 +20,6 @@ java_library(
         "//third_party:error_prone_annotations",
         "//third_party:guava",
         "//third_party:jsr305_annotations",
-        "@com_google_j2cl//transpiler/java/com/google/j2cl/common/visitor",
+        "@j2cl//transpiler/java/com/google/j2cl/common/visitor",
     ],
 )

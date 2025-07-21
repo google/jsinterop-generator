@@ -32,7 +32,7 @@ Examples:
 
 load("@google_bazel_common//tools/javadoc:javadoc.bzl", "javadoc_library")
 load("@rules_java//java:defs.bzl", "java_library")
-load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 
 JS_INTEROP_RULE_NAME_PATTERN = "%s__internal_src_generated"
@@ -331,12 +331,12 @@ def jsinterop_generator(
         gwt_xml_file = ":%s.gwt.xml" % gwt_module_name
 
         deps_java += [
-            Label("@com_google_j2cl//:jsinterop-annotations"),
+            Label("@j2cl//:jsinterop-annotations"),
             Label("@com_google_jsinterop_base//:jsinterop-base"),
             Label("//third_party:jspecify_annotations"),
         ]
         deps_j2cl += [
-            Label("@com_google_j2cl//:jsinterop-annotations-j2cl"),
+            Label("@j2cl//:jsinterop-annotations-j2cl"),
             Label("@com_google_jsinterop_base//:jsinterop-base-j2cl"),
             Label("//third_party:jspecify_annotations-j2cl"),
         ]

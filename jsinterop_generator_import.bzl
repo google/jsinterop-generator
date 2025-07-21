@@ -6,7 +6,7 @@ targets.
 """
 
 load("@rules_java//java:defs.bzl", "java_library")
-load("@com_google_j2cl//build_defs:rules.bzl", "j2cl_library")
+load("@j2cl//build_defs:rules.bzl", "j2cl_library")
 load(":jsinterop_generator.bzl", "JS_INTEROP_RULE_NAME_PATTERN", "JsInteropGeneratorInfo")
 
 def _jsinterop_generator_import_impl(ctx):
@@ -49,7 +49,7 @@ def jsinterop_generator_import(
         name = name,
         srcs = srcs,
         deps = [
-            Label("@com_google_j2cl//:jsinterop-annotations"),
+            Label("@j2cl//:jsinterop-annotations"),
             Label("@com_google_jsinterop_base//:jsinterop-base"),
             Label("//third_party:jspecify_annotations"),
         ],
@@ -62,7 +62,7 @@ def jsinterop_generator_import(
         srcs = srcs,
         visibility = visibility,
         deps = [
-            Label("@com_google_j2cl//:jsinterop-annotations-j2cl"),
+            Label("@j2cl//:jsinterop-annotations-j2cl"),
             Label("@com_google_jsinterop_base//:jsinterop-base-j2cl"),
             Label("//third_party:jspecify_annotations-j2cl"),
         ],
