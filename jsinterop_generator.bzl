@@ -33,7 +33,7 @@ Examples:
 load("@google_bazel_common//tools/javadoc:javadoc.bzl", "javadoc_library")
 load("@rules_java//java:defs.bzl", "java_library")
 load("@j2cl//build_defs:rules.bzl", "j2cl_library")
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@rules_closure//closure:defs.bzl", "closure_js_library")
 
 JS_INTEROP_RULE_NAME_PATTERN = "%s__internal_src_generated"
 
