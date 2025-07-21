@@ -332,12 +332,12 @@ def jsinterop_generator(
 
         deps_java += [
             Label("@j2cl//:jsinterop-annotations"),
-            Label("@com_google_jsinterop_base//:jsinterop-base"),
+            Label("@jsinterop_base//:jsinterop-base"),
             Label("//third_party:jspecify_annotations"),
         ]
         deps_j2cl += [
             Label("@j2cl//:jsinterop-annotations-j2cl"),
-            Label("@com_google_jsinterop_base//:jsinterop-base-j2cl"),
+            Label("@jsinterop_base//:jsinterop-base-j2cl"),
             Label("//third_party:jspecify_annotations-j2cl"),
         ]
 
