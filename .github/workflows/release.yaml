@@ -35,7 +35,7 @@ jobs:
     with:
       version: ${{ github.event.inputs.version }}
       publish_to_sonatype: false
-      create_tag: true
+      continue_if_tag_exists: false
 
     # Allow the reusable workflow to access the secrets.
     secrets: inherit
