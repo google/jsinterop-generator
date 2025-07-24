@@ -245,6 +245,5 @@ InterfaceWithStructuralTypeImpl.prototype.bar3 = function(param1, param2) {};
  * @param {(number|string)} param1
  * @param {(number|string)} param2
  * @return {(number|string)}
- * @override
  */
 InterfaceWithStructuralTypeImpl.prototype.bar4 = function(param1, param2) {};
