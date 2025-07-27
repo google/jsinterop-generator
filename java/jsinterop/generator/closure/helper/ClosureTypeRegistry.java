@@ -42,6 +42,7 @@ import com.google.javascript.rhino.jstype.ProxyObjectType;
 import com.google.javascript.rhino.jstype.TemplateType;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
+import com.google.javascript.rhino.jstype.Visitor;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -112,13 +113,18 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
     jsTypeByThisTemplateType.put(thisTemplateType, jsType);
   }
 
-  private class TypeReferenceCreator extends AbstractNoOpVisitor<TypeReference> {
+  private class TypeReferenceCreator extends Visitor.WithDefaultCase<TypeReference> {
     private final ReferenceContext referenceContext;
     private final boolean isNullable;
 
     TypeReferenceCreator(ReferenceContext referenceContext, boolean isNullable) {
       this.referenceContext = referenceContext;
       this.isNullable = isNullable;
+    }
+
+    @Override
+    protected TypeReference caseDefault(JSType type) {
+      return null;
     }
 
     private TypeReference resolveTypeReference(JSType type) {

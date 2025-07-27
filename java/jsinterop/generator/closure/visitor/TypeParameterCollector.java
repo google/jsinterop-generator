@@ -27,12 +27,12 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.TemplateType;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
+import com.google.javascript.rhino.jstype.Visitor;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import jsinterop.generator.closure.helper.AbstractNoOpVisitor;
 import jsinterop.generator.closure.helper.GenerationContext;
 import jsinterop.generator.model.Annotation;
 import jsinterop.generator.model.JavaTypeReference;
@@ -161,7 +161,7 @@ public class TypeParameterCollector extends AbstractClosureVisitor {
   }
 
   /** Collects Template Types defined in any JsType. */
-  private static class TemplateTypeCollector extends AbstractNoOpVisitor<Void> {
+  private static class TemplateTypeCollector extends Visitor.WithDefaultCase<Void> {
 
     private static Set<String> getTemplateTypes(JSType type) {
       TemplateTypeCollector templateTypeFinder = new TemplateTypeCollector();
@@ -173,6 +173,11 @@ public class TypeParameterCollector extends AbstractClosureVisitor {
 
     Set<String> getTemplateTypeValues() {
       return templateTypes.build();
+    }
+
+    @Override
+    protected Void caseDefault(JSType type) {
+      return null;
     }
 
     @Override
