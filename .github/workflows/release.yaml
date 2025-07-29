@@ -22,14 +22,22 @@ on:
         description: 'The version to release'
         required: true
         type: string
+      continue_if_tag_exists:
+        description: 'Continue the workflow even if the GitHub tag already exists'
+        type: boolean
+        required: true
+        default: false
 
 jobs:
   release:
     uses: google/j2cl/.github/workflows/release_common.yaml@master
 
-    # The reusable workflow requires 'write' access to contents to push a git tag.
     permissions:
+      # Permissions for creating a github release.
       contents: write
+      # Permissions for publishing to bcr.
+      id-token: write
+      attestations: write
 
     # Pass the inputs from the manual trigger to the reusable workflow.
     with:
