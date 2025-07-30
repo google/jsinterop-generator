@@ -1,7 +1,7 @@
-load("//:jsinterop_generator.bzl", "jsinterop_generator")
+load("@jsinterop_generator//:jsinterop_generator.bzl", "jsinterop_generator")
 
 package(
-    default_applicable_licenses = ["//:license"],
+    default_applicable_licenses = ["@jsinterop_generator//:license"],
     licenses = ["notice"],
 )
 

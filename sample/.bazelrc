@@ -1,0 +1,38 @@
+# Recommended bazel settings for working with J2CL.
+# You can copy this into root of your workspace.
+
+build --watchfs
+
+build --spawn_strategy=local
+
+build --strategy=J2cl=worker
+build --strategy=J2clStrip=worker
+build --strategy=J2clRta=worker
+
+build --strategy=J2wasm=worker
+build --strategy=J2wasmStrip=worker
+build --strategy=J2wasmApp=local
+
+build --strategy=Closure=worker
+build --strategy=Javac=worker
+build --strategy=JavaIjar=local
+build --strategy=JavaDeployJar=local
+build --strategy=JavaSourceJar=local
+build --strategy=Turbine=local
+
+# --experimental_inprocess_symlink_creation is used to workaround the missing
+# support for paths with spaces https://github.com/bazelbuild/bazel/issues/4327.
+# Remove the two flags after this issue is fixed in bazel new release.
+build --enable_platform_specific_config
+build:macos --experimental_inprocess_symlink_creation
+
+test --test_output=errors
+
+# Enable Java 21. Note this doesn't control whether J2CL accepts Java 21 inputs,
+# that is controlled in build_defs/internal_do_not_use/j2cl_common.bzl.
+build --java_language_version=21
+build --java_runtime_version=21
+
+# Enable Java 21 for J2CL compiler itself
+build --tool_java_language_version=21
+build --tool_java_runtime_version=21
