@@ -8,24 +8,24 @@ Any other uses are experimental. You can use it to generate java APIs for other 
 
 Run with Bazel
 ---------------
-If your project uses [Bazel](https://bazel.build). You can use `jsinterop_generator` rule to generate java code.
+Using Bazel 8 or later, add to your `MODULE.bazel` file:
 
-You need to add this repository as an external dependency in your `WORKSPACE` file
+```starlark
+bazel_dep(name = "jsinterop_generator", version = "<RELEASE_VERSION>")
+```
 
-    new_http_archive(
-      name = "com_google_jsinterop_generator",
-      url="https://github.com/google/jsinterop-generator/archive/master.zip",
-      strip_prefix="jsinterop-generator-master",
-    )
+Replace `RELEASE_VERSION` with an actual [release version](https://github.com/google/jsinterop-generator/releases).
 
-and then define a `jsinterop_generator` target in your 'BUILD' file
+Then, in your `BUILD` file, load the generator rule and use it:
 
-    load("@com_google_jsinterop_generator//:jsinterop_generator.bzl", "jsinterop_generator")
+```bzl
+load("@jsinterop_generator//:jsinterop_generator.bzl", "jsinterop_generator")
 
-    jsinterop_generator(
+jsinterop_generator(
         name = "my_thirdparty_lib",
         srcs = ["my_externs.js"],
-    )
+)
+```
 
 You can now directly depend on `:my_thirdparty_lib` target in your `java_library` rules or build the jar files with `bazel build //path/to/your/BUILD/file/directory:my_thirdparty_lib`.
 The jar files with the generated source will created in `bazel-bin/path/to/your/BUILD/file/directory`.
@@ -52,9 +52,6 @@ Run as a standalone java program
   ```
 
 The generated jar file can be found at `bazel-bin/java/jsinterop/generator/closure/ClosureJsinteropGenerator_deploy.jar`
-
-### Or download the generator
-TODO(dramaix): provides link to download the generator.
 
 ### Run the generator
 Now you have the jar file, just invoke
