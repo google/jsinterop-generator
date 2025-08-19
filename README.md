@@ -1,4 +1,4 @@
-# JsInterop Generator &middot; [![Build Status](https://github.com/google/jsinterop-generator/actions/workflows/ci.yaml/badge.svg)](https://github.com/google/jsinterop-generator/actions/workflows/ci.yaml)
+# JsInterop Generator &middot; ![Latest Release](https://img.shields.io/github/v/release/google/jsinterop-generator) &middot; [![Build Status](https://github.com/google/jsinterop-generator/actions/workflows/ci.yaml/badge.svg)](https://github.com/google/jsinterop-generator/actions/workflows/ci.yaml)
 
 The jsinterop generator is a java program that takes closure extern files as input and generates
 Java classes annotated with [JsInterop annotations](https://goo.gl/agme3T).
