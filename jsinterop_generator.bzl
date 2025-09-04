@@ -377,6 +377,8 @@ def jsinterop_generator(
             resources = [gwt_xml_file] if gwt_xml_file else [],
             visibility = visibility,
             testonly = testonly,
+            # Keep compatibility with Java 11 for open source GWT.
+            javacopts = ["-source 11 -target 11"],
         )
 
     _extract_srcjar(
