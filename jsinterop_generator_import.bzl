@@ -55,6 +55,8 @@ def jsinterop_generator_import(
         ],
         resources = [gwt_xml] if gwt_xml else [],
         visibility = visibility,
+        # Keep compatibility with Java 11 for open source GWT.
+        javacopts = ["-source 11 -target 11"],
     )
 
     j2cl_library(
