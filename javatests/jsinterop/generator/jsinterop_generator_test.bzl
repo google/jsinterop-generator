@@ -13,6 +13,7 @@ jsinterop_generator_test(
 
 """
 
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
 load("//:jsinterop_generator.bzl", "jsinterop_generator")
 
 def jsinterop_generator_test(
@@ -44,8 +45,7 @@ def jsinterop_generator_test(
 
     zip_tool = "@bazel_tools//tools/zip:zipper"
     java_format_tool = "//third_party:google_java_format"
-
-    native.sh_test(
+    sh_test(
         name = name,
         size = "small",
         srcs = [
