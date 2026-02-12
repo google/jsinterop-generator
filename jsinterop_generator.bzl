@@ -124,6 +124,7 @@ def _closure_impl(srcs, deps_files, types_mapping_file, ctx):
         executable = ctx.executable._closure_generator,
         progress_message = "Generating JsInterop classes from externs",
         arguments = arguments,
+        mnemonic = "JsInteropClassesGen",
     )
 
 def _jsinterop_generator_impl(ctx):
@@ -176,6 +177,7 @@ def _jsinterop_generator_impl(ctx):
         executable = ctx.executable._format_jar_script,
         progress_message = "Formatting java classes",
         arguments = arguments,
+        mnemonic = "JsInteropClassesFormat",
     )
 
     return [
@@ -408,6 +410,7 @@ def _extract_srcjar_impl(ctx):
         command = "unzip -q %s *.java -d %s" % (ctx.file.srcjar.path, output_dir.path),
         inputs = [ctx.file.srcjar],
         outputs = [output_dir],
+        mnemonic = "JsInteropExtractSrcjar",
     )
 
     return [DefaultInfo(files = depset([output_dir]))]
