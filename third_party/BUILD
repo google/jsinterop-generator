@@ -26,6 +26,11 @@ java_library(
     exports = ["@maven//:args4j_args4j"],
 )
 
+alias(
+    name = "error_prone_annotations",
+    actual = "@google_bazel_common//third_party/java/error_prone:annotations",
+)
+
 java_library(
     name = "jsr305_annotations",
     exports = ["@google_bazel_common//third_party/java/jsr305_annotations"],
@@ -34,6 +39,12 @@ java_library(
 java_library(
     name = "guava",
     exports = ["@google_bazel_common//third_party/java/guava"],
+)
+
+java_library(
+    name = "junit",
+    testonly = 1,
+    exports = ["@google_bazel_common//third_party/java/junit"],
 )
 
 # Dependencies used in the jsinterop_generator skylark rules.
@@ -45,17 +56,6 @@ java_binary(
     main_class = "com.google.googlejavaformat.java.Main",
     visibility = ["//visibility:public"],
     runtime_deps = ["@google_bazel_common//third_party/java/google_java_format"],
-)
-
-java_library(
-    name = "junit",
-    testonly = 1,
-    exports = ["@google_bazel_common//third_party/java/junit"],
-)
-
-alias(
-    name = "error_prone_annotations",
-    actual = "@google_bazel_common//third_party/java/error_prone:annotations",
 )
 
 alias(

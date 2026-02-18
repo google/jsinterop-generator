@@ -5,7 +5,7 @@ load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
 package(
     default_applicable_licenses = ["//:license"],
-    default_visibility = ["//visibility:public"],
+    default_visibility = ["//:__subpackages__"],
     licenses = ["notice"],
 )
 
