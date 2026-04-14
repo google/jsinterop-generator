@@ -39,6 +39,7 @@ import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.NoType;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.ProxyObjectType;
+import com.google.javascript.rhino.jstype.SymbolType;
 import com.google.javascript.rhino.jstype.TemplateType;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
@@ -221,7 +222,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
     }
 
     @Override
-    public TypeReference caseSymbolType() {
+      public TypeReference caseSymbolType() {
       // TODO(b/73255220): add support for symbol type.
       return OBJECT.getReference(isNullable);
     }
