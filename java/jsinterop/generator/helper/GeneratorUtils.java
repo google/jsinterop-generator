@@ -20,11 +20,13 @@ import static com.google.common.base.CaseFormat.LOWER_CAMEL;
 import static com.google.common.base.CaseFormat.UPPER_CAMEL;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Iterables.transform;
 import static java.util.stream.Collectors.joining;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -142,8 +144,12 @@ public class GeneratorUtils {
         .split(readFiles(filePaths, fileReader));
   }
 
-  public static List<String> readListFiles(List<String> filePaths, FileReader fileReader) {
-    return Splitter.on('\n').omitEmptyStrings().splitToList(readFiles(filePaths, fileReader));
+  public static ImmutableList<String> readListFiles(List<String> filePaths, FileReader fileReader) {
+    return Splitter.on('\n')
+        .omitEmptyStrings()
+        .splitToStream(readFiles(filePaths, fileReader))
+        .filter(line -> !line.startsWith("#"))
+        .collect(toImmutableList());
   }
 
   private static String readFiles(List<String> filePaths, FileReader reader) {
