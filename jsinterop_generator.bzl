@@ -3,8 +3,7 @@
 Takes closure extern files and generates java files annotated with JsInterop annotations for the types
 defined in the extern files.
 
-By default, this rule produces a java_library with the same name usable with gwt. This behavior
-can be disabled by setting the parameter generate_gwt_library to False.
+By default, this rule produces a java_library with the same name usable with gwt.
 
 By default, this rule produces a j2cl_library with the same name suffixed by '-j2cl'. This
 behavior can be disabled by setting the parameter generate_j2cl_library to False.
@@ -255,7 +254,6 @@ def jsinterop_generator(
         wildcard_types_files = [],
         package_prefix = None,
         generate_j2cl_library = True,
-        generate_gwt_library = True,
         generate_j2cl_build_test = None,
         externs_deps = None,  # Auto-populated from srcs by default.
         runtime_deps = [],
@@ -267,9 +265,6 @@ def jsinterop_generator(
 
     if not srcs and deps:
         fail("deps cannot be used without srcs.")
-
-    if not generate_j2cl_library and not generate_gwt_library:
-        fail("either generate_j2cl_library or generate_gwt_library should be set to True")
 
     exports_java = [_absolute_label(export) for export in exports]
     exports_j2cl = ["%s-j2cl" % export for export in exports_java]
@@ -370,18 +365,19 @@ def jsinterop_generator(
             visibility = visibility,
         )
 
-    if generate_gwt_library:
-        java_library(
-            name = name,
-            srcs = generated_jars,
-            deps = deps_java,
-            exports = exports_java,
-            resources = [gwt_xml_file] if gwt_xml_file else [],
-            visibility = visibility,
-            testonly = testonly,
-            # Keep compatibility with Java 11 for open source GWT.
-            javacopts = ["-source 11 -target 11"],
-        )
+    # This target is required by the Elemental2 open-source release script to build Maven artifacts.
+    # Do not remove it.
+    java_library(
+        name = name,
+        srcs = generated_jars,
+        deps = deps_java,
+        exports = exports_java,
+        resources = [gwt_xml_file] if gwt_xml_file else [],
+        visibility = visibility,
+        testonly = testonly,
+        # Keep compatibility with Java 11 for open source GWT.
+        javacopts = ["-source 11 -target 11"],
+    )
 
     _extract_srcjar(
         name = name + "_generated_files",
