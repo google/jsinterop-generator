@@ -339,6 +339,13 @@ def jsinterop_generator(
             Label("//third_party:jspecify_annotations-j2cl"),
         ]
 
+        native.filegroup(
+            name = name + "_srcjar",
+            srcs = [":%s.srcjar" % jsinterop_generator_rule_name],
+            visibility = visibility,
+            testonly = testonly,
+        )
+
     else:
         # exporting existing generated libraries.
         _jsinterop_generator_export(
