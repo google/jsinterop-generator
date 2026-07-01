@@ -1,7 +1,7 @@
 module(name = "jsinterop_generator")
 
 _J2CL_VERSION = "20260402"
-_JSINTEROP_BASE_VERSION = "1.1.1"
+_JSINTEROP_BASE_VERSION = "1.2.0"
 
 bazel_dep(name = "j2cl", version = _J2CL_VERSION)
 bazel_dep(name = "jsinterop_base", version = _JSINTEROP_BASE_VERSION)
