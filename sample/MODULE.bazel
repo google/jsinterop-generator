@@ -1,12 +1,19 @@
 module(name = "sample")
 
 bazel_dep(name = "jsinterop_generator")
+bazel_dep(name = "rules_jvm_external", version = "6.6")
 
 # Use the repository's version of jsinterop_generator.
 local_path_override(
     module_name = "jsinterop_generator",
     path = "../",
 )
+
+# Maven dependencies.
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+# TODO(b/532249785): we need to have an empty maven.install() here due to
+#   https://github.com/bazel-contrib/rules_jvm_external/issues/1438
+maven.install()
 
 # TODO: drop this once jsinterop_base is in BCR.
 bazel_dep(name = "jsinterop_base", repo_name = "com_google_jsinterop_base")
