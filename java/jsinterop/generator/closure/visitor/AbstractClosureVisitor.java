@@ -23,7 +23,9 @@ import com.google.common.collect.Streams;
 import com.google.javascript.jscomp.NodeUtil;
 import com.google.javascript.jscomp.TypedScope;
 import com.google.javascript.jscomp.TypedVar;
+import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.StaticSourceFile;
+import com.google.javascript.rhino.Token;
 import com.google.javascript.rhino.jstype.EnumType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.FunctionType.Parameter;
@@ -35,6 +37,7 @@ import com.google.javascript.rhino.jstype.RecordType;
 import com.google.javascript.rhino.jstype.StaticTypedSlot;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import jsinterop.generator.closure.helper.ClosureTypeRegistry;
@@ -186,9 +189,9 @@ abstract class AbstractClosureVisitor {
     }
     realType = realType.restrictByNotNullOrUndefined();
 
-    if (realType.isRecordType()) {
+    if (realType.isRecordType() && isRecordTypeDefinition(typedef)) {
       acceptRecordType(toRecordType(realType), name);
-    } else if (isAnonymousFunctionType(realType)) {
+    } else if (isAnonymousFunctionType(realType) && isFunctionTypeDefinition(typedef)) {
       acceptFunctionType(toFunctionType(realType), name);
     } else {
       // we are in a case where typedef is used as an alias and doesnt define any RecordType or
@@ -198,6 +201,29 @@ abstract class AbstractClosureVisitor {
       // the typedef definition.
       return;
     }
+  }
+
+  private static boolean isRecordTypeDefinition(StaticTypedSlot typedef) {
+    return getTypedefTypeNode(typedef)
+        .map(typeNode -> typeNode.getToken() == Token.LC)
+        .orElse(false);
+  }
+
+  private static boolean isFunctionTypeDefinition(StaticTypedSlot typedef) {
+    return getTypedefTypeNode(typedef)
+        .map(typeNode -> typeNode.getToken() == Token.FUNCTION)
+        .orElse(false);
+  }
+
+  private static Optional<Node> getTypedefTypeNode(StaticTypedSlot typedef) {
+    if (typedef.getJSDocInfo() == null || typedef.getJSDocInfo().getTypedefType() == null) {
+      return Optional.empty();
+    }
+    Node root = typedef.getJSDocInfo().getTypedefType().getRoot();
+    while (root != null && (root.getToken() == Token.BANG || root.getToken() == Token.QMARK)) {
+      root = root.getFirstChild();
+    }
+    return Optional.ofNullable(root);
   }
 
   private void acceptModule(StaticTypedSlot module) {

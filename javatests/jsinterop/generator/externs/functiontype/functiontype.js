@@ -10,6 +10,11 @@
 var AliasedFunctionType;
 
 /**
+ * @typedef {AliasedFunctionType}
+ */
+var SecondAliasedFunctionType;
+
+/**
  * @constructor
  */
 function SimpleClass() {}

@@ -27,3 +27,8 @@ SimpleDictionaryType.prototype.baz;
  * @typedef {{foo: string, bar: number}}
  */
 var DictionaryType;
+
+/**
+ * @typedef {DictionaryType}
+ */
+var AliasedDictionaryType;
