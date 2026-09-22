@@ -222,7 +222,7 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
     }
 
     @Override
-      public TypeReference caseSymbolType() {
+    public TypeReference caseSymbolType(SymbolType type) {
       // TODO(b/73255220): add support for symbol type.
       return OBJECT.getReference(isNullable);
     }
