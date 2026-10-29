@@ -16,7 +16,6 @@
 package jsinterop.generator.closure.helper;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.IN_TYPE_ARGUMENTS;
 import static jsinterop.generator.helper.AbstractTypeRegistry.ReferenceContext.REGULAR;
@@ -49,7 +48,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import jsinterop.generator.helper.AbstractTypeRegistry;
-import jsinterop.generator.model.ArrayTypeReference;
 import jsinterop.generator.model.JavaTypeReference;
 import jsinterop.generator.model.ParametrizedTypeReference;
 import jsinterop.generator.model.PredefinedTypes;
@@ -273,11 +271,6 @@ public class ClosureTypeRegistry extends AbstractTypeRegistry<JSType> {
       // reference.
       if (templateKeys.isEmpty()) {
         return typeReference;
-      } else if (jsType.isArrayType()) {
-        checkState(templateKeys.size() == 1, templateKeys);
-        TypeReference mainTypeReference = resolveTypeReference(templateKeys.get(0));
-
-        return new ArrayTypeReference(mainTypeReference, isNullable);
       } else {
         return createParametrizedTypeReference(jsType, templateKeys);
       }
