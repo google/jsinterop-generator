@@ -19,4 +19,6 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Array")
-public class JsArray<T> implements JsIterable {}
+public class JsArray<T> implements JsIterable {
+  public JsArray(Object... args) {}
+}

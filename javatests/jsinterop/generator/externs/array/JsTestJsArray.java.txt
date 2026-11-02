@@ -1,0 +1,23 @@
+package jsinterop.generator.externs.array;
+
+import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.generator.externs.natives.JsArray;
+import org.jspecify.annotations.Nullable;
+
+@JsType(isNative = true, name = "Array", namespace = JsPackage.GLOBAL)
+public class JsTestJsArray<T extends @Nullable Object> extends JsArray<T> {
+  @JsOverlay
+  public static JsTestJsArray of(JsArray o) {
+    return Js.cast(o);
+  }
+
+  public JsTestJsArray(@Nullable Object... args) {
+    // This super call is here only for the code to compile; it is never executed.
+    super((@Nullable Object) null);
+  }
+
+  public native JsArray<T> testArrayReturnThis();
+}
