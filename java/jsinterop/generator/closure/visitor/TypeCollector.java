@@ -129,6 +129,19 @@ public class TypeCollector extends AbstractClosureVisitor {
   @Override
   protected boolean visitEnumType(EnumType type) {
     Type enumType = createJavaType(type.getDisplayName(), ENUM, false);
+    if (!enumType.isExtern()) {
+      JSType elementType = type.getElementsType().getPrimitiveType();
+      if (!elementType.isStringValueType()
+          && !elementType.isNumberValueType()
+          && !elementType.isBooleanValueType()) {
+        getContext()
+            .getProblems()
+            .error(
+                "Enum '%s' cannot have underlying type '%s'; only non-nullable string, number,"
+                    + " or boolean are supported.",
+                type.getDisplayName(), elementType);
+      }
+    }
 
     // In closure, the type used for the enum and the type for the enum members are different.
     // In our model, it's the same java type. We need to register the java type two times.

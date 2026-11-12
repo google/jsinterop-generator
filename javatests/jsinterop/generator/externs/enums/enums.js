@@ -14,6 +14,11 @@ var Foo = {FOO1: 'foo1', FOO2: 'foo2'};
 var Bar = {BAR1: 'bar1', BAR2: 'bar2'};
 
 /**
+ * @enum {boolean}
+ */
+var Qux = {QUX1: true, QUX2: false};
+
+/**
  * @interface
  */
 function Baz() {}
