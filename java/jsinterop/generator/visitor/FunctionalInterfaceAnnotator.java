@@ -35,7 +35,8 @@ public final class FunctionalInterfaceAnnotator implements ModelVisitor {
             if (type.isInterface()
                 && !type.isStructural()
                 && type.getExtendedTypes().isEmpty()
-                && type.getMethods().size() == 1) {
+                && type.getMethods().stream().filter(m -> !m.isDefault() && !m.isStatic()).count()
+                    == 1) {
               type.addAnnotation(Annotation.builder().type(FUNCTIONAL_INTERFACE).build());
             }
           }
