@@ -47,7 +47,7 @@ java_library(
     exports = ["@google_bazel_common//third_party/java/junit"],
 )
 
-# Dependencies used in the jsinterop_generator skylark rules.
+# Dependencies used in the jsinterop_generator starlark rules.
 # These dependencies need to be publicly visible in order to allow any other repo to use the
 # jsinterop generator rule.
 
@@ -56,6 +56,13 @@ java_binary(
     main_class = "com.google.googlejavaformat.java.Main",
     visibility = ["//visibility:public"],
     runtime_deps = ["@google_bazel_common//third_party/java/google_java_format"],
+)
+
+alias(
+    name = "google_java_format-testonly",
+    testonly = True,
+    actual = ":google_java_format",
+    visibility = ["//visibility:public"],
 )
 
 alias(
